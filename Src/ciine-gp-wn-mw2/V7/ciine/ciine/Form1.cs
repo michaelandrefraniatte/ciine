@@ -44,7 +44,7 @@ namespace ciine
         private static bool WiimoteIR0foundcam, WiimoteIR1foundcam, WiimoteIRswitch, WiimoteIR1found, WiimoteIR0found, WiimoteButtonStateA, WiimoteButtonStateB, WiimoteButtonStateMinus, WiimoteButtonStateHome, WiimoteButtonStatePlus, WiimoteButtonStateOne, WiimoteButtonStateTwo, WiimoteButtonStateUp, WiimoteButtonStateDown, WiimoteButtonStateLeft, WiimoteButtonStateRight, running, reconnectingwiimotebool, WiimoteNunchuckStateC, WiimoteNunchuckStateZ;
         private static double WiimoteIR0notfound, reconnectingwiimotecount, stickviewxinit, stickviewyinit, WiimoteNunchuckStateRawValuesX, WiimoteNunchuckStateRawValuesY, WiimoteNunchuckStateRawValuesZ, WiimoteNunchuckStateRawJoystickX, WiimoteNunchuckStateRawJoystickY;
         private static string path;
-        private static byte[] mBuff = new byte[22], aBuffer = new byte[22];
+        private static byte[] mBuff = new byte[22], aBuffer1 = new byte[22], aBuffer2 = new byte[22], aBuffer3 = new byte[22], bBuffer = new byte[22];
         private const byte Type = 0x12, IR = 0x13, WriteMemory = 0x16, ReadMemory = 0x16, IRExtensionAccel = 0x37;
         private static uint CurrentResolution = 0;
         private static FileStream mStream;
@@ -93,9 +93,9 @@ namespace ciine
             Thread.Sleep(3);
             Task.Run(() => taskD3());
             Thread.Sleep(1000);
-            calibrationinit = -aBuffer[4] + 135f;
-            stickviewxinit = -aBuffer[16] + 125f;
-            stickviewyinit = -aBuffer[17] + 125f;
+            calibrationinit = -bBuffer[4] + 135f;
+            stickviewxinit = -bBuffer[16] + 125f;
+            stickviewyinit = -bBuffer[17] + 125f;
             ScpBus.LoadController();
             Task.Run(() => taskX());
         }
@@ -118,8 +118,8 @@ namespace ciine
                     else
                         reconnectingwiimotecount = 0;
                 }
-                WiimoteIR0found = (aBuffer[6] | ((aBuffer[8] >> 4) & 0x03) << 8) > 1 & (aBuffer[6] | ((aBuffer[8] >> 4) & 0x03) << 8) < 1023;
-                WiimoteIR1found = (aBuffer[9] | ((aBuffer[8] >> 0) & 0x03) << 8) > 1 & (aBuffer[9] | ((aBuffer[8] >> 0) & 0x03) << 8) < 1023;
+                WiimoteIR0found = (bBuffer[6] | ((bBuffer[8] >> 4) & 0x03) << 8) > 1 & (bBuffer[6] | ((bBuffer[8] >> 4) & 0x03) << 8) < 1023;
+                WiimoteIR1found = (bBuffer[9] | ((bBuffer[8] >> 0) & 0x03) << 8) > 1 & (bBuffer[9] | ((bBuffer[8] >> 0) & 0x03) << 8) < 1023;
                 if (WiimoteIR0notfound == 0 & WiimoteIR1found)
                     WiimoteIR0notfound = 1;
                 if (WiimoteIR0notfound == 1 & !WiimoteIR0found & !WiimoteIR1found)
@@ -140,13 +140,13 @@ namespace ciine
                     WiimoteIR0notfound = 0;
                 if (WiimoteIR0found)
                 {
-                    WiimoteIRSensors0X = (aBuffer[6] | ((aBuffer[8] >> 4) & 0x03) << 8);
-                    WiimoteIRSensors0Y = (aBuffer[7] | ((aBuffer[8] >> 6) & 0x03) << 8);
+                    WiimoteIRSensors0X = bBuffer[6] | ((bBuffer[8] >> 4) & 0x03) << 8;
+                    WiimoteIRSensors0Y = bBuffer[7] | ((bBuffer[8] >> 6) & 0x03) << 8;
                 }
                 if (WiimoteIR1found)
                 {
-                    WiimoteIRSensors1X = (aBuffer[9] | ((aBuffer[8] >> 0) & 0x03) << 8);
-                    WiimoteIRSensors1Y = (aBuffer[10] | ((aBuffer[8] >> 2) & 0x03) << 8);
+                    WiimoteIRSensors1X = bBuffer[9] | ((bBuffer[8] >> 0) & 0x03) << 8;
+                    WiimoteIRSensors1Y = bBuffer[10] | ((bBuffer[8] >> 2) & 0x03) << 8;
                 }
                 if (WiimoteIRswitch)
                 {
@@ -210,27 +210,27 @@ namespace ciine
                     tempirx = irx;
                     tempiry = iry;
                 }
-                WiimoteButtonStateA = (aBuffer[2] & 0x08) != 0;
-                WiimoteButtonStateB = (aBuffer[2] & 0x04) != 0;
-                WiimoteButtonStateMinus = (aBuffer[2] & 0x10) != 0;
-                WiimoteButtonStateHome = (aBuffer[2] & 0x80) != 0;
-                WiimoteButtonStatePlus = (aBuffer[1] & 0x10) != 0;
-                WiimoteButtonStateOne = (aBuffer[2] & 0x02) != 0;
-                WiimoteButtonStateTwo = (aBuffer[2] & 0x01) != 0;
-                WiimoteButtonStateUp = (aBuffer[1] & 0x08) != 0;
-                WiimoteButtonStateDown = (aBuffer[1] & 0x04) != 0;
-                WiimoteButtonStateLeft = (aBuffer[1] & 0x01) != 0;
-                WiimoteButtonStateRight = (aBuffer[1] & 0x02) != 0;
-                WiimoteRawValuesX = aBuffer[3] - 135f + calibrationinit;
-                WiimoteRawValuesY = aBuffer[4] - 135f + calibrationinit;
-                WiimoteRawValuesZ = aBuffer[5] - 135f + calibrationinit;
-                WiimoteNunchuckStateRawJoystickX = aBuffer[16] - 125f + stickviewxinit;
-                WiimoteNunchuckStateRawJoystickY = aBuffer[17] - 125f + stickviewyinit;
-                WiimoteNunchuckStateRawValuesX = aBuffer[18] - 125f;
-                WiimoteNunchuckStateRawValuesY = aBuffer[19] - 125f;
-                WiimoteNunchuckStateRawValuesZ = aBuffer[20] - 125f;
-                WiimoteNunchuckStateC = (aBuffer[21] & 0x02) == 0;
-                WiimoteNunchuckStateZ = (aBuffer[21] & 0x01) == 0;
+                WiimoteButtonStateA = (bBuffer[2] & 0x08) != 0;
+                WiimoteButtonStateB = (bBuffer[2] & 0x04) != 0;
+                WiimoteButtonStateMinus = (bBuffer[2] & 0x10) != 0;
+                WiimoteButtonStateHome = (bBuffer[2] & 0x80) != 0;
+                WiimoteButtonStatePlus = (bBuffer[1] & 0x10) != 0;
+                WiimoteButtonStateOne = (bBuffer[2] & 0x02) != 0;
+                WiimoteButtonStateTwo = (bBuffer[2] & 0x01) != 0;
+                WiimoteButtonStateUp = (bBuffer[1] & 0x08) != 0;
+                WiimoteButtonStateDown = (bBuffer[1] & 0x04) != 0;
+                WiimoteButtonStateLeft = (bBuffer[1] & 0x01) != 0;
+                WiimoteButtonStateRight = (bBuffer[1] & 0x02) != 0;
+                WiimoteRawValuesX = bBuffer[3] - 135f + calibrationinit;
+                WiimoteRawValuesY = bBuffer[4] - 135f + calibrationinit;
+                WiimoteRawValuesZ = bBuffer[5] - 135f + calibrationinit;
+                WiimoteNunchuckStateRawJoystickX = bBuffer[16] - 125f + stickviewxinit;
+                WiimoteNunchuckStateRawJoystickY = bBuffer[17] - 125f + stickviewyinit;
+                WiimoteNunchuckStateRawValuesX = bBuffer[18] - 125f;
+                WiimoteNunchuckStateRawValuesY = bBuffer[19] - 125f;
+                WiimoteNunchuckStateRawValuesZ = bBuffer[20] - 125f;
+                WiimoteNunchuckStateC = (bBuffer[21] & 0x02) == 0;
+                WiimoteNunchuckStateZ = (bBuffer[21] & 0x01) == 0;
                 controller1_send_rightstick = WiimoteNunchuckStateRawValuesY >= 90f;
                 controller1_send_leftstick = WiimoteNunchuckStateZ;
                 controller1_send_A = WiimoteNunchuckStateC;
@@ -317,7 +317,8 @@ namespace ciine
                     break;
                 try
                 {
-                    mStream.Read(aBuffer, 0, 22);
+                    mStream.Read(aBuffer1, 0, 22);
+                    bBuffer = aBuffer1;
                     reconnectingwiimotebool = false;
                 }
                 catch { }
@@ -331,7 +332,8 @@ namespace ciine
                     break;
                 try
                 {
-                    mStream.Read(aBuffer, 0, 22);
+                    mStream.Read(aBuffer2, 0, 22);
+                    bBuffer = aBuffer2;
                     reconnectingwiimotebool = false;
                 }
                 catch { }
@@ -345,7 +347,8 @@ namespace ciine
                     break;
                 try
                 {
-                    mStream.Read(aBuffer, 0, 22);
+                    mStream.Read(aBuffer3, 0, 22);
+                    bBuffer = aBuffer3;
                     reconnectingwiimotebool = false;
                 }
                 catch { }
