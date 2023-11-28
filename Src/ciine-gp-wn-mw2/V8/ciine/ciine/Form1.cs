@@ -102,12 +102,12 @@ namespace ciine
                 if (reconnectingwiimotecount == 0)
                     reconnectingwiimotebool = true;
                 reconnectingwiimotecount++;
-                if (reconnectingwiimotecount >= 150f)
+                if (reconnectingwiimotecount >= 150f / 9f)
                 {
                     if (reconnectingwiimotebool)
                     {
                         WiimoteFound(path);
-                        reconnectingwiimotecount = -150;
+                        reconnectingwiimotecount = -150f / 9f;
                     }
                     else
                         reconnectingwiimotecount = 0;
@@ -196,13 +196,13 @@ namespace ciine
                 }
                 if (!WiimoteIR0foundcam & !WiimoteIR1foundcam)
                 {
-                    if (irx - tempirx >= 20f)
+                    if (irx - tempirx >= 1f)
                         irx = 1024f;
-                    if (irx - tempirx <= -20f)
+                    if (irx - tempirx <= -1f)
                         irx = -1024f;
-                    if (iry - tempiry >= 20f)
+                    if (iry - tempiry >= 1f)
                         iry = 1024f;
-                    if (iry - tempiry <= -20f)
+                    if (iry - tempiry <= -1f)
                         iry = -1024f;
                 }
                 if (WiimoteIR0foundcam | WiimoteIR1foundcam)
@@ -301,7 +301,7 @@ namespace ciine
                     }
                 }
                 ScpBus.SetController(controller1_send_back, controller1_send_start, controller1_send_A, controller1_send_B, controller1_send_X, controller1_send_Y, controller1_send_up, controller1_send_left, controller1_send_down, controller1_send_right, controller1_send_leftstick, controller1_send_rightstick, controller1_send_leftbumper, controller1_send_rightbumper, controller1_send_leftstickx, controller1_send_leftsticky, controller1_send_rightstickx, controller1_send_rightsticky, controller1_send_lefttriggerposition, controller1_send_righttriggerposition, controller1_send_xbox);
-                Thread.Sleep(1);
+                Thread.Sleep(9);
             }
         }
         private static double Scale(double value, double min, double max, double minScale, double maxScale)
