@@ -50,7 +50,7 @@ namespace ciine
         private const byte Type = 0x12, IR = 0x13, WriteMemory = 0x16, ReadMemory = 0x16, IRExtensionAccel = 0x37;
         private static uint CurrentResolution = 0;
         private static FileStream mStream;
-        private static BufferedStream Stream1, Stream2;
+        private static BufferedStream Stream1, Stream2, Stream3;
         private static SafeFileHandle handle = null;
         private static double mousex = 0f, mousey = 0f, viewpower1x = 0f, viewpower2x = 1f, viewpower3x = 0f, viewpower1y = 0.25f, viewpower2y = 0.75f, viewpower3y = 0f, dzx = 2.0f, dzy = 2.0f, centery = 80f;
         private static bool getstate;
@@ -72,6 +72,7 @@ namespace ciine
                 mStream.Close();
                 Stream1.Close();
                 Stream2.Close();
+                Stream3.Close();
                 handle.Close();
                 wiimotedisconnect();
             }
@@ -318,9 +319,11 @@ namespace ciine
                 try
                 {
                     Stream1.ReadAsync(aBuffer, 0, 22);
-                    Thread.Sleep(5);
+                    Thread.Sleep(6);
                     Stream2.ReadAsync(aBuffer, 0, 22);
-                    Thread.Sleep(5);
+                    Thread.Sleep(6);
+                    Stream3.ReadAsync(aBuffer, 0, 22);
+                    Thread.Sleep(6);
                     reconnectingwiimotebool = false;
                 }
                 catch { }
@@ -393,9 +396,10 @@ namespace ciine
                 ReadData(handle, (int)REGISTER_EXTENSION_CALIBRATION, 32);
             }
             while (handle.IsInvalid);
-            mStream = new FileStream(handle, FileAccess.ReadWrite, 22, true);
-            Stream1 = new BufferedStream(mStream);
-            Stream2 = new BufferedStream(mStream);
+            mStream = new FileStream(handle, FileAccess.Read, 22, true);
+            Stream1 = new BufferedStream(mStream, 22);
+            Stream2 = new BufferedStream(mStream, 22);
+            Stream3 = new BufferedStream(mStream, 22);
         }
         private static void ReadData(SafeFileHandle _hFile, int address, short size)
         {
