@@ -47,7 +47,7 @@ namespace ciine
         private const byte Type = 0x12, IR = 0x13, WriteMemory = 0x16, ReadMemory = 0x16, IRExtensionAccel = 0x37;
         private static uint CurrentResolution = 0;
         private static FileStream mStream;
-        private static BufferedStream Stream1, Stream2, Stream3;
+        private static BufferedStream Stream1, Stream2, Stream3, Stream4;
         private static SafeFileHandle handle = null;
         private static double mousex = 0f, mousey = 0f, dzx = 15.0f, dzy = 0f;
         private void Form1_Load(object sender, EventArgs e)
@@ -68,6 +68,7 @@ namespace ciine
                 Stream1.Close();
                 Stream2.Close();
                 Stream3.Close();
+                Stream4.Close();
                 handle.Close();
                 wiimotedisconnect();
             }
@@ -158,6 +159,8 @@ namespace ciine
                     Thread.Sleep(6);
                     Stream3.ReadAsync(aBuffer, 0, 22);
                     Thread.Sleep(6);
+                    Stream4.ReadAsync(aBuffer, 0, 22);
+                    Thread.Sleep(6);
                 }
                 catch { }
             }
@@ -233,6 +236,7 @@ namespace ciine
             Stream1 = new BufferedStream(mStream, 22);
             Stream2 = new BufferedStream(mStream, 22);
             Stream3 = new BufferedStream(mStream, 22);
+            Stream4 = new BufferedStream(mStream, 22);
         }
         private static void ReadData(SafeFileHandle _hFile, int address, short size)
         {
