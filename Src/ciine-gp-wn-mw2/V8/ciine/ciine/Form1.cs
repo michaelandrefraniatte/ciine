@@ -102,12 +102,12 @@ namespace ciine
                 if (reconnectingwiimotecount == 0)
                     reconnectingwiimotebool = true;
                 reconnectingwiimotecount++;
-                if (reconnectingwiimotecount >= 150f / 9f)
+                if (reconnectingwiimotecount >= 150f / 8f)
                 {
                     if (reconnectingwiimotebool)
                     {
                         WiimoteFound(path);
-                        reconnectingwiimotecount = -150f / 9f;
+                        reconnectingwiimotecount = -150f / 8f;
                     }
                     else
                         reconnectingwiimotecount = 0;
@@ -301,7 +301,7 @@ namespace ciine
                     }
                 }
                 ScpBus.SetController(controller1_send_back, controller1_send_start, controller1_send_A, controller1_send_B, controller1_send_X, controller1_send_Y, controller1_send_up, controller1_send_left, controller1_send_down, controller1_send_right, controller1_send_leftstick, controller1_send_rightstick, controller1_send_leftbumper, controller1_send_rightbumper, controller1_send_leftstickx, controller1_send_leftsticky, controller1_send_rightstickx, controller1_send_rightsticky, controller1_send_lefttriggerposition, controller1_send_righttriggerposition, controller1_send_xbox);
-                Thread.Sleep(9);
+                Thread.Sleep(8);
             }
         }
         private static double Scale(double value, double min, double max, double minScale, double maxScale)
