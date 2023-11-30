@@ -152,9 +152,10 @@ namespace ciine
                     break;
                 try
                 {
-                    aStream.Read(aBuffer, 0, 22);
+                    aStream.ReadAsync(aBuffer, 0, 22);
                 }
                 catch { }
+                Thread.Sleep(8);
             }
         }
         private const string vendor_id = "57e", vendor_id_ = "057e", product_r1 = "0330", product_r2 = "0306", product_l = "2006";

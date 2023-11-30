@@ -190,24 +190,24 @@ namespace ciine
                 }
                 if (WiimoteIR0foundcam | WiimoteIR1foundcam)
                 {
+                    tempirx = irx;
+                    tempiry = iry;
+                }
+                if (WiimoteIR0foundcam | WiimoteIR1foundcam)
+                {
                     irx = (irx2 + irx3) * (1024f / 1346f);
                     iry = iry2 + iry3 + centery >= 0 ? Scale(iry2 + iry3 + centery, 0f, 782f + centery, 0f, 1024f) : Scale(iry2 + iry3 + centery, -782f + centery, 0f, -1024f, 0f);
                 }
                 if (!WiimoteIR0foundcam & !WiimoteIR1foundcam)
                 {
-                    if (irx - tempirx >= 20f)
+                    if (irx - tempirx >= 1f)
                         irx = 1024f;
-                    if (irx - tempirx <= -20f)
+                    if (irx - tempirx <= -1f)
                         irx = -1024f;
-                    if (iry - tempiry >= 20f)
+                    if (iry - tempiry >= 1f)
                         iry = 1024f;
-                    if (iry - tempiry <= -20f)
+                    if (iry - tempiry <= -1f)
                         iry = -1024f;
-                }
-                if (WiimoteIR0foundcam | WiimoteIR1foundcam)
-                {
-                    tempirx = irx;
-                    tempiry = iry;
                 }
                 WiimoteButtonStateA = (aBuffer[2] & 0x08) != 0;
                 WiimoteButtonStateB = (aBuffer[2] & 0x04) != 0;
@@ -316,10 +316,11 @@ namespace ciine
                     break;
                 try
                 {
-                    aStream.Read(aBuffer, 0, 22);
+                    aStream.ReadAsync(aBuffer, 0, 22);
                     reconnectingwiimotebool = false;
                 }
                 catch { }
+                Thread.Sleep(8);
             }
         }
         private const string vendor_id = "57e", vendor_id_ = "057e", product_r1 = "0330", product_r2 = "0306";
