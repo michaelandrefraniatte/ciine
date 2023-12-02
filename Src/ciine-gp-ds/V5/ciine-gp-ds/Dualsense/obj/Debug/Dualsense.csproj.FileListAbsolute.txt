@@ -1,0 +1,6 @@
+C:\Users\micha\Documents\github\ciine\Src\ciine-gp-ds\V3\ciine\Dualsense\bin\Debug\Dualsense.dll
+C:\Users\micha\Documents\github\ciine\Src\ciine-gp-ds\V3\ciine\Dualsense\bin\Debug\Dualsense.pdb
+C:\Users\micha\Documents\github\ciine\Src\ciine-gp-ds\V3\ciine\Dualsense\obj\Debug\Dualsense.csproj.AssemblyReference.cache
+C:\Users\micha\Documents\github\ciine\Src\ciine-gp-ds\V3\ciine\Dualsense\obj\Debug\Dualsense.csproj.CoreCompileInputs.cache
+C:\Users\micha\Documents\github\ciine\Src\ciine-gp-ds\V3\ciine\Dualsense\obj\Debug\Dualsense.dll
+C:\Users\micha\Documents\github\ciine\Src\ciine-gp-ds\V3\ciine\Dualsense\obj\Debug\Dualsense.pdb
