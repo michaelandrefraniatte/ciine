@@ -46,6 +46,10 @@ namespace ciine
         public static bool PS5ControllerButtonMenuPressed;
         public static bool PS5ControllerButtonLogoPressed;
         public static bool PS5ControllerButtonTouchpadPressed;
+        public static bool PS5ControllerButtonFnLPressed;
+        public static bool PS5ControllerButtonFnRPressed;
+        public static bool PS5ControllerButtonBLPPressed;
+        public static bool PS5ControllerButtonBRPPressed;
         public static bool PS5ControllerButtonMicPressed;
         public static bool PS5ControllerTouchOn;
         private static double PS5ControllerLeftStickX, PS5ControllerLeftStickY, PS5ControllerRightStickX, PS5ControllerRightStickY, PS5ControllerRightTriggerPosition, PS5ControllerLeftTriggerPosition, PS5ControllerTouchX, PS5ControllerTouchY;
@@ -172,6 +176,10 @@ namespace ciine
                 PS5ControllerButtonMenuPressed = MenuButton;
                 PS5ControllerButtonLogoPressed = LogoButton;
                 PS5ControllerButtonTouchpadPressed = TouchpadButton;
+                PS5ControllerButtonFnLPressed = FnL;
+                PS5ControllerButtonFnRPressed = FnR;
+                PS5ControllerButtonBLPPressed = BLP;
+                PS5ControllerButtonBRPPressed = BRP;
                 PS5ControllerButtonMicPressed = MicButton;
                 statex = PS5ControllerGyroX * 15f;
                 statey = PS5ControllerGyroY * 15f;
