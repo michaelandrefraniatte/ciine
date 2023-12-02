@@ -216,24 +216,17 @@ namespace ciine
         }
         private async void taskD()
         {
-            // This is Windows specific code. You can replace this with your platform of choice or put this part in the composition root of your app
             string vendor_id = "54C";
             string product_id = "9CC";
             string label_id = "Wireless Controller";
-            //Register the factory for creating Hid devices. 
             var hidFactory = new FilterDeviceDefinition((uint)int.Parse(vendor_id, System.Globalization.NumberStyles.HexNumber), (uint)int.Parse(product_id, System.Globalization.NumberStyles.HexNumber), label: label_id).CreateWindowsHidDeviceFactory();
-            //Join the factories together so that it picks up either the Hid or USB device
             var factories = hidFactory;
-            //Get connected device definitions
             var deviceDefinitions = (await factories.GetConnectedDeviceDefinitionsAsync().ConfigureAwait(false)).ToList();
             if (deviceDefinitions.Count == 0)
             {
-                //No devices were found
                 return;
             }
-            //Get the device from its definition
             var trezorDevice = await hidFactory.GetDeviceAsync(deviceDefinitions.First()).ConfigureAwait(false);
-            //Initialize the device
             await trezorDevice.InitializeAsync().ConfigureAwait(false);
             for (; ; )
             {
@@ -244,11 +237,6 @@ namespace ciine
                 ds4data = ((TransferResult)await readBuffer).Data.Skip(1).ToArray();
             }
         }
-
-        /// <summary>
-        /// Builds the output byte array that will be sent to the controller.
-        /// </summary>
-        /// <returns>An array of bytes to send to the controller</returns>
         private byte[] GetOutputDataBytes()
         {
             byte[] bytes = new byte[32];
@@ -280,7 +268,6 @@ namespace ciine
         }
         private static DualShock4Touch ReadTouchpad(byte[] bytes)
         {
-            // force everything into the right byte order; input bytes are LSB-first
             if (!BitConverter.IsLittleEndian)
             {
                 bytes = bytes.Reverse().ToArray();
@@ -296,7 +283,6 @@ namespace ciine
         }
         private static Vec3 ReadAccelAxes(byte[] x, byte[] y, byte[] z)
         {
-            // force everything into the right byte order; assuming that input bytes is little-endian
             if (!BitConverter.IsLittleEndian)
             {
                 x = x.Reverse().ToArray();
@@ -310,221 +296,57 @@ namespace ciine
                 Z = BitConverter.ToInt16(z, 0)
             };
         }
-
-        /// <summary>
-        /// The left analog stick. Values are from -1 to 1. Positive X is right, positive Y is up.
-        /// </summary>
         public static Vec2 LeftAnalogStick { get; private set; }
-
-        /// <summary>
-        /// The right analog stick. Values are from -1 to 1. Positive X is right, positive Y is up.
-        /// </summary>
         public static Vec2 RightAnalogStick { get; private set; }
-
-        /// <summary>
-        /// L2's analog value, from 0 to 1.
-        /// </summary>
         public static float L2 { get; private set; }
-
-        /// <summary>
-        /// R2's analog value, from 0 to 1.
-        /// </summary>
         public static float R2 { get; private set; }
-
-        /// <summary>
-        /// The status of the square button.
-        /// </summary>
         public static bool SquareButton { get; private set; }
-
-        /// <summary>
-        /// The status of the cross button.
-        /// </summary>
         public static bool CrossButton { get; private set; }
-
-        /// <summary>
-        /// The status of the circle button.
-        /// </summary>
         public static bool CircleButton { get; private set; }
-
-        /// <summary>
-        /// The status of the triangle button.
-        /// </summary>
         public static bool TriangleButton { get; private set; }
-
-        /// <summary>
-        /// The status of the D-pad up button.
-        /// </summary>
         public static bool DPadUpButton { get; private set; }
-
-        /// <summary>
-        /// The status of the D-pad right button.
-        /// </summary>
         public static bool DPadRightButton { get; private set; }
-
-        /// <summary>
-        /// The status of the D-pad down button.
-        /// </summary>
         public static bool DPadDownButton { get; private set; }
-
-        /// <summary>
-        /// The status of the D-pad left button.
-        /// </summary>
         public static bool DPadLeftButton { get; private set; }
-
-        /// <summary>
-        /// The status of the L1 button.
-        /// </summary>
         public static bool L1Button { get; private set; }
-
-        /// <summary>
-        /// The status of the R1 button.
-        /// </summary>
         public static bool R1Button { get; private set; }
-
-        /// <summary>
-        /// The status of the L2 button.
-        /// </summary>
         public static bool L2Button { get; private set; }
-
-        /// <summary>
-        /// The status of the R2 button.
-        /// </summary>
         public static bool R2Button { get; private set; }
-
-        /// <summary>
-        /// The status of the create button.
-        /// </summary>
         public static bool CreateButton { get; private set; }
-
-        /// <summary>
-        /// The status of the menu button.
-        /// </summary>
         public static bool MenuButton { get; private set; }
-
-        /// <summary>
-        /// The status of the L3 button.
-        /// </summary>
         public static bool L3Button { get; private set; }
-
-        /// <summary>
-        /// The status of the R3 button.
-        /// </summary>
         public static bool R3Button { get; private set; }
-
-        /// <summary>
-        /// The status of the PlayStation logo button.
-        /// </summary>
         public static bool LogoButton { get; private set; }
-
-        /// <summary>
-        /// The status of the touchpad button.
-        /// </summary>
         public static bool TouchpadButton { get; private set; }
-
-        /// <summary>
-        /// The status of the mic button.
-        /// </summary>
         public static bool MicButton { get; private set; }
-
-        /// <summary>
-        /// The first touch point.
-        /// </summary>
         public static DualShock4Touch Touchpad1 { get; private set; }
-
-        /// <summary>
-        /// The second touch point.
-        /// </summary>
         public static DualShock4Touch Touchpad2 { get; private set; }
-
-        /// <summary>
-        /// The accelerometer's rotational axes. The directions of the axes have been slightly adjusted from the controller's original values
-        /// to make them behave nicer with standard Newtonian physics. The signs follow normal right-hand rule with respect to
-        /// <see cref="Accelerometer"/>'s axes, e.g. +X rotation means counterclockwise around the +X axis and so on. Unit is unclear, but
-        /// magnitude while stationary is about 0.
-        /// </summary>
         public static Vec3 Gyro { get; private set; }
-
-        /// <summary>
-        /// The accelerometer's linear axes. The directions of the axes have been slightly adjusted from the controller's original values
-        /// to make them behave nicer with standard Newtonian physics. +X is to the right. +Y is behind the controller (roughly straight down
-        /// if the controller is flat on the table). +Z is at the top of the controller (where the USB port is). Unit is unclear, but magnitude
-        /// while stationary (e.g. just gravity) is about 8000 +- 100.
-        /// </summary>
         public static Vec3 Accelerometer { get; private set; }
-
-        /// <summary>
-        /// Whether or not headphones are connected to the controller.
-        /// </summary>
         public static bool IsHeadphoneConnected { get; private set; }
     }
-    /// <summary>
-    /// Extension logic to help conversion between bytes and more useful formats.
-    /// </summary>
     internal static class DualShock4ByteConverterExtensions
     {
-        /// <summary>
-        /// Converts a byte to the corresponding signed float.
-        /// </summary>
-        /// <param name="b">The byte value</param>
-        /// <returns>The byte, scaled and translated to floating point value between -1 and 1.</returns>
         public static float ToSignedFloat(this byte b)
         {
             return (b / 255.0f - 0.5f) * 2.0f;
         }
-
-        /// <summary>
-        /// Converts a byte to the corresponding unsigned float.
-        /// </summary>
-        /// <param name="b">The byte value</param>
-        /// <returns>The byte, scaled to a floating point value between 0 and 1.</returns>
         public static float ToUnsignedFloat(this byte b)
         {
             return b / 255.0f;
         }
-
-        /// <summary>
-        /// Checks whether the provided flag's bits are set on this byte. Similar to <see cref="Enum.HasFlag(Enum)"/>.
-        /// </summary>
-        /// <param name="b">The byte value</param>
-        /// <param name="flag">The flag to check</param>
-        /// <returns>Whether all the bits of the flag are set on the byte.</returns>
         public static bool HasFlag(this byte b, byte flag)
         {
             return (b & flag) == flag;
         }
     }
-    /// <summary>
-    /// One of the DualShock4's 2 touch points. The touchpad is 1920x1080, 0-indexed.
-    /// </summary>
     public struct DualShock4Touch
     {
-        /// <summary>
-        /// The X position of the touchpoint. 0 is the leftmost edge. If the touch point is currently pressed,
-        /// this is the current position. If the touch point is released, it was the last position before it
-        /// was released.
-        /// </summary>
         public uint X;
-
-        /// <summary>
-        /// The Y position of the touchpoint. 0 is the topmost edge. If the touch point is currently pressed,
-        /// this is the current position. If the touch point is released, it was the last position before it
-        /// was released.
-        /// </summary>
         public uint Y;
-
-        /// <summary>
-        /// Whether the touch point is currently pressed.
-        /// </summary>
         public bool IsDown;
-
-        /// <summary>
-        /// The touch id. This is a counter that changes whenever a touch is pressed or released.
-        /// </summary>
         public byte Id;
     }
-    /// <summary>
-    /// A 2D vector
-    /// </summary>
     public struct Vec2
     {
         public float X, Y;
@@ -545,24 +367,18 @@ namespace ciine
             return new Vec2 { X = -v.X, Y = -v.Y };
         }
     }
-    /// <summary>
-    /// A 3D vector
-    /// </summary>
     public struct Vec3
     {
         public float X, Y, Z;
-
         public float Magnitude()
         {
             return (float)Math.Sqrt(X * X + Y * Y + Z * Z);
         }
-
         public Vec3 Normalize()
         {
             float m = Magnitude();
             return new Vec3 { X = X / m, Y = Y / m, Z = Z / m };
         }
-
         public static Vec3 operator -(Vec3 v)
         {
             return new Vec3 { X = -v.X, Y = -v.Y, Z = -v.Z };
