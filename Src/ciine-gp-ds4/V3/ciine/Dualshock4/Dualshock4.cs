@@ -12,7 +12,7 @@ namespace DualShock4API
         private static byte btnBlock1, btnBlock2, btnBlock3;
         private static byte[] ds4data = new byte[37];
         public static IDevice trezorDevice;
-        public async static void EnumerateControllers(string vendor_id, string product_id, string label_id)
+        public async void EnumerateControllers(string vendor_id, string product_id, string label_id)
         {
             var hidFactory = new FilterDeviceDefinition((uint)int.Parse(vendor_id, System.Globalization.NumberStyles.HexNumber), (uint)int.Parse(product_id, System.Globalization.NumberStyles.HexNumber), label: label_id).CreateWindowsHidDeviceFactory();
             var factories = hidFactory;
@@ -24,7 +24,7 @@ namespace DualShock4API
             trezorDevice = await hidFactory.GetDeviceAsync(deviceDefinitions.First()).ConfigureAwait(false);
             await trezorDevice.InitializeAsync().ConfigureAwait(false);
         }
-        public async static void BeginPolling()
+        public async void BeginPolling()
         {
             var readBuffer = trezorDevice.WriteAndReadAsync(GetOutputDataBytes());
             readBuffer.Wait();

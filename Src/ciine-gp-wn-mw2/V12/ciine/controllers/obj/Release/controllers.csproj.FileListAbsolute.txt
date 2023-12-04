@@ -46,3 +46,9 @@ C:\Users\micha\Documents\github\ciine\Src\ciine-gp-wn-mw2\V10\ciine\controllers\
 C:\Users\micha\Documents\github\ciine\Src\ciine-gp-wn-mw2\V10\ciine\controllers\obj\Release\controllers.csproj.CoreCompileInputs.cache
 C:\Users\micha\Documents\github\ciine\Src\ciine-gp-wn-mw2\V10\ciine\controllers\obj\Release\controllers.dll
 C:\Users\micha\Documents\github\ciine\Src\ciine-gp-wn-mw2\V10\ciine\controllers\obj\Release\controllers.pdb
+C:\Users\micha\Documents\github\ciine\Src\ciine-gp-wn-mw2\V12\ciine\controllers\bin\Release\controllers.dll
+C:\Users\micha\Documents\github\ciine\Src\ciine-gp-wn-mw2\V12\ciine\controllers\bin\Release\controllers.pdb
+C:\Users\micha\Documents\github\ciine\Src\ciine-gp-wn-mw2\V12\ciine\controllers\obj\Release\controllers.csproj.AssemblyReference.cache
+C:\Users\micha\Documents\github\ciine\Src\ciine-gp-wn-mw2\V12\ciine\controllers\obj\Release\controllers.csproj.CoreCompileInputs.cache
+C:\Users\micha\Documents\github\ciine\Src\ciine-gp-wn-mw2\V12\ciine\controllers\obj\Release\controllers.dll
+C:\Users\micha\Documents\github\ciine\Src\ciine-gp-wn-mw2\V12\ciine\controllers\obj\Release\controllers.pdb

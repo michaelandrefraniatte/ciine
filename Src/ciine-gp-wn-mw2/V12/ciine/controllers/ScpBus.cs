@@ -27,19 +27,19 @@ namespace controllers
         private static ScpBus scpBus;
         private static X360Controller controller;
         public static Valuechanges ValueChange = new Valuechanges();
-        public static void LoadController()
+        public void LoadController()
         {
             scpBus = new ScpBus();
             scpBus.PlugIn(1);
             controller = new X360Controller();
         }
-        public static void UnLoadController()
+        public void UnLoadController()
         {
             SetController(false, false, false, false, false, false, false, false, false, false, false, false, false, false, 0, 0, 0, 0, 0, 0, false);
             Thread.Sleep(100);
             scpBus.Unplug(1);
         }
-        public static void SetController(bool back, bool start, bool A, bool B, bool X, bool Y, bool up, bool left, bool down, bool right, bool leftstick, bool rightstick, bool leftbumper, bool rightbumper, double leftstickx, double leftsticky, double rightstickx, double rightsticky, double lefttriggerposition, double righttriggerposition, bool xbox)
+        public void SetController(bool back, bool start, bool A, bool B, bool X, bool Y, bool up, bool left, bool down, bool right, bool leftstick, bool rightstick, bool leftbumper, bool rightbumper, double leftstickx, double leftsticky, double rightstickx, double rightsticky, double lefttriggerposition, double righttriggerposition, bool xbox)
         {
             ValueChange[0] = back ? 1 : 0;
             if (Valuechanges._ValueChange[0] > 0f)

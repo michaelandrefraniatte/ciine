@@ -51,6 +51,8 @@ namespace ciine
         public static Vector3 gyr_gPS4 = new Vector3();
         public static Vector3 acc_gPS4 = new Vector3();
         public static Vector3 InitDirectAnglesPS4, DirectAnglesPS4;
+        public DualShock4 ds4 = new DualShock4();
+        public ScpBus scp = new ScpBus();
         private static bool running;
         private int sleeptime = 1;
         private void Form1_Load(object sender, EventArgs e)
@@ -65,17 +67,17 @@ namespace ciine
             {
                 running = false;
                 Thread.Sleep(100);
-                ScpBus.UnLoadController();
+                scp.UnLoadController();
             }
             catch { }
         }
         private void Start()
         {
             running = true;
-            DualShock4.EnumerateControllers("54C", "9CC", "Wireless Controller");
+            ds4.EnumerateControllers("54C", "9CC", "Wireless Controller");
             Thread.Sleep(2000);
             Task.Run(() => taskD());
-            ScpBus.LoadController();
+            scp.LoadController();
             Thread.Sleep(2000);
             Task.Run(() => taskX());
         }
@@ -161,7 +163,7 @@ namespace ciine
                 controller1_send_rightbumper = PS4ControllerButtonR1Pressed;
                 controller1_send_back = PS4ControllerButtonLogoPressed;
                 controller1_send_start = PS4ControllerButtonTouchpadPressed;
-                ScpBus.SetController(controller1_send_back, controller1_send_start, controller1_send_A, controller1_send_B, controller1_send_X, controller1_send_Y, controller1_send_up, controller1_send_left, controller1_send_down, controller1_send_right, controller1_send_leftstick, controller1_send_rightstick, controller1_send_leftbumper, controller1_send_rightbumper, controller1_send_leftstickx, controller1_send_leftsticky, controller1_send_rightstickx, controller1_send_rightsticky, controller1_send_lefttriggerposition, controller1_send_righttriggerposition, controller1_send_xbox);
+                scp.SetController(controller1_send_back, controller1_send_start, controller1_send_A, controller1_send_B, controller1_send_X, controller1_send_Y, controller1_send_up, controller1_send_left, controller1_send_down, controller1_send_right, controller1_send_leftstick, controller1_send_rightstick, controller1_send_leftbumper, controller1_send_rightbumper, controller1_send_leftstickx, controller1_send_leftsticky, controller1_send_rightstickx, controller1_send_rightsticky, controller1_send_lefttriggerposition, controller1_send_righttriggerposition, controller1_send_xbox);
                 Thread.Sleep(sleeptime);
             }
         }
@@ -176,7 +178,7 @@ namespace ciine
             {
                 if (!running)
                     break;
-                DualShock4.BeginPolling();
+                ds4.BeginPolling();
             }
         }
     }

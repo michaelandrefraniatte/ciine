@@ -1,16 +1,17 @@
 ﻿using Microsoft.Win32.SafeHandles;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
+using System.Threading;
 
 namespace WiiMoteAPI
 {
     public class WiiMote
     {
+        [DllImport("MotionInputPairing.dll", EntryPoint = "wiimoteconnect")]
+        public static extern bool wiimoteconnect();
+        [DllImport("MotionInputPairing.dll", EntryPoint = "wiimotedisconnect")]
+        public static extern bool wiimotedisconnect();
         [DllImport("hid.dll")]
         private static extern void HidD_GetHidGuid(out Guid gHid);
         [DllImport("hid.dll")]
@@ -43,6 +44,7 @@ namespace WiiMoteAPI
             mStream.Dispose();
             handle.Close();
             handle.Dispose();
+            wiimotedisconnect();
         }
         public void BeginPolling()
         {
@@ -90,6 +92,9 @@ namespace WiiMoteAPI
         }
         public bool ScanWiimote()
         {
+            do
+                Thread.Sleep(1);
+            while (!wiimoteconnect());
             int index = 0;
             Guid guid;
             HidD_GetHidGuid(out guid);

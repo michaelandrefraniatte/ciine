@@ -1,6 +1,4 @@
-﻿using Microsoft.Win32.SafeHandles;
-using System;
-using System.IO;
+﻿using System;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -17,10 +15,6 @@ namespace ciine
         {
             InitializeComponent();
         }
-        [DllImport("MotionInputPairing.dll", EntryPoint = "wiimoteconnect")]
-        public static extern bool wiimoteconnect();
-        [DllImport("MotionInputPairing.dll", EntryPoint = "wiimotedisconnect")]
-        public static extern bool wiimotedisconnect();
         [DllImport("winmm.dll", EntryPoint = "timeBeginPeriod")]
         private static extern uint TimeBeginPeriod(uint ms);
         [DllImport("winmm.dll", EntryPoint = "timeEndPeriod")]
@@ -34,6 +28,7 @@ namespace ciine
         private static double mousex = 0f, mousey = 0f, dzx = 15.0f, dzy = 0f;
         private static uint CurrentResolution = 0;
         private WiiMote wm = new WiiMote();
+        private ScpBus scp = new ScpBus();
         private void Form1_Load(object sender, EventArgs e)
         {
             TimeBeginPeriod(1);
@@ -47,9 +42,8 @@ namespace ciine
             {
                 running = false;
                 Thread.Sleep(100);
-                ScpBus.UnLoadController();
+                scp.UnLoadController();
                 wm.Close();
-                wiimotedisconnect();
             }
             catch { }
         }
@@ -63,14 +57,11 @@ namespace ciine
         private void Start()
         {
             running = true;
-            do
-                Thread.Sleep(1);
-            while (!wiimoteconnect());
             wm.ScanWiimote();
             Task.Run(() => taskD());
             Thread.Sleep(1000);
             calibrationinit = -wm.aBuffer[4] + 135f;
-            ScpBus.LoadController();
+            scp.LoadController();
             Task.Run(() => taskX());
         }
         private void taskX()
@@ -116,7 +107,7 @@ namespace ciine
                 controller1_send_leftbumper = WiimoteButtonStateMinus;
                 controller1_send_lefttriggerposition = WiimoteButtonStateOne ? 255 : 0;
                 controller1_send_righttriggerposition = WiimoteButtonStateTwo ? 255 : 0;
-                ScpBus.SetController(controller1_send_back, controller1_send_start, controller1_send_A, controller1_send_B, controller1_send_X, controller1_send_Y, controller1_send_up, controller1_send_left, controller1_send_down, controller1_send_right, controller1_send_leftstick, controller1_send_rightstick, controller1_send_leftbumper, controller1_send_rightbumper, controller1_send_leftstickx, controller1_send_leftsticky, controller1_send_rightstickx, controller1_send_rightsticky, controller1_send_lefttriggerposition, controller1_send_righttriggerposition, controller1_send_xbox);
+                scp.SetController(controller1_send_back, controller1_send_start, controller1_send_A, controller1_send_B, controller1_send_X, controller1_send_Y, controller1_send_up, controller1_send_left, controller1_send_down, controller1_send_right, controller1_send_leftstick, controller1_send_rightstick, controller1_send_leftbumper, controller1_send_rightbumper, controller1_send_leftstickx, controller1_send_leftsticky, controller1_send_rightstickx, controller1_send_rightsticky, controller1_send_lefttriggerposition, controller1_send_righttriggerposition, controller1_send_xbox);
                 Thread.Sleep(1);
             }
         }
