@@ -24,11 +24,8 @@ namespace DualSenseAPI
             trezorDevice = await hidFactory.GetDeviceAsync(deviceDefinitions.First()).ConfigureAwait(false);
             await trezorDevice.InitializeAsync().ConfigureAwait(false);
         }
-        public async void BeginPolling()
+        public void ProcessStateLogic()
         {
-            var readBuffer = trezorDevice.WriteAndReadAsync(GetOutputDataBytes());
-            readBuffer.Wait();
-            dsdata = ((TransferResult)await readBuffer).Data.Skip(1).ToArray();
             LeftAnalogStick = ReadAnalogStick(dsdata[0], dsdata[1]);
             RightAnalogStick = ReadAnalogStick(dsdata[2], dsdata[3]);
             L2 = GetModeSwitch(dsdata, 4).ToUnsignedFloat();
@@ -73,6 +70,12 @@ namespace DualSenseAPI
             );
             miscByte = GetModeSwitch(dsdata, 53);
             IsHeadphoneConnected = miscByte.HasFlag(0x01);
+        }
+        public async void BeginPolling()
+        {
+            var readBuffer = trezorDevice.WriteAndReadAsync(GetOutputDataBytes());
+            readBuffer.Wait();
+            dsdata = (await readBuffer).Data.Skip(1).ToArray();
         }
         private static byte[] GetOutputDataBytes()
         {

@@ -87,6 +87,7 @@ namespace ciine
             {
                 if (!running)
                     break;
+                ds4.ProcessStateLogic();
                 PS4ControllerLeftStickX = DualShock4.LeftAnalogStick.X;
                 PS4ControllerLeftStickY = DualShock4.LeftAnalogStick.Y;
                 PS4ControllerRightStickX = -DualShock4.RightAnalogStick.X;

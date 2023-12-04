@@ -24,11 +24,8 @@ namespace DualShock4API
             trezorDevice = await hidFactory.GetDeviceAsync(deviceDefinitions.First()).ConfigureAwait(false);
             await trezorDevice.InitializeAsync().ConfigureAwait(false);
         }
-        public async void BeginPolling()
+        public void ProcessStateLogic()
         {
-            var readBuffer = trezorDevice.WriteAndReadAsync(GetOutputDataBytes());
-            readBuffer.Wait();
-            ds4data = ((TransferResult)await readBuffer).Data.Skip(1).ToArray();
             LeftAnalogStick = ReadAnalogStick(ds4data[0], ds4data[1]);
             RightAnalogStick = ReadAnalogStick(ds4data[2], ds4data[3]);
             L2 = GetModeSwitch(ds4data, 7).ToUnsignedFloat();
@@ -69,6 +66,12 @@ namespace DualShock4API
             );
             miscByte = GetModeSwitch(ds4data, 29);
             IsHeadphoneConnected = miscByte.HasFlag(0x01);
+        }
+        public async void BeginPolling()
+        {
+            var readBuffer = trezorDevice.WriteAndReadAsync(GetOutputDataBytes());
+            readBuffer.Wait();
+            ds4data = (await readBuffer).Data.Skip(1).ToArray();
         }
         private static byte[] GetOutputDataBytes()
         {

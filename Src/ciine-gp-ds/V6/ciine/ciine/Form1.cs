@@ -6,6 +6,7 @@ using System.Threading;
 using System.Numerics;
 using controllers;
 using DualSenseAPI;
+using System.Security.Cryptography;
 
 namespace ciine
 {
@@ -91,6 +92,7 @@ namespace ciine
             {
                 if (!running)
                     break;
+                ds.ProcessStateLogic();
                 PS5ControllerLeftStickX = DualSense.LeftAnalogStick.X;
                 PS5ControllerLeftStickY = DualSense.LeftAnalogStick.Y;
                 PS5ControllerRightStickX = -DualSense.RightAnalogStick.X;
