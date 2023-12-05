@@ -1,0 +1,6 @@
+C:\Users\micha\Documents\github\ciine\Src\ciine-gp-joys\V2\ciine-gp-joys\Joyconright\bin\Release\Joyconright.dll
+C:\Users\micha\Documents\github\ciine\Src\ciine-gp-joys\V2\ciine-gp-joys\Joyconright\bin\Release\Joyconright.pdb
+C:\Users\micha\Documents\github\ciine\Src\ciine-gp-joys\V2\ciine-gp-joys\Joyconright\obj\Release\Joyconright.csproj.AssemblyReference.cache
+C:\Users\micha\Documents\github\ciine\Src\ciine-gp-joys\V2\ciine-gp-joys\Joyconright\obj\Release\Joyconright.csproj.CoreCompileInputs.cache
+C:\Users\micha\Documents\github\ciine\Src\ciine-gp-joys\V2\ciine-gp-joys\Joyconright\obj\Release\Joyconright.dll
+C:\Users\micha\Documents\github\ciine\Src\ciine-gp-joys\V2\ciine-gp-joys\Joyconright\obj\Release\Joyconright.pdb

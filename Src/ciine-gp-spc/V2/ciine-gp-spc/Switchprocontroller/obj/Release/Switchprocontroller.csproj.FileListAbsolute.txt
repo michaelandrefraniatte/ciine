@@ -1,0 +1,6 @@
+C:\Users\micha\Documents\github\ciine\Src\ciine-gp-spc\V2\ciine-gp-spc\Switchprocontroller\bin\Release\Switchprocontroller.dll
+C:\Users\micha\Documents\github\ciine\Src\ciine-gp-spc\V2\ciine-gp-spc\Switchprocontroller\bin\Release\Switchprocontroller.pdb
+C:\Users\micha\Documents\github\ciine\Src\ciine-gp-spc\V2\ciine-gp-spc\Switchprocontroller\obj\Release\Switchprocontroller.csproj.AssemblyReference.cache
+C:\Users\micha\Documents\github\ciine\Src\ciine-gp-spc\V2\ciine-gp-spc\Switchprocontroller\obj\Release\Switchprocontroller.csproj.CoreCompileInputs.cache
+C:\Users\micha\Documents\github\ciine\Src\ciine-gp-spc\V2\ciine-gp-spc\Switchprocontroller\obj\Release\Switchprocontroller.dll
+C:\Users\micha\Documents\github\ciine\Src\ciine-gp-spc\V2\ciine-gp-spc\Switchprocontroller\obj\Release\Switchprocontroller.pdb
