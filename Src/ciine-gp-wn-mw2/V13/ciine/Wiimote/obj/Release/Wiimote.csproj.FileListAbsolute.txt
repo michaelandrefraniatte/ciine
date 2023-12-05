@@ -1,0 +1,12 @@
+C:\Users\micha\Documents\github\ciine\Src\ciine-gp-wn-mw2\V12\ciine\Wiimote\bin\Release\Wiimote.dll
+C:\Users\micha\Documents\github\ciine\Src\ciine-gp-wn-mw2\V12\ciine\Wiimote\bin\Release\Wiimote.pdb
+C:\Users\micha\Documents\github\ciine\Src\ciine-gp-wn-mw2\V12\ciine\Wiimote\obj\Release\Wiimote.csproj.AssemblyReference.cache
+C:\Users\micha\Documents\github\ciine\Src\ciine-gp-wn-mw2\V12\ciine\Wiimote\obj\Release\Wiimote.csproj.CoreCompileInputs.cache
+C:\Users\micha\Documents\github\ciine\Src\ciine-gp-wn-mw2\V12\ciine\Wiimote\obj\Release\Wiimote.dll
+C:\Users\micha\Documents\github\ciine\Src\ciine-gp-wn-mw2\V12\ciine\Wiimote\obj\Release\Wiimote.pdb
+C:\Users\micha\Documents\github\ciine\Src\ciine-gp-wn-mw2\V13\ciine\Wiimote\bin\Release\Wiimote.dll
+C:\Users\micha\Documents\github\ciine\Src\ciine-gp-wn-mw2\V13\ciine\Wiimote\bin\Release\Wiimote.pdb
+C:\Users\micha\Documents\github\ciine\Src\ciine-gp-wn-mw2\V13\ciine\Wiimote\obj\Release\Wiimote.csproj.AssemblyReference.cache
+C:\Users\micha\Documents\github\ciine\Src\ciine-gp-wn-mw2\V13\ciine\Wiimote\obj\Release\Wiimote.csproj.CoreCompileInputs.cache
+C:\Users\micha\Documents\github\ciine\Src\ciine-gp-wn-mw2\V13\ciine\Wiimote\obj\Release\Wiimote.dll
+C:\Users\micha\Documents\github\ciine\Src\ciine-gp-wn-mw2\V13\ciine\Wiimote\obj\Release\Wiimote.pdb
