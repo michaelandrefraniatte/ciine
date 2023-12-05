@@ -4,6 +4,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
+using Vector3 = System.Numerics.Vector3;
 
 namespace SwitchProControllerAPI
 {
@@ -42,7 +43,24 @@ namespace SwitchProControllerAPI
         private static uint CurrentResolution = 0;
         public const uint report_lenPro = 49;
         public byte[] report_bufPro = new byte[report_lenPro];
-        public SafeFileHandle handlePro;
+        public SafeFileHandle handlePro; 
+        public bool ISPRO = true;
+        public bool ProControllerButtonACC, ProControllerRollLeft, ProControllerRollRight;
+        public double ProControllerLeftStickX, ProControllerLeftStickY, ProControllerRightStickX, ProControllerRightStickY;
+        public System.Collections.Generic.List<double> ProValListX = new System.Collections.Generic.List<double>(), ProValListY = new System.Collections.Generic.List<double>();
+        public bool ProControllerAccelCenter, ProControllerStickCenter;
+        public double ProControllerAccelX, ProControllerAccelY, ProControllerGyroX, ProControllerGyroY;
+        private double[] stickleftPro = { 0, 0 };
+        private double[] stickCenterleftPro = { 0, 0 };
+        private byte[] stick_rawleftPro = { 0, 0, 0 };
+        private double[] stickrightPro = { 0, 0 };
+        private double[] stickCenterrightPro = { 0, 0 };
+        private byte[] stick_rawrightPro = { 0, 0, 0 };
+        public Vector3 acc_gPro = new Vector3();
+        public Vector3 gyr_gPro = new Vector3();
+        public Vector3 InitDirectAnglesPro, DirectAnglesPro;
+        public bool ProControllerButtonSHOULDER_Left_1, ProControllerButtonSHOULDER_Left_2, ProControllerButtonSHOULDER_Right_1, ProControllerButtonSHOULDER_Right_2, ProControllerButtonDPAD_DOWN, ProControllerButtonDPAD_RIGHT, ProControllerButtonDPAD_UP, ProControllerButtonDPAD_LEFT, ProControllerButtonA, ProControllerButtonB, ProControllerButtonX, ProControllerButtonY, ProControllerButtonMINUS, ProControllerButtonPLUS, ProControllerButtonSTICK_Left, ProControllerButtonSTICK_Right, ProControllerButtonCAPTURE, ProControllerButtonHOME;
+        public float acc_gcalibrationProX, acc_gcalibrationProY, acc_gcalibrationProZ;
         public bool running;
         public SwitchProController()
         {
@@ -73,6 +91,101 @@ namespace SwitchProControllerAPI
         public void BeginAsyncPolling()
         {
             Task.Run(() => taskDPro());
+        }
+        public void InitProController()
+        {
+            try
+            {
+                stick_rawleftPro[0] = report_bufPro[6 + (ISPRO ? 0 : 3)];
+                stick_rawleftPro[1] = report_bufPro[7 + (ISPRO ? 0 : 3)];
+                stick_rawleftPro[2] = report_bufPro[8 + (ISPRO ? 0 : 3)];
+                stickCenterleftPro[0] = (UInt16)(stick_rawleftPro[0] | ((stick_rawleftPro[1] & 0xf) << 8));
+                stickCenterleftPro[1] = (UInt16)((stick_rawleftPro[1] >> 4) | (stick_rawleftPro[2] << 4));
+                stick_rawrightPro[0] = report_bufPro[6 + (!ISPRO ? 0 : 3)];
+                stick_rawrightPro[1] = report_bufPro[7 + (!ISPRO ? 0 : 3)];
+                stick_rawrightPro[2] = report_bufPro[8 + (!ISPRO ? 0 : 3)];
+                stickCenterrightPro[0] = (UInt16)(stick_rawrightPro[0] | ((stick_rawrightPro[1] & 0xf) << 8));
+                stickCenterrightPro[1] = (UInt16)((stick_rawrightPro[1] >> 4) | (stick_rawrightPro[2] << 4));
+                acc_gcalibrationProX = (Int16)(report_bufPro[13 + 0 * 12] | ((report_bufPro[14 + 0 * 12] << 8) & 0xff00)) + (Int16)(report_bufPro[13 + 1 * 12] | ((report_bufPro[14 + 1 * 12] << 8) & 0xff00)) + (Int16)(report_bufPro[13 + 2 * 12] | ((report_bufPro[14 + 2 * 12] << 8) & 0xff00));
+                acc_gcalibrationProY = (Int16)(report_bufPro[15 + 0 * 12] | ((report_bufPro[16 + 0 * 12] << 8) & 0xff00)) + (Int16)(report_bufPro[15 + 1 * 12] | ((report_bufPro[16 + 1 * 12] << 8) & 0xff00)) + (Int16)(report_bufPro[15 + 2 * 12] | ((report_bufPro[16 + 2 * 12] << 8) & 0xff00));
+                acc_gcalibrationProZ = (Int16)(report_bufPro[17 + 0 * 12] | ((report_bufPro[18 + 0 * 12] << 8) & 0xff00)) + (Int16)(report_bufPro[17 + 1 * 12] | ((report_bufPro[18 + 1 * 12] << 8) & 0xff00)) + (Int16)(report_bufPro[17 + 2 * 12] | ((report_bufPro[18 + 2 * 12] << 8) & 0xff00));
+            }
+            catch { }
+        }
+        public void ProcessButtonsAndSticksPro()
+        {
+            try
+            {
+                stick_rawleftPro[0] = report_bufPro[6 + (ISPRO ? 0 : 3)];
+                stick_rawleftPro[1] = report_bufPro[7 + (ISPRO ? 0 : 3)];
+                stick_rawleftPro[2] = report_bufPro[8 + (ISPRO ? 0 : 3)];
+                stickleftPro[0] = ((UInt16)(stick_rawleftPro[0] | ((stick_rawleftPro[1] & 0xf) << 8)) - stickCenterleftPro[0]) / 1440f;
+                stickleftPro[1] = ((UInt16)((stick_rawleftPro[1] >> 4) | (stick_rawleftPro[2] << 4)) - stickCenterleftPro[1]) / 1440f;
+                ProControllerLeftStickX = stickleftPro[0];
+                ProControllerLeftStickY = stickleftPro[1];
+                stick_rawrightPro[0] = report_bufPro[6 + (!ISPRO ? 0 : 3)];
+                stick_rawrightPro[1] = report_bufPro[7 + (!ISPRO ? 0 : 3)];
+                stick_rawrightPro[2] = report_bufPro[8 + (!ISPRO ? 0 : 3)];
+                stickrightPro[0] = ((UInt16)(stick_rawrightPro[0] | ((stick_rawrightPro[1] & 0xf) << 8)) - stickCenterrightPro[0]) / 1440f;
+                stickrightPro[1] = ((UInt16)((stick_rawrightPro[1] >> 4) | (stick_rawrightPro[2] << 4)) - stickCenterrightPro[1]) / 1440f;
+                ProControllerRightStickX = -stickrightPro[0];
+                ProControllerRightStickY = -stickrightPro[1];
+                acc_gPro.X = ((Int16)(report_bufPro[13 + 0 * 12] | ((report_bufPro[14 + 0 * 12] << 8) & 0xff00)) + (Int16)(report_bufPro[13 + 1 * 12] | ((report_bufPro[14 + 1 * 12] << 8) & 0xff00)) + (Int16)(report_bufPro[13 + 2 * 12] | ((report_bufPro[14 + 2 * 12] << 8) & 0xff00)) - acc_gcalibrationProX) * (1.0f / 12000f);
+                acc_gPro.Y = -((Int16)(report_bufPro[15 + 0 * 12] | ((report_bufPro[16 + 0 * 12] << 8) & 0xff00)) + (Int16)(report_bufPro[15 + 1 * 12] | ((report_bufPro[16 + 1 * 12] << 8) & 0xff00)) + (Int16)(report_bufPro[15 + 2 * 12] | ((report_bufPro[16 + 2 * 12] << 8) & 0xff00)) - acc_gcalibrationProY) * (1.0f / 12000f);
+                acc_gPro.Z = -((Int16)(report_bufPro[17 + 0 * 12] | ((report_bufPro[18 + 0 * 12] << 8) & 0xff00)) + (Int16)(report_bufPro[17 + 1 * 12] | ((report_bufPro[18 + 1 * 12] << 8) & 0xff00)) + (Int16)(report_bufPro[17 + 2 * 12] | ((report_bufPro[18 + 2 * 12] << 8) & 0xff00)) - acc_gcalibrationProZ) * (1.0f / 12000f);
+                ProControllerButtonSHOULDER_Left_1 = (report_bufPro[3 + (ISPRO ? 2 : 0)] & 0x40) != 0;
+                ProControllerButtonSHOULDER_Left_2 = (report_bufPro[3 + (ISPRO ? 2 : 0)] & 0x80) != 0;
+                ProControllerButtonDPAD_DOWN = (report_bufPro[3 + (ISPRO ? 2 : 0)] & (ISPRO ? 0x01 : 0x04)) != 0;
+                ProControllerButtonDPAD_RIGHT = (report_bufPro[3 + (ISPRO ? 2 : 0)] & (ISPRO ? 0x04 : 0x08)) != 0;
+                ProControllerButtonDPAD_UP = (report_bufPro[3 + (ISPRO ? 2 : 0)] & (ISPRO ? 0x02 : 0x02)) != 0;
+                ProControllerButtonDPAD_LEFT = (report_bufPro[3 + (ISPRO ? 2 : 0)] & (ISPRO ? 0x08 : 0x01)) != 0;
+                ProControllerButtonMINUS = (report_bufPro[4] & 0x01) != 0;
+                ProControllerButtonCAPTURE = (report_bufPro[4] & 0x20) != 0;
+                ProControllerButtonSTICK_Left = (report_bufPro[4] & (ISPRO ? 0x08 : 0x04)) != 0;
+                ProControllerButtonACC = acc_gPro.X <= -1.13;
+                ProControllerButtonSHOULDER_Right_1 = (report_bufPro[3 + (!ISPRO ? 2 : 0)] & 0x40) != 0;
+                ProControllerButtonSHOULDER_Right_2 = (report_bufPro[3 + (!ISPRO ? 2 : 0)] & 0x80) != 0;
+                ProControllerButtonA = (report_bufPro[3 + (!ISPRO ? 2 : 0)] & (!ISPRO ? 0x04 : 0x08)) != 0;
+                ProControllerButtonB = (report_bufPro[3 + (!ISPRO ? 2 : 0)] & (!ISPRO ? 0x01 : 0x04)) != 0;
+                ProControllerButtonX = (report_bufPro[3 + (!ISPRO ? 2 : 0)] & (!ISPRO ? 0x02 : 0x02)) != 0;
+                ProControllerButtonY = (report_bufPro[3 + (!ISPRO ? 2 : 0)] & (!ISPRO ? 0x08 : 0x01)) != 0;
+                ProControllerButtonPLUS = (report_bufPro[4] & 0x02) != 0;
+                ProControllerButtonHOME = (report_bufPro[4] & 0x10) != 0;
+                ProControllerButtonSTICK_Right = ((report_bufPro[4] & (!ISPRO ? 0x08 : 0x04)) != 0);
+                if (ProValListY.Count >= 50)
+                {
+                    ProValListY.RemoveAt(0);
+                    ProValListY.Add(acc_gPro.Y);
+                }
+                else
+                    ProValListY.Add(acc_gPro.Y);
+                DirectAnglesPro = acc_gPro - InitDirectAnglesPro;
+                ProControllerAccelX = DirectAnglesPro.X * 1350f;
+                ProControllerAccelY = -DirectAnglesPro.Y * 1350f;
+                gyr_gPro.X = ((Int16)(report_bufPro[19 + 0 * 12] | ((report_bufPro[20 + 0 * 12] << 8) & 0xff00)) + (Int16)(report_bufPro[19 + 1 * 12] | ((report_bufPro[20 + 1 * 12] << 8) & 0xff00)) + (Int16)(report_bufPro[19 + 2 * 12] | ((report_bufPro[20 + 2 * 12] << 8) & 0xff00)));
+                gyr_gPro.Y = ((Int16)(report_bufPro[21 + 0 * 12] | ((report_bufPro[22 + 0 * 12] << 8) & 0xff00)) + (Int16)(report_bufPro[21 + 1 * 12] | ((report_bufPro[22 + 1 * 12] << 8) & 0xff00)) + (Int16)(report_bufPro[21 + 2 * 12] | ((report_bufPro[22 + 2 * 12] << 8) & 0xff00)));
+                gyr_gPro.Z = ((Int16)(report_bufPro[23 + 0 * 12] | ((report_bufPro[24 + 0 * 12] << 8) & 0xff00)) + (Int16)(report_bufPro[23 + 1 * 12] | ((report_bufPro[24 + 1 * 12] << 8) & 0xff00)) + (Int16)(report_bufPro[23 + 2 * 12] | ((report_bufPro[24 + 2 * 12] << 8) & 0xff00)));
+                ProControllerGyroX = gyr_gPro.Z;
+                ProControllerGyroY = gyr_gPro.Y;
+            }
+            catch { }
+        }
+        public void InitProControllerAccel()
+        {
+            InitDirectAnglesPro = acc_gPro;
+        }
+        public void InitProControllerStick()
+        {
+            stick_rawleftPro[0] = report_bufPro[6 + (ISPRO ? 0 : 3)];
+            stick_rawleftPro[1] = report_bufPro[7 + (ISPRO ? 0 : 3)];
+            stick_rawleftPro[2] = report_bufPro[8 + (ISPRO ? 0 : 3)];
+            stickCenterleftPro[0] = (UInt16)(stick_rawleftPro[0] | ((stick_rawleftPro[1] & 0xf) << 8));
+            stickCenterleftPro[1] = (UInt16)((stick_rawleftPro[1] >> 4) | (stick_rawleftPro[2] << 4));
+            stick_rawrightPro[0] = report_bufPro[6 + (!ISPRO ? 0 : 3)];
+            stick_rawrightPro[1] = report_bufPro[7 + (!ISPRO ? 0 : 3)];
+            stick_rawrightPro[2] = report_bufPro[8 + (!ISPRO ? 0 : 3)];
+            stickCenterrightPro[0] = (UInt16)(stick_rawrightPro[0] | ((stick_rawrightPro[1] & 0xf) << 8));
+            stickCenterrightPro[1] = (UInt16)((stick_rawrightPro[1] >> 4) | (stick_rawrightPro[2] << 4));
         }
         public const string vendor_id = "57e", vendor_id_ = "057e", product_pro = "2009";
         public enum EFileAttributes : uint

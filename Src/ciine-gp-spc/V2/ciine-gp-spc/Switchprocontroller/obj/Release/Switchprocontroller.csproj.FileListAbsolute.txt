@@ -4,3 +4,5 @@ C:\Users\micha\Documents\github\ciine\Src\ciine-gp-spc\V2\ciine-gp-spc\Switchpro
 C:\Users\micha\Documents\github\ciine\Src\ciine-gp-spc\V2\ciine-gp-spc\Switchprocontroller\obj\Release\Switchprocontroller.csproj.CoreCompileInputs.cache
 C:\Users\micha\Documents\github\ciine\Src\ciine-gp-spc\V2\ciine-gp-spc\Switchprocontroller\obj\Release\Switchprocontroller.dll
 C:\Users\micha\Documents\github\ciine\Src\ciine-gp-spc\V2\ciine-gp-spc\Switchprocontroller\obj\Release\Switchprocontroller.pdb
+C:\Users\micha\Documents\github\ciine\Src\ciine-gp-spc\V2\ciine-gp-spc\Switchprocontroller\bin\Release\System.Numerics.Vectors.dll
+C:\Users\micha\Documents\github\ciine\Src\ciine-gp-spc\V2\ciine-gp-spc\Switchprocontroller\obj\Release\Switchprocontroller.csproj.CopyComplete

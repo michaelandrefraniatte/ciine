@@ -45,6 +45,9 @@ namespace WiiMoteAPI
         public bool reconnectingwiimotebool;
         public double reconnectingwiimotecount;
         public bool running;
+        public double irx2, iry2, irx3, iry3, irx, iry, tempirx, tempiry, WiimoteIRSensors0X, WiimoteIRSensors0Y, WiimoteIRSensors1X, WiimoteIRSensors1Y, WiimoteRawValuesX, WiimoteRawValuesY, WiimoteRawValuesZ, calibrationinit, WiimoteIRSensors0Xcam, WiimoteIRSensors0Ycam, WiimoteIRSensors1Xcam, WiimoteIRSensors1Ycam, WiimoteIRSensorsXcam, WiimoteIRSensorsYcam;
+        public bool WiimoteIR0foundcam, WiimoteIR1foundcam, WiimoteIRswitch, WiimoteIR1found, WiimoteIR0found, WiimoteButtonStateA, WiimoteButtonStateB, WiimoteButtonStateMinus, WiimoteButtonStateHome, WiimoteButtonStatePlus, WiimoteButtonStateOne, WiimoteButtonStateTwo, WiimoteButtonStateUp, WiimoteButtonStateDown, WiimoteButtonStateLeft, WiimoteButtonStateRight, WiimoteNunchuckStateC, WiimoteNunchuckStateZ;
+        public double WiimoteIR0notfound, stickviewxinit, stickviewyinit, WiimoteNunchuckStateRawValuesX, WiimoteNunchuckStateRawValuesY, WiimoteNunchuckStateRawValuesZ, WiimoteNunchuckStateRawJoystickX, WiimoteNunchuckStateRawJoystickY, centery = 80f;
         public WiiMote()
         {
             TimeBeginPeriod(1);
@@ -73,6 +76,7 @@ namespace WiiMoteAPI
             {
                 if (!running)
                     break;
+                Reconnection();
                 try
                 {
                     mStream.Read(aBuffer, 0, 22);
@@ -81,17 +85,141 @@ namespace WiiMoteAPI
                 catch { }
             }
         }
+        public void Init() 
+        {
+            calibrationinit = -aBuffer[4] + 135f;
+            stickviewxinit = -aBuffer[16] + 125f;
+            stickviewyinit = -aBuffer[17] + 125f;
+        }
+        public void ProcessStateLogic()
+        {
+            WiimoteIR0found = (aBuffer[6] | ((aBuffer[8] >> 4) & 0x03) << 8) > 1 & (aBuffer[6] | ((aBuffer[8] >> 4) & 0x03) << 8) < 1023;
+            WiimoteIR1found = (aBuffer[9] | ((aBuffer[8] >> 0) & 0x03) << 8) > 1 & (aBuffer[9] | ((aBuffer[8] >> 0) & 0x03) << 8) < 1023;
+            if (WiimoteIR0notfound == 0 & WiimoteIR1found)
+                WiimoteIR0notfound = 1;
+            if (WiimoteIR0notfound == 1 & !WiimoteIR0found & !WiimoteIR1found)
+                WiimoteIR0notfound = 2;
+            if (WiimoteIR0notfound == 2 & WiimoteIR0found)
+            {
+                WiimoteIR0notfound = 0;
+                if (!WiimoteIRswitch)
+                    WiimoteIRswitch = true;
+                else
+                    WiimoteIRswitch = false;
+            }
+            if (WiimoteIR0notfound == 0 & WiimoteIR0found)
+                WiimoteIR0notfound = 0;
+            if (WiimoteIR0notfound == 0 & !WiimoteIR0found & !WiimoteIR1found)
+                WiimoteIR0notfound = 0;
+            if (WiimoteIR0notfound == 1 & WiimoteIR0found)
+                WiimoteIR0notfound = 0;
+            if (WiimoteIR0found)
+            {
+                WiimoteIRSensors0X = aBuffer[6] | ((aBuffer[8] >> 4) & 0x03) << 8;
+                WiimoteIRSensors0Y = aBuffer[7] | ((aBuffer[8] >> 6) & 0x03) << 8;
+            }
+            if (WiimoteIR1found)
+            {
+                WiimoteIRSensors1X = aBuffer[9] | ((aBuffer[8] >> 0) & 0x03) << 8;
+                WiimoteIRSensors1Y = aBuffer[10] | ((aBuffer[8] >> 2) & 0x03) << 8;
+            }
+            if (WiimoteIRswitch)
+            {
+                WiimoteIR0foundcam = WiimoteIR0found;
+                WiimoteIR1foundcam = WiimoteIR1found;
+                WiimoteIRSensors0Xcam = WiimoteIRSensors0X - 512f;
+                WiimoteIRSensors0Ycam = WiimoteIRSensors0Y - 384f;
+                WiimoteIRSensors1Xcam = WiimoteIRSensors1X - 512f;
+                WiimoteIRSensors1Ycam = WiimoteIRSensors1Y - 384f;
+            }
+            else
+            {
+                WiimoteIR1foundcam = WiimoteIR0found;
+                WiimoteIR0foundcam = WiimoteIR1found;
+                WiimoteIRSensors1Xcam = WiimoteIRSensors0X - 512f;
+                WiimoteIRSensors1Ycam = WiimoteIRSensors0Y - 384f;
+                WiimoteIRSensors0Xcam = WiimoteIRSensors1X - 512f;
+                WiimoteIRSensors0Ycam = WiimoteIRSensors1Y - 384f;
+            }
+            if (WiimoteIR0foundcam & WiimoteIR1foundcam)
+            {
+                irx2 = WiimoteIRSensors0Xcam;
+                iry2 = WiimoteIRSensors0Ycam;
+                irx3 = WiimoteIRSensors1Xcam;
+                iry3 = WiimoteIRSensors1Ycam;
+                WiimoteIRSensorsXcam = WiimoteIRSensors0Xcam - WiimoteIRSensors1Xcam;
+                WiimoteIRSensorsYcam = WiimoteIRSensors0Ycam - WiimoteIRSensors1Ycam;
+            }
+            if (WiimoteIR0foundcam & !WiimoteIR1foundcam)
+            {
+                irx2 = WiimoteIRSensors0Xcam;
+                iry2 = WiimoteIRSensors0Ycam;
+                irx3 = WiimoteIRSensors0Xcam - WiimoteIRSensorsXcam;
+                iry3 = WiimoteIRSensors0Ycam - WiimoteIRSensorsYcam;
+            }
+            if (WiimoteIR1foundcam & !WiimoteIR0foundcam)
+            {
+                irx3 = WiimoteIRSensors1Xcam;
+                iry3 = WiimoteIRSensors1Ycam;
+                irx2 = WiimoteIRSensors1Xcam + WiimoteIRSensorsXcam;
+                iry2 = WiimoteIRSensors1Ycam + WiimoteIRSensorsYcam;
+            }
+            if (WiimoteIR0foundcam | WiimoteIR1foundcam)
+            {
+                tempirx = irx;
+                tempiry = iry;
+                irx = (irx2 + irx3) * (1024f / 1346f);
+                iry = iry2 + iry3 + centery >= 0 ? Scale(iry2 + iry3 + centery, 0f, 782f + centery, 0f, 1024f) : Scale(iry2 + iry3 + centery, -782f + centery, 0f, -1024f, 0f);
+            }
+            else
+            {
+                if (irx - tempirx >= 1f)
+                    irx = 1024f;
+                if (irx - tempirx <= -1f)
+                    irx = -1024f;
+                if (iry - tempiry >= 1f)
+                    iry = 1024f;
+                if (iry - tempiry <= -1f)
+                    iry = -1024f;
+            }
+            WiimoteButtonStateA = (aBuffer[2] & 0x08) != 0;
+            WiimoteButtonStateB = (aBuffer[2] & 0x04) != 0;
+            WiimoteButtonStateMinus = (aBuffer[2] & 0x10) != 0;
+            WiimoteButtonStateHome = (aBuffer[2] & 0x80) != 0;
+            WiimoteButtonStatePlus = (aBuffer[1] & 0x10) != 0;
+            WiimoteButtonStateOne = (aBuffer[2] & 0x02) != 0;
+            WiimoteButtonStateTwo = (aBuffer[2] & 0x01) != 0;
+            WiimoteButtonStateUp = (aBuffer[1] & 0x08) != 0;
+            WiimoteButtonStateDown = (aBuffer[1] & 0x04) != 0;
+            WiimoteButtonStateLeft = (aBuffer[1] & 0x01) != 0;
+            WiimoteButtonStateRight = (aBuffer[1] & 0x02) != 0;
+            WiimoteRawValuesX = aBuffer[3] - 135f + calibrationinit;
+            WiimoteRawValuesY = aBuffer[4] - 135f + calibrationinit;
+            WiimoteRawValuesZ = aBuffer[5] - 135f + calibrationinit;
+            WiimoteNunchuckStateRawJoystickX = aBuffer[16] - 125f + stickviewxinit;
+            WiimoteNunchuckStateRawJoystickY = aBuffer[17] - 125f + stickviewyinit;
+            WiimoteNunchuckStateRawValuesX = aBuffer[18] - 125f;
+            WiimoteNunchuckStateRawValuesY = aBuffer[19] - 125f;
+            WiimoteNunchuckStateRawValuesZ = aBuffer[20] - 125f;
+            WiimoteNunchuckStateC = (aBuffer[21] & 0x02) == 0;
+            WiimoteNunchuckStateZ = (aBuffer[21] & 0x01) == 0;
+        }
+        private double Scale(double value, double min, double max, double minScale, double maxScale)
+        {
+            double scaled = minScale + (double)(value - min) / (max - min) * (maxScale - minScale);
+            return scaled;
+        }
         public void Reconnection()
         {
             if (reconnectingwiimotecount == 0)
                 reconnectingwiimotebool = true;
             reconnectingwiimotecount++;
-            if (reconnectingwiimotecount >= 150f)
+            if (reconnectingwiimotecount >= 15f)
             {
                 if (reconnectingwiimotebool)
                 {
                     WiimoteFound(path);
-                    reconnectingwiimotecount = -150;
+                    reconnectingwiimotecount = -15f;
                 }
                 else
                     reconnectingwiimotecount = 0;
