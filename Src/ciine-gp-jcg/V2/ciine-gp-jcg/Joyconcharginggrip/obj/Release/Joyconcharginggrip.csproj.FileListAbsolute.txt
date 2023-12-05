@@ -1,0 +1,6 @@
+C:\Users\micha\Documents\github\ciine\Src\ciine-gp-jcg\V2\ciine-gp-jcg\Joyconcharginggrip\bin\Release\Joyconcharginggrip.dll
+C:\Users\micha\Documents\github\ciine\Src\ciine-gp-jcg\V2\ciine-gp-jcg\Joyconcharginggrip\bin\Release\Joyconcharginggrip.pdb
+C:\Users\micha\Documents\github\ciine\Src\ciine-gp-jcg\V2\ciine-gp-jcg\Joyconcharginggrip\obj\Release\Joyconcharginggrip.csproj.AssemblyReference.cache
+C:\Users\micha\Documents\github\ciine\Src\ciine-gp-jcg\V2\ciine-gp-jcg\Joyconcharginggrip\obj\Release\Joyconcharginggrip.csproj.CoreCompileInputs.cache
+C:\Users\micha\Documents\github\ciine\Src\ciine-gp-jcg\V2\ciine-gp-jcg\Joyconcharginggrip\obj\Release\Joyconcharginggrip.dll
+C:\Users\micha\Documents\github\ciine\Src\ciine-gp-jcg\V2\ciine-gp-jcg\Joyconcharginggrip\obj\Release\Joyconcharginggrip.pdb
