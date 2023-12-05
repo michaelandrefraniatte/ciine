@@ -4,3 +4,5 @@ C:\Users\micha\Documents\github\ciine\Src\ciine-gp-jcg\V2\ciine-gp-jcg\Joyconcha
 C:\Users\micha\Documents\github\ciine\Src\ciine-gp-jcg\V2\ciine-gp-jcg\Joyconcharginggrip\obj\Release\Joyconcharginggrip.csproj.CoreCompileInputs.cache
 C:\Users\micha\Documents\github\ciine\Src\ciine-gp-jcg\V2\ciine-gp-jcg\Joyconcharginggrip\obj\Release\Joyconcharginggrip.dll
 C:\Users\micha\Documents\github\ciine\Src\ciine-gp-jcg\V2\ciine-gp-jcg\Joyconcharginggrip\obj\Release\Joyconcharginggrip.pdb
+C:\Users\micha\Documents\github\ciine\Src\ciine-gp-jcg\V2\ciine-gp-jcg\Joyconcharginggrip\bin\Release\System.Numerics.Vectors.dll
+C:\Users\micha\Documents\github\ciine\Src\ciine-gp-jcg\V2\ciine-gp-jcg\Joyconcharginggrip\obj\Release\Joyconcharginggrip.csproj.CopyComplete

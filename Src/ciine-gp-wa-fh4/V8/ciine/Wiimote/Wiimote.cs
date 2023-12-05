@@ -45,7 +45,7 @@ namespace WiiMoteAPI
         public bool reconnectingwiimotebool;
         public double reconnectingwiimotecount;
         public bool running;
-        public double irx2, iry2, irx3, iry3, irx, iry, tempirx, tempiry, WiimoteIRSensors0X, WiimoteIRSensors0Y, WiimoteIRSensors1X, WiimoteIRSensors1Y, WiimoteRawValuesX, WiimoteRawValuesY, WiimoteRawValuesZ, calibrationinit, WiimoteIRSensors0Xcam, WiimoteIRSensors0Ycam, WiimoteIRSensors1Xcam, WiimoteIRSensors1Ycam, WiimoteIRSensorsXcam, WiimoteIRSensorsYcam;
+        public double irxc, iryc, irx0, iry0, irx1, iry1, irx2, iry2, irx3, iry3, irx, iry, tempirx, tempiry, WiimoteIRSensors0X, WiimoteIRSensors0Y, WiimoteIRSensors1X, WiimoteIRSensors1Y, WiimoteRawValuesX, WiimoteRawValuesY, WiimoteRawValuesZ, calibrationinit, WiimoteIRSensors0Xcam, WiimoteIRSensors0Ycam, WiimoteIRSensors1Xcam, WiimoteIRSensors1Ycam, WiimoteIRSensorsXcam, WiimoteIRSensorsYcam;
         public bool WiimoteIR0foundcam, WiimoteIR1foundcam, WiimoteIRswitch, WiimoteIR1found, WiimoteIR0found, WiimoteButtonStateA, WiimoteButtonStateB, WiimoteButtonStateMinus, WiimoteButtonStateHome, WiimoteButtonStatePlus, WiimoteButtonStateOne, WiimoteButtonStateTwo, WiimoteButtonStateUp, WiimoteButtonStateDown, WiimoteButtonStateLeft, WiimoteButtonStateRight, WiimoteNunchuckStateC, WiimoteNunchuckStateZ;
         public double WiimoteIR0notfound, stickviewxinit, stickviewyinit, WiimoteNunchuckStateRawValuesX, WiimoteNunchuckStateRawValuesY, WiimoteNunchuckStateRawValuesZ, WiimoteNunchuckStateRawJoystickX, WiimoteNunchuckStateRawJoystickY, centery = 80f;
         public WiiMote()
@@ -91,85 +91,144 @@ namespace WiiMoteAPI
             stickviewxinit = -aBuffer[16] + 125f;
             stickviewyinit = -aBuffer[17] + 125f;
         }
-        public void ProcessStateLogic()
+        public void ProcessStateLogic(int irmode)
         {
-            WiimoteIR0found = (aBuffer[6] | ((aBuffer[8] >> 4) & 0x03) << 8) > 1 & (aBuffer[6] | ((aBuffer[8] >> 4) & 0x03) << 8) < 1023;
-            WiimoteIR1found = (aBuffer[9] | ((aBuffer[8] >> 0) & 0x03) << 8) > 1 & (aBuffer[9] | ((aBuffer[8] >> 0) & 0x03) << 8) < 1023;
-            if (WiimoteIR0notfound == 0 & WiimoteIR1found)
-                WiimoteIR0notfound = 1;
-            if (WiimoteIR0notfound == 1 & !WiimoteIR0found & !WiimoteIR1found)
-                WiimoteIR0notfound = 2;
-            if (WiimoteIR0notfound == 2 & WiimoteIR0found)
-            {
-                WiimoteIR0notfound = 0;
-                if (!WiimoteIRswitch)
-                    WiimoteIRswitch = true;
-                else
-                    WiimoteIRswitch = false;
-            }
-            if (WiimoteIR0notfound == 0 & WiimoteIR0found)
-                WiimoteIR0notfound = 0;
-            if (WiimoteIR0notfound == 0 & !WiimoteIR0found & !WiimoteIR1found)
-                WiimoteIR0notfound = 0;
-            if (WiimoteIR0notfound == 1 & WiimoteIR0found)
-                WiimoteIR0notfound = 0;
-            if (WiimoteIR0found)
+            if (irmode == 1)
             {
                 WiimoteIRSensors0X = aBuffer[6] | ((aBuffer[8] >> 4) & 0x03) << 8;
                 WiimoteIRSensors0Y = aBuffer[7] | ((aBuffer[8] >> 6) & 0x03) << 8;
-            }
-            if (WiimoteIR1found)
-            {
                 WiimoteIRSensors1X = aBuffer[9] | ((aBuffer[8] >> 0) & 0x03) << 8;
                 WiimoteIRSensors1Y = aBuffer[10] | ((aBuffer[8] >> 2) & 0x03) << 8;
+                WiimoteIR0found = WiimoteIRSensors0X > 0f & WiimoteIRSensors0X <= 1024f & WiimoteIRSensors0Y > 0f & WiimoteIRSensors0Y <= 768f;
+                WiimoteIR1found = WiimoteIRSensors1X > 0f & WiimoteIRSensors1X <= 1024f & WiimoteIRSensors1Y > 0f & WiimoteIRSensors1Y <= 768f;
+                if (WiimoteIR0found)
+                {
+                    WiimoteIRSensors0Xcam = WiimoteIRSensors0X - 512f;
+                    WiimoteIRSensors0Ycam = WiimoteIRSensors0Y - 384f;
+                }
+                if (WiimoteIR1found)
+                {
+                    WiimoteIRSensors1Xcam = WiimoteIRSensors1X - 512f;
+                    WiimoteIRSensors1Ycam = WiimoteIRSensors1Y - 384f;
+                }
+                if (WiimoteIR0found & WiimoteIR1found)
+                {
+                    WiimoteIRSensorsXcam = (WiimoteIRSensors0Xcam + WiimoteIRSensors1Xcam) / 2f;
+                    WiimoteIRSensorsYcam = (WiimoteIRSensors0Ycam + WiimoteIRSensors1Ycam) / 2f;
+                }
+                if (WiimoteIR0found)
+                {
+                    irx0 = 2 * WiimoteIRSensors0Xcam - WiimoteIRSensorsXcam;
+                    iry0 = 2 * WiimoteIRSensors0Ycam - WiimoteIRSensorsYcam;
+                }
+                if (WiimoteIR1found)
+                {
+                    irx1 = 2 * WiimoteIRSensors1Xcam - WiimoteIRSensorsXcam;
+                    iry1 = 2 * WiimoteIRSensors1Ycam - WiimoteIRSensorsYcam;
+                }
+                irxc = irx0 + irx1;
+                iryc = iry0 + iry1;
             }
-            if (WiimoteIRswitch)
+            else if (irmode == 2)
             {
-                WiimoteIR0foundcam = WiimoteIR0found;
-                WiimoteIR1foundcam = WiimoteIR1found;
-                WiimoteIRSensors0Xcam = WiimoteIRSensors0X - 512f;
-                WiimoteIRSensors0Ycam = WiimoteIRSensors0Y - 384f;
-                WiimoteIRSensors1Xcam = WiimoteIRSensors1X - 512f;
-                WiimoteIRSensors1Ycam = WiimoteIRSensors1Y - 384f;
+                WiimoteIR0found = (aBuffer[6] | ((aBuffer[8] >> 4) & 0x03) << 8) > 1 & (aBuffer[6] | ((aBuffer[8] >> 4) & 0x03) << 8) < 1023;
+                WiimoteIR1found = (aBuffer[9] | ((aBuffer[8] >> 0) & 0x03) << 8) > 1 & (aBuffer[9] | ((aBuffer[8] >> 0) & 0x03) << 8) < 1023;
+                if (WiimoteIR0notfound == 0 & WiimoteIR1found)
+                    WiimoteIR0notfound = 1;
+                if (WiimoteIR0notfound == 1 & !WiimoteIR0found & !WiimoteIR1found)
+                    WiimoteIR0notfound = 2;
+                if (WiimoteIR0notfound == 2 & WiimoteIR0found)
+                {
+                    WiimoteIR0notfound = 0;
+                    if (!WiimoteIRswitch)
+                        WiimoteIRswitch = true;
+                    else
+                        WiimoteIRswitch = false;
+                }
+                if (WiimoteIR0notfound == 0 & WiimoteIR0found)
+                    WiimoteIR0notfound = 0;
+                if (WiimoteIR0notfound == 0 & !WiimoteIR0found & !WiimoteIR1found)
+                    WiimoteIR0notfound = 0;
+                if (WiimoteIR0notfound == 1 & WiimoteIR0found)
+                    WiimoteIR0notfound = 0;
+                if (WiimoteIR0found)
+                {
+                    WiimoteIRSensors0X = aBuffer[6] | ((aBuffer[8] >> 4) & 0x03) << 8;
+                    WiimoteIRSensors0Y = aBuffer[7] | ((aBuffer[8] >> 6) & 0x03) << 8;
+                }
+                if (WiimoteIR1found)
+                {
+                    WiimoteIRSensors1X = aBuffer[9] | ((aBuffer[8] >> 0) & 0x03) << 8;
+                    WiimoteIRSensors1Y = aBuffer[10] | ((aBuffer[8] >> 2) & 0x03) << 8;
+                }
+                if (WiimoteIRswitch)
+                {
+                    WiimoteIR0foundcam = WiimoteIR0found;
+                    WiimoteIR1foundcam = WiimoteIR1found;
+                    WiimoteIRSensors0Xcam = WiimoteIRSensors0X - 512f;
+                    WiimoteIRSensors0Ycam = WiimoteIRSensors0Y - 384f;
+                    WiimoteIRSensors1Xcam = WiimoteIRSensors1X - 512f;
+                    WiimoteIRSensors1Ycam = WiimoteIRSensors1Y - 384f;
+                }
+                else
+                {
+                    WiimoteIR1foundcam = WiimoteIR0found;
+                    WiimoteIR0foundcam = WiimoteIR1found;
+                    WiimoteIRSensors1Xcam = WiimoteIRSensors0X - 512f;
+                    WiimoteIRSensors1Ycam = WiimoteIRSensors0Y - 384f;
+                    WiimoteIRSensors0Xcam = WiimoteIRSensors1X - 512f;
+                    WiimoteIRSensors0Ycam = WiimoteIRSensors1Y - 384f;
+                }
+                if (WiimoteIR0foundcam & WiimoteIR1foundcam)
+                {
+                    irx2 = WiimoteIRSensors0Xcam;
+                    iry2 = WiimoteIRSensors0Ycam;
+                    irx3 = WiimoteIRSensors1Xcam;
+                    iry3 = WiimoteIRSensors1Ycam;
+                    WiimoteIRSensorsXcam = WiimoteIRSensors0Xcam - WiimoteIRSensors1Xcam;
+                    WiimoteIRSensorsYcam = WiimoteIRSensors0Ycam - WiimoteIRSensors1Ycam;
+                }
+                if (WiimoteIR0foundcam & !WiimoteIR1foundcam)
+                {
+                    irx2 = WiimoteIRSensors0Xcam;
+                    iry2 = WiimoteIRSensors0Ycam;
+                    irx3 = WiimoteIRSensors0Xcam - WiimoteIRSensorsXcam;
+                    iry3 = WiimoteIRSensors0Ycam - WiimoteIRSensorsYcam;
+                }
+                if (WiimoteIR1foundcam & !WiimoteIR0foundcam)
+                {
+                    irx3 = WiimoteIRSensors1Xcam;
+                    iry3 = WiimoteIRSensors1Ycam;
+                    irx2 = WiimoteIRSensors1Xcam + WiimoteIRSensorsXcam;
+                    iry2 = WiimoteIRSensors1Ycam + WiimoteIRSensorsYcam;
+                }
+                irxc = irx2 + irx3;
+                iryc = iry2 + iry3;
             }
-            else
+            else if (irmode == 3)
             {
-                WiimoteIR1foundcam = WiimoteIR0found;
-                WiimoteIR0foundcam = WiimoteIR1found;
-                WiimoteIRSensors1Xcam = WiimoteIRSensors0X - 512f;
-                WiimoteIRSensors1Ycam = WiimoteIRSensors0Y - 384f;
-                WiimoteIRSensors0Xcam = WiimoteIRSensors1X - 512f;
-                WiimoteIRSensors0Ycam = WiimoteIRSensors1Y - 384f;
+                WiimoteIR0found = (aBuffer[6] | ((aBuffer[8] >> 4) & 0x03) << 8) > 1 & (aBuffer[6] | ((aBuffer[8] >> 4) & 0x03) << 8) < 1023;
+                WiimoteIR1found = (aBuffer[9] | ((aBuffer[8] >> 0) & 0x03) << 8) > 1 & (aBuffer[9] | ((aBuffer[8] >> 0) & 0x03) << 8) < 1023;
+                if (WiimoteIR0found & WiimoteIR1found)
+                {
+                    WiimoteIRSensors0X = (aBuffer[6] | ((aBuffer[8] >> 4) & 0x03) << 8);
+                    WiimoteIRSensors0Y = (aBuffer[7] | ((aBuffer[8] >> 6) & 0x03) << 8);
+                    irx2 = WiimoteIRSensors0X - 512f;
+                    iry2 = WiimoteIRSensors0Y - 384f;
+                    WiimoteIRSensors1X = (aBuffer[9] | ((aBuffer[8] >> 0) & 0x03) << 8);
+                    WiimoteIRSensors1Y = (aBuffer[10] | ((aBuffer[8] >> 2) & 0x03) << 8);
+                    irx3 = WiimoteIRSensors1X - 512f;
+                    iry3 = WiimoteIRSensors1Y - 384f;
+                }
+                irxc = (irx2 + irx3) / 512f * 1346f;
+                iryc = (iry2 + iry3) / 768f * 782f;
             }
-            if (WiimoteIR0foundcam & WiimoteIR1foundcam)
-            {
-                irx2 = WiimoteIRSensors0Xcam;
-                iry2 = WiimoteIRSensors0Ycam;
-                irx3 = WiimoteIRSensors1Xcam;
-                iry3 = WiimoteIRSensors1Ycam;
-                WiimoteIRSensorsXcam = WiimoteIRSensors0Xcam - WiimoteIRSensors1Xcam;
-                WiimoteIRSensorsYcam = WiimoteIRSensors0Ycam - WiimoteIRSensors1Ycam;
-            }
-            if (WiimoteIR0foundcam & !WiimoteIR1foundcam)
-            {
-                irx2 = WiimoteIRSensors0Xcam;
-                iry2 = WiimoteIRSensors0Ycam;
-                irx3 = WiimoteIRSensors0Xcam - WiimoteIRSensorsXcam;
-                iry3 = WiimoteIRSensors0Ycam - WiimoteIRSensorsYcam;
-            }
-            if (WiimoteIR1foundcam & !WiimoteIR0foundcam)
-            {
-                irx3 = WiimoteIRSensors1Xcam;
-                iry3 = WiimoteIRSensors1Ycam;
-                irx2 = WiimoteIRSensors1Xcam + WiimoteIRSensorsXcam;
-                iry2 = WiimoteIRSensors1Ycam + WiimoteIRSensorsYcam;
-            }
-            if (WiimoteIR0foundcam | WiimoteIR1foundcam)
+            if (WiimoteIR0found | WiimoteIR1found)
             {
                 tempirx = irx;
                 tempiry = iry;
-                irx = (irx2 + irx3) * (1024f / 1346f);
-                iry = iry2 + iry3 + centery >= 0 ? Scale(iry2 + iry3 + centery, 0f, 782f + centery, 0f, 1024f) : Scale(iry2 + iry3 + centery, -782f + centery, 0f, -1024f, 0f);
+                irx = irxc * (1024f / 1346f);
+                iry = iryc + centery >= 0 ? Scale(iryc + centery, 0f, 782f + centery, 0f, 1024f) : Scale(iryc + centery, -782f + centery, 0f, -1024f, 0f);
             }
             else
             {

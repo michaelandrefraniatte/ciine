@@ -4,8 +4,8 @@ using Device.Net;
 using Hid.Net.Windows;
 using System.Reactive.Linq;
 using System.Runtime.InteropServices;
-using System.Security.Cryptography;
 using System.Threading.Tasks;
+using System.Numerics;
 
 namespace DualShock4API
 {
@@ -18,10 +18,36 @@ namespace DualShock4API
         [DllImport("ntdll.dll", EntryPoint = "NtSetTimerResolution")]
         private static extern void NtSetTimerResolution(uint DesiredResolution, bool SetResolution, ref uint CurrentResolution);
         private static uint CurrentResolution = 0;
-        private static byte miscByte;
-        private static byte btnBlock1, btnBlock2, btnBlock3;
-        private static byte[] ds4data = new byte[37];
-        public static IDevice trezorDevice;
+        private byte miscByte;
+        private byte btnBlock1, btnBlock2, btnBlock3;
+        private byte[] ds4data = new byte[37];
+        public IDevice trezorDevice;
+        public bool PS4ControllerButtonCrossPressed;
+        public bool PS4ControllerButtonCirclePressed;
+        public bool PS4ControllerButtonSquarePressed;
+        public bool PS4ControllerButtonTrianglePressed;
+        public bool PS4ControllerButtonDPadUpPressed;
+        public bool PS4ControllerButtonDPadRightPressed;
+        public bool PS4ControllerButtonDPadDownPressed;
+        public bool PS4ControllerButtonDPadLeftPressed;
+        public bool PS4ControllerButtonL1Pressed;
+        public bool PS4ControllerButtonR1Pressed;
+        public bool PS4ControllerButtonL2Pressed;
+        public bool PS4ControllerButtonR2Pressed;
+        public bool PS4ControllerButtonL3Pressed;
+        public bool PS4ControllerButtonR3Pressed;
+        public bool PS4ControllerButtonCreatePressed;
+        public bool PS4ControllerButtonMenuPressed;
+        public bool PS4ControllerButtonLogoPressed;
+        public bool PS4ControllerButtonTouchpadPressed;
+        public bool PS4ControllerButtonMicPressed;
+        public bool PS4ControllerTouchOn;
+        public double PS4ControllerLeftStickX, PS4ControllerLeftStickY, PS4ControllerRightStickX, PS4ControllerRightStickY, PS4ControllerRightTriggerPosition, PS4ControllerLeftTriggerPosition, PS4ControllerTouchX, PS4ControllerTouchY;
+        public bool PS4ControllerAccelCenter;
+        public double PS4ControllerAccelX, PS4ControllerAccelY, PS4ControllerGyroX, PS4ControllerGyroY;
+        public Vector3 gyr_gPS4 = new Vector3();
+        public Vector3 acc_gPS4 = new Vector3();
+        public Vector3 InitDirectAnglesPS4, DirectAnglesPS4;
         public bool running;
         public DualShock4()
         {
@@ -87,6 +113,48 @@ namespace DualShock4API
             );
             miscByte = GetModeSwitch(ds4data, 29);
             IsHeadphoneConnected = miscByte.HasFlag(0x01);
+            PS4ControllerLeftStickX = LeftAnalogStick.X;
+            PS4ControllerLeftStickY = LeftAnalogStick.Y;
+            PS4ControllerRightStickX = -RightAnalogStick.X;
+            PS4ControllerRightStickY = -RightAnalogStick.Y;
+            PS4ControllerLeftTriggerPosition = L2;
+            PS4ControllerRightTriggerPosition = R2;
+            PS4ControllerTouchX = Touchpad1.X;
+            PS4ControllerTouchY = Touchpad1.Y;
+            PS4ControllerTouchOn = Touchpad1.IsDown;
+            gyr_gPS4.X = Gyro.Z;
+            gyr_gPS4.Y = -Gyro.X;
+            gyr_gPS4.Z = -Gyro.Y;
+            PS4ControllerGyroX = gyr_gPS4.Z;
+            PS4ControllerGyroY = gyr_gPS4.Y;
+            acc_gPS4 = new Vector3(Accelerometer.X, Accelerometer.Z, Accelerometer.Y);
+            PS4ControllerAccelCenter = MenuButton;
+            DirectAnglesPS4 = acc_gPS4 - InitDirectAnglesPS4;
+            PS4ControllerAccelX = -(DirectAnglesPS4.Y + DirectAnglesPS4.Z) / 6f;
+            PS4ControllerAccelY = DirectAnglesPS4.X / 6f;
+            PS4ControllerButtonCrossPressed = CrossButton;
+            PS4ControllerButtonCirclePressed = CircleButton;
+            PS4ControllerButtonSquarePressed = SquareButton;
+            PS4ControllerButtonTrianglePressed = TriangleButton;
+            PS4ControllerButtonDPadUpPressed = DPadUpButton;
+            PS4ControllerButtonDPadRightPressed = DPadRightButton;
+            PS4ControllerButtonDPadDownPressed = DPadDownButton;
+            PS4ControllerButtonDPadLeftPressed = DPadLeftButton;
+            PS4ControllerButtonL1Pressed = L1Button;
+            PS4ControllerButtonR1Pressed = R1Button;
+            PS4ControllerButtonL2Pressed = L2Button;
+            PS4ControllerButtonR2Pressed = R2Button;
+            PS4ControllerButtonL3Pressed = L3Button;
+            PS4ControllerButtonR3Pressed = R3Button;
+            PS4ControllerButtonCreatePressed = CreateButton;
+            PS4ControllerButtonMenuPressed = MenuButton;
+            PS4ControllerButtonLogoPressed = LogoButton;
+            PS4ControllerButtonTouchpadPressed = TouchpadButton;
+            PS4ControllerButtonMicPressed = MicButton;
+        }
+        public void InitDualShock4Accel()
+        {
+            InitDirectAnglesPS4 = acc_gPS4;
         }
         private async void taskD()
         {

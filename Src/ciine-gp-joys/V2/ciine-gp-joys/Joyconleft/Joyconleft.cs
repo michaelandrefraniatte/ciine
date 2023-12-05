@@ -7,6 +7,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Vector3 = System.Numerics.Vector3;
 
 namespace JoyconLeftAPI
 {
@@ -50,6 +51,20 @@ namespace JoyconLeftAPI
         public const uint report_lenLeft = 49;
         public byte[] report_bufLeft = new byte[report_lenLeft];
         public SafeFileHandle handleLeft;
+        public bool JoyconLeftButtonSMA, JoyconLeftButtonACC, JoyconLeftRollLeft, JoyconLeftRollRight;
+        public double JoyconLeftStickX, JoyconLeftStickY;
+        public System.Collections.Generic.List<double> LeftValListX = new System.Collections.Generic.List<double>(), LeftValListY = new System.Collections.Generic.List<double>();
+        public bool JoyconLeftAccelCenter, JoyconLeftStickCenter;
+        public double JoyconLeftAccelX, JoyconLeftAccelY, JoyconLeftGyroX, JoyconLeftGyroY;
+        private double[] stickLeft = { 0, 0 };
+        private double[] stickCenterLeft = { 0, 0 };
+        private byte[] stick_rawLeft = { 0, 0, 0 };
+        public Vector3 acc_gLeft = new Vector3();
+        public Vector3 gyr_gLeft = new Vector3();
+        public Vector3 InitDirectAnglesLeft, DirectAnglesLeft;
+        public bool JoyconLeftButtonSHOULDER_1, JoyconLeftButtonSHOULDER_2, JoyconLeftButtonSR, JoyconLeftButtonSL, JoyconLeftButtonDPAD_DOWN, JoyconLeftButtonDPAD_RIGHT, JoyconLeftButtonDPAD_UP, JoyconLeftButtonDPAD_LEFT, JoyconLeftButtonMINUS, JoyconLeftButtonSTICK, JoyconLeftButtonCAPTURE;
+        public float acc_gcalibrationLeftX, acc_gcalibrationLeftY, acc_gcalibrationLeftZ;
+        public bool ISLEFT = true;
         private bool running;
         public JoyconLeft()
         {
@@ -80,6 +95,71 @@ namespace JoyconLeftAPI
         public void BeginAsyncPolling()
         {
             Task.Run(() => taskDLeft());
+        }
+        public void InitLeftJoycon()
+        {
+            try
+            {
+                stick_rawLeft[0] = report_bufLeft[6 + (ISLEFT ? 0 : 3)];
+                stick_rawLeft[1] = report_bufLeft[7 + (ISLEFT ? 0 : 3)];
+                stick_rawLeft[2] = report_bufLeft[8 + (ISLEFT ? 0 : 3)];
+                stickCenterLeft[0] = (UInt16)(stick_rawLeft[0] | ((stick_rawLeft[1] & 0xf) << 8));
+                stickCenterLeft[1] = (UInt16)((stick_rawLeft[1] >> 4) | (stick_rawLeft[2] << 4));
+                acc_gcalibrationLeftX = (Int16)(report_bufLeft[13 + 0 * 12] | ((report_bufLeft[14 + 0 * 12] << 8) & 0xff00)) + (Int16)(report_bufLeft[13 + 1 * 12] | ((report_bufLeft[14 + 1 * 12] << 8) & 0xff00)) + (Int16)(report_bufLeft[13 + 2 * 12] | ((report_bufLeft[14 + 2 * 12] << 8) & 0xff00));
+                acc_gcalibrationLeftY = (Int16)(report_bufLeft[15 + 0 * 12] | ((report_bufLeft[16 + 0 * 12] << 8) & 0xff00)) + (Int16)(report_bufLeft[15 + 1 * 12] | ((report_bufLeft[16 + 1 * 12] << 8) & 0xff00)) + (Int16)(report_bufLeft[15 + 2 * 12] | ((report_bufLeft[16 + 2 * 12] << 8) & 0xff00));
+                acc_gcalibrationLeftZ = (Int16)(report_bufLeft[17 + 0 * 12] | ((report_bufLeft[18 + 0 * 12] << 8) & 0xff00)) + (Int16)(report_bufLeft[17 + 1 * 12] | ((report_bufLeft[18 + 1 * 12] << 8) & 0xff00)) + (Int16)(report_bufLeft[17 + 2 * 12] | ((report_bufLeft[18 + 2 * 12] << 8) & 0xff00));
+            }
+            catch { }
+        }
+        public void ProcessButtonsLeftJoycon()
+        {
+            try
+            {
+                stick_rawLeft[0] = report_bufLeft[6 + (ISLEFT ? 0 : 3)];
+                stick_rawLeft[1] = report_bufLeft[7 + (ISLEFT ? 0 : 3)];
+                stick_rawLeft[2] = report_bufLeft[8 + (ISLEFT ? 0 : 3)];
+                stickLeft[0] = ((UInt16)(stick_rawLeft[0] | ((stick_rawLeft[1] & 0xf) << 8)) - stickCenterLeft[0]) / 1440f;
+                stickLeft[1] = ((UInt16)((stick_rawLeft[1] >> 4) | (stick_rawLeft[2] << 4)) - stickCenterLeft[1]) / 1440f;
+                JoyconLeftStickX = stickLeft[0];
+                JoyconLeftStickY = stickLeft[1];
+                acc_gLeft.X = ((Int16)(report_bufLeft[13 + 0 * 12] | ((report_bufLeft[14 + 0 * 12] << 8) & 0xff00)) + (Int16)(report_bufLeft[13 + 1 * 12] | ((report_bufLeft[14 + 1 * 12] << 8) & 0xff00)) + (Int16)(report_bufLeft[13 + 2 * 12] | ((report_bufLeft[14 + 2 * 12] << 8) & 0xff00)) - acc_gcalibrationLeftX) * (1.0f / 12000f);
+                acc_gLeft.Y = -((Int16)(report_bufLeft[15 + 0 * 12] | ((report_bufLeft[16 + 0 * 12] << 8) & 0xff00)) + (Int16)(report_bufLeft[15 + 1 * 12] | ((report_bufLeft[16 + 1 * 12] << 8) & 0xff00)) + (Int16)(report_bufLeft[15 + 2 * 12] | ((report_bufLeft[16 + 2 * 12] << 8) & 0xff00)) - acc_gcalibrationLeftY) * (1.0f / 12000f);
+                acc_gLeft.Z = -((Int16)(report_bufLeft[17 + 0 * 12] | ((report_bufLeft[18 + 0 * 12] << 8) & 0xff00)) + (Int16)(report_bufLeft[17 + 1 * 12] | ((report_bufLeft[18 + 1 * 12] << 8) & 0xff00)) + (Int16)(report_bufLeft[17 + 2 * 12] | ((report_bufLeft[18 + 2 * 12] << 8) & 0xff00)) - acc_gcalibrationLeftZ) * (1.0f / 12000f);
+                JoyconLeftButtonSHOULDER_1 = (report_bufLeft[3 + (ISLEFT ? 2 : 0)] & 0x40) != 0;
+                JoyconLeftButtonSHOULDER_2 = (report_bufLeft[3 + (ISLEFT ? 2 : 0)] & 0x80) != 0;
+                JoyconLeftButtonSR = (report_bufLeft[3 + (ISLEFT ? 2 : 0)] & 0x10) != 0;
+                JoyconLeftButtonSL = (report_bufLeft[3 + (ISLEFT ? 2 : 0)] & 0x20) != 0;
+                JoyconLeftButtonDPAD_DOWN = (report_bufLeft[3 + (ISLEFT ? 2 : 0)] & (ISLEFT ? 0x01 : 0x04)) != 0;
+                JoyconLeftButtonDPAD_RIGHT = (report_bufLeft[3 + (ISLEFT ? 2 : 0)] & (ISLEFT ? 0x04 : 0x08)) != 0;
+                JoyconLeftButtonDPAD_UP = (report_bufLeft[3 + (ISLEFT ? 2 : 0)] & (ISLEFT ? 0x02 : 0x02)) != 0;
+                JoyconLeftButtonDPAD_LEFT = (report_bufLeft[3 + (ISLEFT ? 2 : 0)] & (ISLEFT ? 0x08 : 0x01)) != 0;
+                JoyconLeftButtonMINUS = (report_bufLeft[4] & 0x01) != 0;
+                JoyconLeftButtonCAPTURE = (report_bufLeft[4] & 0x20) != 0;
+                JoyconLeftButtonSTICK = (report_bufLeft[4] & (ISLEFT ? 0x08 : 0x04)) != 0;
+                JoyconLeftButtonACC = acc_gLeft.X <= -1.13;
+                JoyconLeftButtonSMA = JoyconLeftButtonSL | JoyconLeftButtonSR | JoyconLeftButtonMINUS | JoyconLeftButtonACC;
+                DirectAnglesLeft = acc_gLeft - InitDirectAnglesLeft;
+                JoyconLeftAccelX = DirectAnglesLeft.X * 1350f;
+                JoyconLeftAccelY = -DirectAnglesLeft.Y * 1350f;
+                gyr_gLeft.X = ((Int16)(report_bufLeft[19 + 0 * 12] | ((report_bufLeft[20 + 0 * 12] << 8) & 0xff00)) + (Int16)(report_bufLeft[19 + 1 * 12] | ((report_bufLeft[20 + 1 * 12] << 8) & 0xff00)) + (Int16)(report_bufLeft[19 + 2 * 12] | ((report_bufLeft[20 + 2 * 12] << 8) & 0xff00)));
+                gyr_gLeft.Y = ((Int16)(report_bufLeft[21 + 0 * 12] | ((report_bufLeft[22 + 0 * 12] << 8) & 0xff00)) + (Int16)(report_bufLeft[21 + 1 * 12] | ((report_bufLeft[22 + 1 * 12] << 8) & 0xff00)) + (Int16)(report_bufLeft[21 + 2 * 12] | ((report_bufLeft[22 + 2 * 12] << 8) & 0xff00)));
+                gyr_gLeft.Z = ((Int16)(report_bufLeft[23 + 0 * 12] | ((report_bufLeft[24 + 0 * 12] << 8) & 0xff00)) + (Int16)(report_bufLeft[23 + 1 * 12] | ((report_bufLeft[24 + 1 * 12] << 8) & 0xff00)) + (Int16)(report_bufLeft[23 + 2 * 12] | ((report_bufLeft[24 + 2 * 12] << 8) & 0xff00)));
+                JoyconLeftGyroX = gyr_gLeft.Z;
+                JoyconLeftGyroY = gyr_gLeft.Y;
+            }
+            catch { }
+        }
+        public void InitLeftJoyconAccel()
+        {
+            InitDirectAnglesLeft = acc_gLeft;
+        }
+        public void InitLeftJoyconStick()
+        {
+            stick_rawLeft[0] = report_bufLeft[6 + (ISLEFT ? 0 : 3)];
+            stick_rawLeft[1] = report_bufLeft[7 + (ISLEFT ? 0 : 3)];
+            stick_rawLeft[2] = report_bufLeft[8 + (ISLEFT ? 0 : 3)];
+            stickCenterLeft[0] = (UInt16)(stick_rawLeft[0] | ((stick_rawLeft[1] & 0xf) << 8));
+            stickCenterLeft[1] = (UInt16)((stick_rawLeft[1] >> 4) | (stick_rawLeft[2] << 4));
         }
         public const string vendor_id = "57e", vendor_id_ = "057e", product_l = "2006", product_r = "2007";
         public enum EFileAttributes : uint

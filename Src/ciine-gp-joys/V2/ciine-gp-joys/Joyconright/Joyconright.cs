@@ -7,6 +7,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Vector3 = System.Numerics.Vector3;
 
 namespace JoyconRightAPI
 {
@@ -50,6 +51,20 @@ namespace JoyconRightAPI
         public const uint report_lenRight = 49;
         public byte[] report_bufRight = new byte[report_lenRight];
         public SafeFileHandle handleRight;
+        public bool JoyconRightButtonSPA, JoyconRightButtonACC, JoyconRightRollLeft, JoyconRightRollRight;
+        public double JoyconRightStickX, JoyconRightStickY;
+        public System.Collections.Generic.List<double> RightValListX = new System.Collections.Generic.List<double>(), RightValListY = new System.Collections.Generic.List<double>();
+        public bool JoyconRightAccelCenter, JoyconRightStickCenter;
+        public double JoyconRightAccelX, JoyconRightAccelY, JoyconRightGyroX, JoyconRightGyroY;
+        private double[] stickRight = { 0, 0 };
+        private double[] stickCenterRight = { 0, 0 };
+        private byte[] stick_rawRight = { 0, 0, 0 };
+        public Vector3 acc_gRight = new Vector3();
+        public Vector3 gyr_gRight = new Vector3();
+        public Vector3 InitDirectAnglesRight, DirectAnglesRight;
+        public bool JoyconRightButtonSHOULDER_1, JoyconRightButtonSHOULDER_2, JoyconRightButtonSR, JoyconRightButtonSL, JoyconRightButtonDPAD_DOWN, JoyconRightButtonDPAD_RIGHT, JoyconRightButtonDPAD_UP, JoyconRightButtonDPAD_LEFT, JoyconRightButtonPLUS, JoyconRightButtonSTICK, JoyconRightButtonHOME;
+        public float acc_gcalibrationRightX, acc_gcalibrationRightY, acc_gcalibrationRightZ;
+        public bool ISRIGHT = true;
         private bool running;
         public JoyconRight()
         {
@@ -80,6 +95,71 @@ namespace JoyconRightAPI
         public void BeginAsyncPolling()
         {
             Task.Run(() => taskDRight());
+        }
+        public void InitRightJoycon()
+        {
+            try
+            {
+                stick_rawRight[0] = report_bufRight[6 + (!ISRIGHT ? 0 : 3)];
+                stick_rawRight[1] = report_bufRight[7 + (!ISRIGHT ? 0 : 3)];
+                stick_rawRight[2] = report_bufRight[8 + (!ISRIGHT ? 0 : 3)];
+                stickCenterRight[0] = (UInt16)(stick_rawRight[0] | ((stick_rawRight[1] & 0xf) << 8));
+                stickCenterRight[1] = (UInt16)((stick_rawRight[1] >> 4) | (stick_rawRight[2] << 4));
+                acc_gcalibrationRightX = (Int16)(report_bufRight[13 + 0 * 12] | ((report_bufRight[14 + 0 * 12] << 8) & 0xff00)) + (Int16)(report_bufRight[13 + 1 * 12] | ((report_bufRight[14 + 1 * 12] << 8) & 0xff00)) + (Int16)(report_bufRight[13 + 2 * 12] | ((report_bufRight[14 + 2 * 12] << 8) & 0xff00));
+                acc_gcalibrationRightY = (Int16)(report_bufRight[15 + 0 * 12] | ((report_bufRight[16 + 0 * 12] << 8) & 0xff00)) + (Int16)(report_bufRight[15 + 1 * 12] | ((report_bufRight[16 + 1 * 12] << 8) & 0xff00)) + (Int16)(report_bufRight[15 + 2 * 12] | ((report_bufRight[16 + 2 * 12] << 8) & 0xff00));
+                acc_gcalibrationRightZ = (Int16)(report_bufRight[17 + 0 * 12] | ((report_bufRight[18 + 0 * 12] << 8) & 0xff00)) + (Int16)(report_bufRight[17 + 1 * 12] | ((report_bufRight[18 + 1 * 12] << 8) & 0xff00)) + (Int16)(report_bufRight[17 + 2 * 12] | ((report_bufRight[18 + 2 * 12] << 8) & 0xff00));
+            }
+            catch { }
+        }
+        public void ProcessButtonsRightJoycon()
+        {
+            try
+            {
+                stick_rawRight[0] = report_bufRight[6 + (!ISRIGHT ? 0 : 3)];
+                stick_rawRight[1] = report_bufRight[7 + (!ISRIGHT ? 0 : 3)];
+                stick_rawRight[2] = report_bufRight[8 + (!ISRIGHT ? 0 : 3)];
+                stickRight[0] = ((UInt16)(stick_rawRight[0] | ((stick_rawRight[1] & 0xf) << 8)) - stickCenterRight[0]) / 1440f;
+                stickRight[1] = ((UInt16)((stick_rawRight[1] >> 4) | (stick_rawRight[2] << 4)) - stickCenterRight[1]) / 1440f;
+                JoyconRightStickX = -stickRight[0];
+                JoyconRightStickY = -stickRight[1];
+                acc_gRight.X = ((Int16)(report_bufRight[13 + 0 * 12] | ((report_bufRight[14 + 0 * 12] << 8) & 0xff00)) + (Int16)(report_bufRight[13 + 1 * 12] | ((report_bufRight[14 + 1 * 12] << 8) & 0xff00)) + (Int16)(report_bufRight[13 + 2 * 12] | ((report_bufRight[14 + 2 * 12] << 8) & 0xff00)) - acc_gcalibrationRightX) * (1.0f / 12000f);
+                acc_gRight.Y = -((Int16)(report_bufRight[15 + 0 * 12] | ((report_bufRight[16 + 0 * 12] << 8) & 0xff00)) + (Int16)(report_bufRight[15 + 1 * 12] | ((report_bufRight[16 + 1 * 12] << 8) & 0xff00)) + (Int16)(report_bufRight[15 + 2 * 12] | ((report_bufRight[16 + 2 * 12] << 8) & 0xff00)) - acc_gcalibrationRightY) * (1.0f / 12000f);
+                acc_gRight.Z = -((Int16)(report_bufRight[17 + 0 * 12] | ((report_bufRight[18 + 0 * 12] << 8) & 0xff00)) + (Int16)(report_bufRight[17 + 1 * 12] | ((report_bufRight[18 + 1 * 12] << 8) & 0xff00)) + (Int16)(report_bufRight[17 + 2 * 12] | ((report_bufRight[18 + 2 * 12] << 8) & 0xff00)) - acc_gcalibrationRightZ) * (1.0f / 12000f);
+                JoyconRightButtonSHOULDER_1 = (report_bufRight[3 + (!ISRIGHT ? 2 : 0)] & 0x40) != 0;
+                JoyconRightButtonSHOULDER_2 = (report_bufRight[3 + (!ISRIGHT ? 2 : 0)] & 0x80) != 0;
+                JoyconRightButtonSR = (report_bufRight[3 + (!ISRIGHT ? 2 : 0)] & 0x10) != 0;
+                JoyconRightButtonSL = (report_bufRight[3 + (!ISRIGHT ? 2 : 0)] & 0x20) != 0;
+                JoyconRightButtonDPAD_DOWN = (report_bufRight[3 + (!ISRIGHT ? 2 : 0)] & (!ISRIGHT ? 0x01 : 0x04)) != 0;
+                JoyconRightButtonDPAD_RIGHT = (report_bufRight[3 + (!ISRIGHT ? 2 : 0)] & (!ISRIGHT ? 0x04 : 0x08)) != 0;
+                JoyconRightButtonDPAD_UP = (report_bufRight[3 + (!ISRIGHT ? 2 : 0)] & (!ISRIGHT ? 0x02 : 0x02)) != 0;
+                JoyconRightButtonDPAD_LEFT = (report_bufRight[3 + (!ISRIGHT ? 2 : 0)] & (!ISRIGHT ? 0x08 : 0x01)) != 0;
+                JoyconRightButtonPLUS = ((report_bufRight[4] & 0x02) != 0);
+                JoyconRightButtonHOME = ((report_bufRight[4] & 0x10) != 0);
+                JoyconRightButtonSTICK = ((report_bufRight[4] & (!ISRIGHT ? 0x08 : 0x04)) != 0);
+                JoyconRightButtonACC = acc_gRight.X <= -1.13;
+                JoyconRightButtonSPA = JoyconRightButtonSL | JoyconRightButtonSR | JoyconRightButtonPLUS | JoyconRightButtonACC;
+                DirectAnglesRight = acc_gRight - InitDirectAnglesRight;
+                JoyconRightAccelX = DirectAnglesRight.X * 1350f;
+                JoyconRightAccelY = -DirectAnglesRight.Y * 1350f;
+                gyr_gRight.X = ((Int16)(report_bufRight[19 + 0 * 12] | ((report_bufRight[20 + 0 * 12] << 8) & 0xff00)) + (Int16)(report_bufRight[19 + 1 * 12] | ((report_bufRight[20 + 1 * 12] << 8) & 0xff00)) + (Int16)(report_bufRight[19 + 2 * 12] | ((report_bufRight[20 + 2 * 12] << 8) & 0xff00)));
+                gyr_gRight.Y = ((Int16)(report_bufRight[21 + 0 * 12] | ((report_bufRight[22 + 0 * 12] << 8) & 0xff00)) + (Int16)(report_bufRight[21 + 1 * 12] | ((report_bufRight[22 + 1 * 12] << 8) & 0xff00)) + (Int16)(report_bufRight[21 + 2 * 12] | ((report_bufRight[22 + 2 * 12] << 8) & 0xff00)));
+                gyr_gRight.Z = ((Int16)(report_bufRight[23 + 0 * 12] | ((report_bufRight[24 + 0 * 12] << 8) & 0xff00)) + (Int16)(report_bufRight[23 + 1 * 12] | ((report_bufRight[24 + 1 * 12] << 8) & 0xff00)) + (Int16)(report_bufRight[23 + 2 * 12] | ((report_bufRight[24 + 2 * 12] << 8) & 0xff00)));
+                JoyconRightGyroX = gyr_gRight.Z;
+                JoyconRightGyroY = gyr_gRight.Y;
+            }
+            catch { }
+        }
+        public void InitRightJoyconAccel()
+        {
+            InitDirectAnglesRight = acc_gRight;
+        }
+        public void InitRightJoyconStick()
+        {
+            stick_rawRight[0] = report_bufRight[6 + (!ISRIGHT ? 0 : 3)];
+            stick_rawRight[1] = report_bufRight[7 + (!ISRIGHT ? 0 : 3)];
+            stick_rawRight[2] = report_bufRight[8 + (!ISRIGHT ? 0 : 3)];
+            stickCenterRight[0] = (UInt16)(stick_rawRight[0] | ((stick_rawRight[1] & 0xf) << 8));
+            stickCenterRight[1] = (UInt16)((stick_rawRight[1] >> 4) | (stick_rawRight[2] << 4));
         }
         public const string vendor_id = "57e", vendor_id_ = "057e", product_l = "2006", product_r = "2007";
         public enum EFileAttributes : uint

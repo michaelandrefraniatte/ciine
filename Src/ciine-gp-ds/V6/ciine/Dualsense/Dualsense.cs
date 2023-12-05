@@ -5,6 +5,7 @@ using Hid.Net.Windows;
 using System.Reactive.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using System.Numerics;
 
 namespace DualSenseAPI
 {
@@ -17,10 +18,40 @@ namespace DualSenseAPI
         [DllImport("ntdll.dll", EntryPoint = "NtSetTimerResolution")]
         private static extern void NtSetTimerResolution(uint DesiredResolution, bool SetResolution, ref uint CurrentResolution);
         private static uint CurrentResolution = 0;
-        private static byte miscByte;
-        private static byte btnBlock1, btnBlock2, btnBlock3;
-        private static byte[] dsdata = new byte[54];
-        public static IDevice trezorDevice;
+        private byte miscByte;
+        private byte btnBlock1, btnBlock2, btnBlock3;
+        private byte[] dsdata = new byte[54];
+        public IDevice trezorDevice;
+        public bool PS5ControllerButtonCrossPressed;
+        public bool PS5ControllerButtonCirclePressed;
+        public bool PS5ControllerButtonSquarePressed;
+        public bool PS5ControllerButtonTrianglePressed;
+        public bool PS5ControllerButtonDPadUpPressed;
+        public bool PS5ControllerButtonDPadRightPressed;
+        public bool PS5ControllerButtonDPadDownPressed;
+        public bool PS5ControllerButtonDPadLeftPressed;
+        public bool PS5ControllerButtonL1Pressed;
+        public bool PS5ControllerButtonR1Pressed;
+        public bool PS5ControllerButtonL2Pressed;
+        public bool PS5ControllerButtonR2Pressed;
+        public bool PS5ControllerButtonL3Pressed;
+        public bool PS5ControllerButtonR3Pressed;
+        public bool PS5ControllerButtonCreatePressed;
+        public bool PS5ControllerButtonMenuPressed;
+        public bool PS5ControllerButtonLogoPressed;
+        public bool PS5ControllerButtonTouchpadPressed;
+        public bool PS5ControllerButtonFnLPressed;
+        public bool PS5ControllerButtonFnRPressed;
+        public bool PS5ControllerButtonBLPPressed;
+        public bool PS5ControllerButtonBRPPressed;
+        public bool PS5ControllerButtonMicPressed;
+        public bool PS5ControllerTouchOn;
+        public double PS5ControllerLeftStickX, PS5ControllerLeftStickY, PS5ControllerRightStickX, PS5ControllerRightStickY, PS5ControllerRightTriggerPosition, PS5ControllerLeftTriggerPosition, PS5ControllerTouchX, PS5ControllerTouchY;
+        public bool PS5ControllerAccelCenter;
+        public double PS5ControllerAccelX, PS5ControllerAccelY, PS5ControllerGyroX, PS5ControllerGyroY;
+        public Vector3 gyr_gPS5 = new Vector3();
+        public Vector3 acc_gPS5 = new Vector3();
+        public Vector3 InitDirectAnglesPS5, DirectAnglesPS5;
         public bool running;
         public DualSense()
         {
@@ -90,6 +121,52 @@ namespace DualSenseAPI
             );
             miscByte = GetModeSwitch(dsdata, 53);
             IsHeadphoneConnected = miscByte.HasFlag(0x01);
+            PS5ControllerLeftStickX = LeftAnalogStick.X;
+            PS5ControllerLeftStickY = LeftAnalogStick.Y;
+            PS5ControllerRightStickX = -RightAnalogStick.X;
+            PS5ControllerRightStickY = -RightAnalogStick.Y;
+            PS5ControllerLeftTriggerPosition = L2;
+            PS5ControllerRightTriggerPosition = R2;
+            PS5ControllerTouchX = Touchpad1.X;
+            PS5ControllerTouchY = Touchpad1.Y;
+            PS5ControllerTouchOn = Touchpad1.IsDown;
+            gyr_gPS5.X = Gyro.Z;
+            gyr_gPS5.Y = -Gyro.X;
+            gyr_gPS5.Z = -Gyro.Y;
+            PS5ControllerGyroX = gyr_gPS5.Z;
+            PS5ControllerGyroY = gyr_gPS5.Y;
+            acc_gPS5 = new Vector3(Accelerometer.X, Accelerometer.Z, Accelerometer.Y);
+            PS5ControllerAccelCenter = MenuButton;
+            DirectAnglesPS5 = acc_gPS5 - InitDirectAnglesPS5;
+            PS5ControllerAccelX = -(DirectAnglesPS5.Y + DirectAnglesPS5.Z) / 6f;
+            PS5ControllerAccelY = DirectAnglesPS5.X / 6f;
+            PS5ControllerButtonCrossPressed = CrossButton;
+            PS5ControllerButtonCirclePressed = CircleButton;
+            PS5ControllerButtonSquarePressed = SquareButton;
+            PS5ControllerButtonTrianglePressed = TriangleButton;
+            PS5ControllerButtonDPadUpPressed = DPadUpButton;
+            PS5ControllerButtonDPadRightPressed = DPadRightButton;
+            PS5ControllerButtonDPadDownPressed = DPadDownButton;
+            PS5ControllerButtonDPadLeftPressed = DPadLeftButton;
+            PS5ControllerButtonL1Pressed = L1Button;
+            PS5ControllerButtonR1Pressed = R1Button;
+            PS5ControllerButtonL2Pressed = L2Button;
+            PS5ControllerButtonR2Pressed = R2Button;
+            PS5ControllerButtonL3Pressed = L3Button;
+            PS5ControllerButtonR3Pressed = R3Button;
+            PS5ControllerButtonCreatePressed = CreateButton;
+            PS5ControllerButtonMenuPressed = MenuButton;
+            PS5ControllerButtonLogoPressed = LogoButton;
+            PS5ControllerButtonTouchpadPressed = TouchpadButton;
+            PS5ControllerButtonFnLPressed = FnL;
+            PS5ControllerButtonFnRPressed = FnR;
+            PS5ControllerButtonBLPPressed = BLP;
+            PS5ControllerButtonBRPPressed = BRP;
+            PS5ControllerButtonMicPressed = MicButton;
+        }
+        public void InitDualSenseAccel()
+        {
+            InitDirectAnglesPS5 = acc_gPS5;
         }
         private async void taskD()
         {

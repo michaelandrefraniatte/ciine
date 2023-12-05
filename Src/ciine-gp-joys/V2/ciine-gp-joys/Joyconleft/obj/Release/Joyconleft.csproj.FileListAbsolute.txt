@@ -4,3 +4,5 @@ C:\Users\micha\Documents\github\ciine\Src\ciine-gp-joys\V2\ciine-gp-joys\Joyconl
 C:\Users\micha\Documents\github\ciine\Src\ciine-gp-joys\V2\ciine-gp-joys\Joyconleft\obj\Release\Joyconleft.csproj.CoreCompileInputs.cache
 C:\Users\micha\Documents\github\ciine\Src\ciine-gp-joys\V2\ciine-gp-joys\Joyconleft\obj\Release\Joyconleft.dll
 C:\Users\micha\Documents\github\ciine\Src\ciine-gp-joys\V2\ciine-gp-joys\Joyconleft\obj\Release\Joyconleft.pdb
+C:\Users\micha\Documents\github\ciine\Src\ciine-gp-joys\V2\ciine-gp-joys\Joyconleft\bin\Release\System.Numerics.Vectors.dll
+C:\Users\micha\Documents\github\ciine\Src\ciine-gp-joys\V2\ciine-gp-joys\Joyconleft\obj\Release\Joyconleft.csproj.CopyComplete
