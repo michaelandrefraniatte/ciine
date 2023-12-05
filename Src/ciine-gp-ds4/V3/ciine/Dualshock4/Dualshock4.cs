@@ -3,15 +3,36 @@ using System.Linq;
 using Device.Net;
 using Hid.Net.Windows;
 using System.Reactive.Linq;
+using System.Runtime.InteropServices;
+using System.Security.Cryptography;
+using System.Threading.Tasks;
 
 namespace DualShock4API
 {
     public class DualShock4
     {
+        [DllImport("winmm.dll", EntryPoint = "timeBeginPeriod")]
+        private static extern uint TimeBeginPeriod(uint ms);
+        [DllImport("winmm.dll", EntryPoint = "timeEndPeriod")]
+        private static extern uint TimeEndPeriod(uint ms);
+        [DllImport("ntdll.dll", EntryPoint = "NtSetTimerResolution")]
+        private static extern void NtSetTimerResolution(uint DesiredResolution, bool SetResolution, ref uint CurrentResolution);
+        private static uint CurrentResolution = 0;
         private static byte miscByte;
         private static byte btnBlock1, btnBlock2, btnBlock3;
         private static byte[] ds4data = new byte[37];
         public static IDevice trezorDevice;
+        public bool running;
+        public DualShock4()
+        {
+            TimeBeginPeriod(1);
+            NtSetTimerResolution(1, true, ref CurrentResolution);
+            running = true;
+        }
+        public void Close()
+        {
+            running = false;
+        }
         public async void EnumerateControllers(string vendor_id, string product_id, string label_id)
         {
             var hidFactory = new FilterDeviceDefinition((uint)int.Parse(vendor_id, System.Globalization.NumberStyles.HexNumber), (uint)int.Parse(product_id, System.Globalization.NumberStyles.HexNumber), label: label_id).CreateWindowsHidDeviceFactory();
@@ -67,11 +88,20 @@ namespace DualShock4API
             miscByte = GetModeSwitch(ds4data, 29);
             IsHeadphoneConnected = miscByte.HasFlag(0x01);
         }
-        public async void BeginPolling()
+        private async void taskD()
         {
-            var readBuffer = trezorDevice.WriteAndReadAsync(GetOutputDataBytes());
-            readBuffer.Wait();
-            ds4data = (await readBuffer).Data.Skip(1).ToArray();
+            for (; ; )
+            {
+                if (!running)
+                    break;
+                var readBuffer = trezorDevice.WriteAndReadAsync(GetOutputDataBytes());
+                readBuffer.Wait();
+                ds4data = (await readBuffer).Data.Skip(1).ToArray();
+            }
+        }
+        public void BeginPolling()
+        {
+            Task.Run(() => taskD());
         }
         private static byte[] GetOutputDataBytes()
         {

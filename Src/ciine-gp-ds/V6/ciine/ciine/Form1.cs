@@ -73,6 +73,7 @@ namespace ciine
                 running = false;
                 Thread.Sleep(100);
                 scp.UnLoadController();
+                ds.Close();
             }
             catch { }
         }
@@ -81,7 +82,7 @@ namespace ciine
             running = true;
             ds.EnumerateControllers("54C", "CE6", "DualSense");
             Thread.Sleep(2000);
-            Task.Run(() => taskD());
+            ds.BeginPolling();
             scp.LoadController();
             Thread.Sleep(2000);
             Task.Run(() => taskX());
@@ -181,15 +182,6 @@ namespace ciine
         {
             double scaled = minScale + (double)(value - min) / (max - min) * (maxScale - minScale);
             return scaled;
-        }
-        private void taskD()
-        {
-            for (; ; )
-            {
-                if (!running)
-                    break;
-                ds.BeginPolling();
-            }
         }
     }
 }

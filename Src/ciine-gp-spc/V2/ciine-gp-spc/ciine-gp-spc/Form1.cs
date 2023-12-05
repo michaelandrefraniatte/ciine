@@ -21,9 +21,9 @@ namespace ciine_gp_spc
         private static extern uint TimeEndPeriod(uint ms);
         [DllImport("ntdll.dll", EntryPoint = "NtSetTimerResolution")]
         private static extern void NtSetTimerResolution(uint DesiredResolution, bool SetResolution, ref uint CurrentResolution);
+        private static uint CurrentResolution = 0;
         private static bool controller1_send_back, controller1_send_start, controller1_send_A, controller1_send_B, controller1_send_X, controller1_send_Y, controller1_send_up, controller1_send_left, controller1_send_down, controller1_send_right, controller1_send_leftstick, controller1_send_rightstick, controller1_send_leftbumper, controller1_send_rightbumper, controller1_send_xbox;
         private static double controller1_send_leftstickx, controller1_send_leftsticky, controller1_send_rightstickx, controller1_send_rightsticky, controller1_send_lefttriggerposition, controller1_send_righttriggerposition;
-        private static uint CurrentResolution = 0;
         private static bool running;
         private double statex = 0f, statey = 0f, mousex = 0f, mousey = 0f, mousestatex = 0f, mousestatey = 0f, viewpower1x = 1f, viewpower2x = 0f, viewpower3x = 0f, viewpower1y = 1f, viewpower2y = 0f, viewpower3y = 0f, dzx = 20.0f, dzy = 0f;
         private int sleeptime = 1;
@@ -67,7 +67,7 @@ namespace ciine_gp_spc
         {
             running = true;
             spc.ScanPro();
-            Task.Run(() => taskDPro());
+            spc.BeginAsyncPolling();
             Thread.Sleep(1000);
             InitProController();
             scp.LoadController();
@@ -125,17 +125,6 @@ namespace ciine_gp_spc
         {
             double scaled = minScale + (double)(value - min) / (max - min) * (maxScale - minScale);
             return scaled;
-        }
-        private void taskDPro()
-        {
-            while (running)
-            {
-                try
-                {
-                    spc.BeginAsyncPolling();
-                }
-                catch { }
-            }
         }
         public void InitProController()
         {

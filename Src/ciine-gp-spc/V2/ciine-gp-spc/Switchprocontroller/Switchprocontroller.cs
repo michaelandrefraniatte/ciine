@@ -2,6 +2,8 @@
 using System;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SwitchProControllerAPI
 {
@@ -31,19 +33,46 @@ namespace SwitchProControllerAPI
         public static extern SafeFileHandle Prohid_open_path(IntPtr handle);
         [DllImport("prohidread.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "Prohid_close")]
         public static extern void Prohid_close(SafeFileHandle device);
+        [DllImport("winmm.dll", EntryPoint = "timeBeginPeriod")]
+        private static extern uint TimeBeginPeriod(uint ms);
+        [DllImport("winmm.dll", EntryPoint = "timeEndPeriod")]
+        private static extern uint TimeEndPeriod(uint ms);
+        [DllImport("ntdll.dll", EntryPoint = "NtSetTimerResolution")]
+        private static extern void NtSetTimerResolution(uint DesiredResolution, bool SetResolution, ref uint CurrentResolution);
+        private static uint CurrentResolution = 0;
         public const uint report_lenPro = 49;
         public byte[] report_bufPro = new byte[report_lenPro];
         public SafeFileHandle handlePro;
+        public bool running;
+        public SwitchProController()
+        {
+            TimeBeginPeriod(1);
+            NtSetTimerResolution(1, true, ref CurrentResolution);
+            running = true;
+        }
         public void Close()
         {
+            running = false;
+            Thread.Sleep(100);
             Subcommand3ProController(0x06, new byte[] { 0x01 }, 1);
             Prohid_close(handlePro);
             handlePro.Close();
             handlePro.Dispose();
         }
+        private void taskDPro()
+        {
+            while (running)
+            {
+                try
+                {
+                    Prohid_read_timeout(handlePro, report_bufPro, (UIntPtr)report_lenPro);
+                }
+                catch { }
+            }
+        }
         public void BeginAsyncPolling()
         {
-            Prohid_read_timeout(handlePro, report_bufPro, (UIntPtr)report_lenPro);
+            Task.Run(() => taskDPro());
         }
         public const string vendor_id = "57e", vendor_id_ = "057e", product_pro = "2009";
         public enum EFileAttributes : uint

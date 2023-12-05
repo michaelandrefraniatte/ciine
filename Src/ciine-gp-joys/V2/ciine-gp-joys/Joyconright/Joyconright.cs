@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace JoyconRightAPI
@@ -39,19 +40,46 @@ namespace JoyconRightAPI
         public static extern SafeFileHandle CreateFile(string fileName, [MarshalAs(UnmanagedType.U4)] FileAccess fileAccess, [MarshalAs(UnmanagedType.U4)] FileShare fileShare, IntPtr securityAttributes, [MarshalAs(UnmanagedType.U4)] FileMode creationDisposition, [MarshalAs(UnmanagedType.U4)] uint flags, IntPtr template);
         [DllImport("Kernel32.dll")]
         public static extern IntPtr CreateFile(string fileName, System.IO.FileAccess fileAccess, System.IO.FileShare fileShare, IntPtr securityAttributes, System.IO.FileMode creationDisposition, EFileAttributes flags, IntPtr template);
+        [DllImport("winmm.dll", EntryPoint = "timeBeginPeriod")]
+        private static extern uint TimeBeginPeriod(uint ms);
+        [DllImport("winmm.dll", EntryPoint = "timeEndPeriod")]
+        private static extern uint TimeEndPeriod(uint ms);
+        [DllImport("ntdll.dll", EntryPoint = "NtSetTimerResolution")]
+        private static extern void NtSetTimerResolution(uint DesiredResolution, bool SetResolution, ref uint CurrentResolution);
+        private static uint CurrentResolution = 0;
         public const uint report_lenRight = 49;
         public byte[] report_bufRight = new byte[report_lenRight];
         public SafeFileHandle handleRight;
+        private bool running;
+        public JoyconRight()
+        {
+            TimeBeginPeriod(1);
+            NtSetTimerResolution(1, true, ref CurrentResolution);
+            running = true;
+        }
         public void Close()
         {
+            running = false;
+            Thread.Sleep(100);
             Rhid_close(handleRight);
             handleRight.Close();
             handleRight.Dispose();
             joyconrightdisconnect();
         }
+        private void taskDRight()
+        {
+            while (running)
+            {
+                try
+                {
+                    Rhid_read_timeout(handleRight, report_bufRight, (UIntPtr)report_lenRight);
+                }
+                catch { }
+            }
+        }
         public void BeginAsyncPolling()
         {
-            Rhid_read_timeout(handleRight, report_bufRight, (UIntPtr)report_lenRight);
+            Task.Run(() => taskDRight());
         }
         public const string vendor_id = "57e", vendor_id_ = "057e", product_l = "2006", product_r = "2007";
         public enum EFileAttributes : uint

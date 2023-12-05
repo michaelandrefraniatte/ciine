@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace JoyconChargingGripAPI
@@ -44,15 +45,30 @@ namespace JoyconChargingGripAPI
         public static extern SafeFileHandle Rhid_open_path(IntPtr handle);
         [DllImport("rhidread.dll", CallingConvention = CallingConvention.Cdecl, EntryPoint = "Rhid_close")]
         public static extern void Rhid_close(SafeFileHandle device);
+        [DllImport("winmm.dll", EntryPoint = "timeBeginPeriod")]
+        private static extern uint TimeBeginPeriod(uint ms);
+        [DllImport("winmm.dll", EntryPoint = "timeEndPeriod")]
+        private static extern uint TimeEndPeriod(uint ms);
+        [DllImport("ntdll.dll", EntryPoint = "NtSetTimerResolution")]
+        private static extern void NtSetTimerResolution(uint DesiredResolution, bool SetResolution, ref uint CurrentResolution);
+        private static uint CurrentResolution = 0;
         public const uint report_lenLeft = 49;
         public byte[] report_bufLeft = new byte[report_lenLeft];
         public const uint report_lenRight = 49;
         public byte[] report_bufRight = new byte[report_lenRight];
         public SafeFileHandle handleRight;
         public SafeFileHandle handleLeft;
-        public bool ISLEFT, ISRIGHT;
+        public bool ISLEFT, ISRIGHT, running;
+        public JoyconChargingGrip()
+        {
+            TimeBeginPeriod(1);
+            NtSetTimerResolution(1, true, ref CurrentResolution);
+            running = true;
+        }
         public void Close()
         {
+            running = false;
+            Thread.Sleep(100);
             Subcommand3GripLeftController(0x06, new byte[] { 0x01 }, 1);
             Subcommand3GripRightController(0x06, new byte[] { 0x01 }, 1);
             Lhid_close(handleLeft);
@@ -62,13 +78,35 @@ namespace JoyconChargingGripAPI
             handleRight.Close();
             handleRight.Dispose();
         }
+        private void taskDLeft()
+        {
+            while (running)
+            {
+                try
+                {
+                    Lhid_read_timeout(handleLeft, report_bufLeft, (UIntPtr)report_lenLeft);
+                }
+                catch { }
+            }
+        }
+        private void taskDRight()
+        {
+            while (running)
+            {
+                try
+                {
+                    Rhid_read_timeout(handleRight, report_bufRight, (UIntPtr)report_lenRight);
+                }
+                catch { }
+            }
+        }
         public void BeginAsyncPollingLeft()
         {
-            Lhid_read_timeout(handleLeft, report_bufLeft, (UIntPtr)report_lenLeft);
+            Task.Run(() => taskDLeft());
         }
         public void BeginAsyncPollingRight()
         {
-            Rhid_read_timeout(handleRight, report_bufRight, (UIntPtr)report_lenRight);
+            Task.Run(() => taskDRight());
         }
         public const string vendor_id = "57e", vendor_id_ = "057e", product_grip = "200e";
         public enum EFileAttributes : uint

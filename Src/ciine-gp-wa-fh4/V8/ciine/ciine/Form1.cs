@@ -58,7 +58,7 @@ namespace ciine
         {
             running = true;
             wm.ScanWiimote();
-            Task.Run(() => taskD());
+            wm.BeginPolling();
             Thread.Sleep(1000);
             calibrationinit = -wm.aBuffer[4] + 135f;
             scp.LoadController();
@@ -115,15 +115,6 @@ namespace ciine
         {
             double scaled = minScale + (double)(value - min) / (max - min) * (maxScale - minScale);
             return scaled;
-        }
-        private void taskD()
-        {
-            for (; ; )
-            {
-                if (!running)
-                    break;
-                wm.BeginPolling();
-            }
         }
     }
 }

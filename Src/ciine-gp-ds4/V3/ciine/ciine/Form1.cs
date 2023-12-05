@@ -68,6 +68,7 @@ namespace ciine
                 running = false;
                 Thread.Sleep(100);
                 scp.UnLoadController();
+                ds4.Close();
             }
             catch { }
         }
@@ -76,7 +77,7 @@ namespace ciine
             running = true;
             ds4.EnumerateControllers("54C", "9CC", "Wireless Controller");
             Thread.Sleep(2000);
-            Task.Run(() => taskD());
+            ds4.BeginPolling();
             scp.LoadController();
             Thread.Sleep(2000);
             Task.Run(() => taskX());
@@ -172,15 +173,6 @@ namespace ciine
         {
             double scaled = minScale + (double)(value - min) / (max - min) * (maxScale - minScale);
             return scaled;
-        }
-        private void taskD()
-        {
-            for (; ; )
-            {
-                if (!running)
-                    break;
-                ds4.BeginPolling();
-            }
         }
     }
 }

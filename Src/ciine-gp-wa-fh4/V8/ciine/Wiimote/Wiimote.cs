@@ -3,6 +3,7 @@ using System;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace WiiMoteAPI
 {
@@ -28,6 +29,13 @@ namespace WiiMoteAPI
         private static extern SafeFileHandle CreateFile(string fileName, [MarshalAs(UnmanagedType.U4)] FileAccess fileAccess, [MarshalAs(UnmanagedType.U4)] FileShare fileShare, IntPtr securityAttributes, [MarshalAs(UnmanagedType.U4)] FileMode creationDisposition, [MarshalAs(UnmanagedType.U4)] uint flags, IntPtr template);
         [DllImport("Kernel32.dll")]
         private static extern IntPtr CreateFile(string fileName, System.IO.FileAccess fileAccess, System.IO.FileShare fileShare, IntPtr securityAttributes, System.IO.FileMode creationDisposition, EFileAttributes flags, IntPtr template);
+        [DllImport("winmm.dll", EntryPoint = "timeBeginPeriod")]
+        private static extern uint TimeBeginPeriod(uint ms);
+        [DllImport("winmm.dll", EntryPoint = "timeEndPeriod")]
+        private static extern uint TimeEndPeriod(uint ms);
+        [DllImport("ntdll.dll", EntryPoint = "NtSetTimerResolution")]
+        private static extern void NtSetTimerResolution(uint DesiredResolution, bool SetResolution, ref uint CurrentResolution);
+        private static uint CurrentResolution = 0;
         private const double REGISTER_IR = 0x04b00030, REGISTER_EXTENSION_INIT_1 = 0x04a400f0, REGISTER_EXTENSION_INIT_2 = 0x04a400fb, REGISTER_EXTENSION_TYPE = 0x04a400fa, REGISTER_EXTENSION_CALIBRATION = 0x04a40020, REGISTER_MOTIONPLUS_INIT = 0x04a600fe;
         public string path;
         public byte[] mBuff = new byte[22], aBuffer = new byte[22];
@@ -36,8 +44,17 @@ namespace WiiMoteAPI
         private static SafeFileHandle handle = null, handleunshared = null;
         public bool reconnectingwiimotebool;
         public double reconnectingwiimotecount;
+        public bool running;
+        public WiiMote()
+        {
+            TimeBeginPeriod(1);
+            NtSetTimerResolution(1, true, ref CurrentResolution);
+            running = true;
+        }
         public void Close()
         {
+            running = false;
+            Thread.Sleep(100);
             handleunshared.Close();
             handleunshared.Dispose();
             mStream.Close();
@@ -48,12 +65,21 @@ namespace WiiMoteAPI
         }
         public void BeginPolling()
         {
-            try
+            Task.Run(() => taskD());
+        }
+        public void taskD()
+        {
+            for (; ; )
             {
-                mStream.Read(aBuffer, 0, 22);
-                reconnectingwiimotebool = false;
+                if (!running)
+                    break;
+                try
+                {
+                    mStream.Read(aBuffer, 0, 22);
+                    reconnectingwiimotebool = false;
+                }
+                catch { }
             }
-            catch { }
         }
         public void Reconnection()
         {
