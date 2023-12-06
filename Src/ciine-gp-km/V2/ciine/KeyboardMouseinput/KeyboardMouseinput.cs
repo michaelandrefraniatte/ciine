@@ -38,6 +38,8 @@ namespace KeyboardMouseInputAPI
                     break; 
                 MouseInputProcess();
                 System.Threading.Thread.Sleep(1);
+                if (Mouse1AxisZ != 0)
+                    Task.Run(() => InitMouse());
             }
         }
         public void BeginPollingMouse()
@@ -57,6 +59,11 @@ namespace KeyboardMouseInputAPI
         public void BeginPollingKeyboard() 
         {
             Task.Run(() => taskK());
+        }
+        public void InitMouse()
+        {
+            System.Threading.Thread.Sleep(100);
+            Mouse1AxisZ = 0;
         }
         private static Mouse[] mouse = new Mouse[] { null };
         private static Guid[] mouseGuid = new Guid[] { Guid.Empty };
