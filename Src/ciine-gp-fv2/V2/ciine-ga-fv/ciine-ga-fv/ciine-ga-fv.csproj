@@ -112,6 +112,10 @@
       <Project>{8bde6140-ee1c-4fd9-85e8-7f0dfd14ce94}</Project>
       <Name>controllers</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Directinput\Directinput.csproj">
+      <Project>{a7930c91-022c-4017-9b78-795c26e0b2a6}</Project>
+      <Name>Directinput</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

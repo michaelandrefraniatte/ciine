@@ -1,0 +1,9 @@
+C:\Users\micha\Documents\github\ciine\Src\ciine-gp-fv2\V2\ciine-ga-fv\Directinput\bin\Release\Directinput.dll
+C:\Users\micha\Documents\github\ciine\Src\ciine-gp-fv2\V2\ciine-ga-fv\Directinput\bin\Release\Directinput.pdb
+C:\Users\micha\Documents\github\ciine\Src\ciine-gp-fv2\V2\ciine-ga-fv\Directinput\obj\Release\Directinput.csproj.AssemblyReference.cache
+C:\Users\micha\Documents\github\ciine\Src\ciine-gp-fv2\V2\ciine-ga-fv\Directinput\obj\Release\Directinput.csproj.CoreCompileInputs.cache
+C:\Users\micha\Documents\github\ciine\Src\ciine-gp-fv2\V2\ciine-ga-fv\Directinput\obj\Release\Directinput.dll
+C:\Users\micha\Documents\github\ciine\Src\ciine-gp-fv2\V2\ciine-ga-fv\Directinput\obj\Release\Directinput.pdb
+C:\Users\micha\Documents\github\ciine\Src\ciine-gp-fv2\V2\ciine-ga-fv\Directinput\bin\Release\SharpDX.DirectInput.dll
+C:\Users\micha\Documents\github\ciine\Src\ciine-gp-fv2\V2\ciine-ga-fv\Directinput\bin\Release\SharpDX.dll
+C:\Users\micha\Documents\github\ciine\Src\ciine-gp-fv2\V2\ciine-ga-fv\Directinput\obj\Release\Directinput.csproj.CopyComplete
