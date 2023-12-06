@@ -37,6 +37,7 @@ namespace DirectInputAPI
                 if (!running)
                     break;
                 GamepadProcess();
+                System.Threading.Thread.Sleep(1);
             }
         }
         public void BeginPolling()

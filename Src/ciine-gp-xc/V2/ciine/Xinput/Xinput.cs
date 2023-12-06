@@ -36,6 +36,7 @@ namespace XInputAPI
                 if (!running)
                     break;
                 ControllerProcess();
+                System.Threading.Thread.Sleep(1);
             }
         }
         public void BeginPolling()

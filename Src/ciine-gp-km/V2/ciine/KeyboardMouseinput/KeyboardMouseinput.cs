@@ -37,6 +37,7 @@ namespace KeyboardMouseInputAPI
                 if (!running)
                     break; 
                 MouseInputProcess();
+                System.Threading.Thread.Sleep(1);
             }
         }
         public void BeginPollingMouse()
@@ -50,6 +51,7 @@ namespace KeyboardMouseInputAPI
                 if (!running)
                     break;
                 KeyboardInputProcess();
+                System.Threading.Thread.Sleep(1);
             }
         }
         public void BeginPollingKeyboard() 
