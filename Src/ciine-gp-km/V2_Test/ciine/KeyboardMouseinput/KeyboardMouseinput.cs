@@ -22,8 +22,6 @@ namespace KeyboardMouseInputAPI
         private static uint CurrentResolution = 0;
         private static bool running;
         static DirectInput directInput = new DirectInput();
-        public bool viewdata = false;
-        public static bool viewdatashow = false;
         public Form1 form1 = new Form1();
         private static int[] wd = { 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2 };
         private static int[] wu = { 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2 };
@@ -54,16 +52,13 @@ namespace KeyboardMouseInputAPI
         }
         public void ViewData(bool viewdata)
         {
-            this.viewdata = viewdata;
-            if (!viewdatashow & viewdata)
+            if (!form1.Visible & viewdata)
             {
-                form1.Visible = true;
-                viewdatashow = true;
+                form1.SetVisible();
             }
-            if (viewdatashow & !viewdata)
+            if (form1.Visible & !viewdata)
             {
-                form1.Hide();
-                viewdatashow = false;
+                form1.SetUnvisible();
             }
         }
         public void Close()
@@ -80,7 +75,7 @@ namespace KeyboardMouseInputAPI
                 System.Threading.Thread.Sleep(1);
                 if (Mouse1AxisZ != 0)
                     Task.Run(() => InitMouse());
-                if (this.viewdata)
+                if (form1.Visible)
                 {
                     form1.SetLabel1(Mouse1AxisZ.ToString());
                 }
