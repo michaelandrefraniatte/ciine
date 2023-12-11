@@ -69,7 +69,7 @@ namespace ciine
             {
                 if (!running)
                     break;
-                wm.ProcessStateLogic(0);
+                wm.ProcessStateLogic();
                 if (wm.WiimoteRawValuesY > 0f)
                     mousex = Scale(wm.WiimoteRawValuesY * 45f, 0f, 1024f, (dzx / 100f) * 1024f, 1024f);
                 if (wm.WiimoteRawValuesY < 0f)
