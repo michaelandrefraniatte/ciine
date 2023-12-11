@@ -1,6 +1,8 @@
 ﻿using Microsoft.Win32.SafeHandles;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -45,7 +47,8 @@ namespace WiiMoteAPI
         public bool reconnectingwiimotebool;
         public double reconnectingwiimotecount;
         public bool running;
-        public double irxc, iryc, irx0, iry0, irx1, iry1, irx2, iry2, irx3, iry3, irx, iry, tempirx, tempiry, WiimoteIRSensors0X, WiimoteIRSensors0Y, WiimoteIRSensors1X, WiimoteIRSensors1Y, WiimoteRawValuesX, WiimoteRawValuesY, WiimoteRawValuesZ, calibrationinit, WiimoteIRSensors0Xcam, WiimoteIRSensors0Ycam, WiimoteIRSensors1Xcam, WiimoteIRSensors1Ycam, WiimoteIRSensorsXcam, WiimoteIRSensorsYcam;
+        public List<double> vallistirx = new List<double>(), vallistiry = new List<double>();
+        public double irxc, iryc, irx0, iry0, irx1, iry1, irx2, iry2, irx3, iry3, irx, iry, WiimoteIRSensors0X, WiimoteIRSensors0Y, WiimoteIRSensors1X, WiimoteIRSensors1Y, WiimoteRawValuesX, WiimoteRawValuesY, WiimoteRawValuesZ, calibrationinit, WiimoteIRSensors0Xcam, WiimoteIRSensors0Ycam, WiimoteIRSensors1Xcam, WiimoteIRSensors1Ycam, WiimoteIRSensorsXcam, WiimoteIRSensorsYcam;
         public bool WiimoteIR0foundcam, WiimoteIR1foundcam, WiimoteIRswitch, WiimoteIR1found, WiimoteIR0found, WiimoteButtonStateA, WiimoteButtonStateB, WiimoteButtonStateMinus, WiimoteButtonStateHome, WiimoteButtonStatePlus, WiimoteButtonStateOne, WiimoteButtonStateTwo, WiimoteButtonStateUp, WiimoteButtonStateDown, WiimoteButtonStateLeft, WiimoteButtonStateRight, WiimoteNunchuckStateC, WiimoteNunchuckStateZ;
         public double WiimoteIR0notfound, stickviewxinit, stickviewyinit, WiimoteNunchuckStateRawValuesX, WiimoteNunchuckStateRawValuesY, WiimoteNunchuckStateRawValuesZ, WiimoteNunchuckStateRawJoystickX, WiimoteNunchuckStateRawJoystickY, centery = 80f;
         public WiiMote()
@@ -53,6 +56,14 @@ namespace WiiMoteAPI
             TimeBeginPeriod(1);
             NtSetTimerResolution(1, true, ref CurrentResolution);
             running = true;
+            while (vallistirx.Count <= 2)
+            {
+                vallistirx.Add(0);
+            }
+            while (vallistiry.Count <= 2)
+            {
+                vallistiry.Add(0);
+            }
         }
         public void Close()
         {
@@ -81,6 +92,7 @@ namespace WiiMoteAPI
                 {
                     mStream.Read(aBuffer, 0, 22);
                     reconnectingwiimotebool = false;
+                    ProcessStateLogic();
                 }
                 catch { }
             }
@@ -166,8 +178,26 @@ namespace WiiMoteAPI
             }
             irxc = irx2 + irx3;
             iryc = iry2 + iry3;
-            irx = irxc * (1024f / 1346f);
-            iry = iryc + centery >= 0 ? Scale(iryc + centery, 0f, 782f + centery, 0f, 1024f) : Scale(iryc + centery, -782f + centery, 0f, -1024f, 0f);
+            if (WiimoteIR0found | WiimoteIR1found)
+            {
+                vallistirx.Add(irx);
+                vallistirx.RemoveAt(0);
+                vallistiry.Add(iry);
+                vallistiry.RemoveAt(0);
+                irx = irxc * (1024f / 1346f);
+                iry = iryc + centery >= 0 ? Scale(iryc + centery, 0f, 782f + centery, 0f, 1024f) : Scale(iryc + centery, -782f + centery, 0f, -1024f, 0f);
+            }
+            else
+            {
+                if (irx - vallistirx.Average() >= 600f)
+                    irx = 1024f;
+                if (irx - vallistirx.Average() <= -600f)
+                    irx = -1024f;
+                if (iry - vallistiry.Average() >= 200f)
+                    iry = 1024f;
+                if (iry - vallistiry.Average() <= -200f)
+                    iry = -1024f;
+            }
             WiimoteButtonStateA = (aBuffer[2] & 0x08) != 0;
             WiimoteButtonStateB = (aBuffer[2] & 0x04) != 0;
             WiimoteButtonStateMinus = (aBuffer[2] & 0x10) != 0;

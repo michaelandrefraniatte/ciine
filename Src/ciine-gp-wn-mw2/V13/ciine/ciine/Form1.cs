@@ -71,7 +71,6 @@ namespace ciine
             {
                 if (!running)
                     break;
-                wm.ProcessStateLogic();
                 controller1_send_rightstick = wm.WiimoteNunchuckStateRawValuesY >= 90f;
                 controller1_send_leftstick = wm.WiimoteNunchuckStateZ;
                 controller1_send_A = wm.WiimoteNunchuckStateC;
