@@ -26,6 +26,7 @@ namespace ciine
         private static double controller1_send_leftstickx, controller1_send_leftsticky, controller1_send_rightstickx, controller1_send_rightsticky, controller1_send_lefttriggerposition, controller1_send_righttriggerposition;
         private static double mousex = 0f, mousey = 0f, viewpower1x = 0f, viewpower2x = 1f, viewpower3x = 0f, viewpower1y = 0.25f, viewpower2y = 0.75f, viewpower3y = 0f, dzx = 2.0f, dzy = 2.0f;
         private static bool getstate;
+        private static int pollcount;
         public bool running;
         public static Valuechange ValueChange = new Valuechange();
         private WiiMote wm = new WiiMote();
@@ -81,7 +82,10 @@ namespace ciine
                 controller1_send_rightbumper = wm.WiimoteButtonStatePlus | wm.WiimoteButtonStateUp;
                 controller1_send_B = wm.WiimoteButtonStateDown;
                 controller1_send_Y = wm.WiimoteButtonStateRight;
-                controller1_send_righttriggerposition = wm.WiimoteButtonStateB ? 255 : 0;
+                pollcount++;
+                if (pollcount >= 60)
+                    pollcount = 0;
+                controller1_send_righttriggerposition = wm.WiimoteButtonStateB & pollcount <= 50 ? 255 : 0;
                 ValueChange[0] = wm.WiimoteButtonStateA ? 1 : 0;
                 if (Valuechange._ValueChange[0] > 0f & !getstate)
                 {
