@@ -81,6 +81,7 @@ namespace WiiMoteAPI
                 {
                     mStream.Read(aBuffer, 0, 22);
                     reconnectingwiimotebool = false;
+                    ProcessStateLogic();
                 }
                 catch { }
             }
@@ -107,11 +108,6 @@ namespace WiiMoteAPI
             WiimoteRawValuesX = aBuffer[3] - 135f + calibrationinit;
             WiimoteRawValuesY = aBuffer[4] - 135f + calibrationinit;
             WiimoteRawValuesZ = aBuffer[5] - 135f + calibrationinit;
-        }
-        private double Scale(double value, double min, double max, double minScale, double maxScale)
-        {
-            double scaled = minScale + (double)(value - min) / (max - min) * (maxScale - minScale);
-            return scaled;
         }
         public void Reconnection()
         {
