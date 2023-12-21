@@ -7,8 +7,20 @@ namespace controllers
 {
     public class Valuechanges
     {
+        [DllImport("winmm.dll", EntryPoint = "timeBeginPeriod")]
+        private static extern uint TimeBeginPeriod(uint ms);
+        [DllImport("winmm.dll", EntryPoint = "timeEndPeriod")]
+        private static extern uint TimeEndPeriod(uint ms);
+        [DllImport("ntdll.dll", EntryPoint = "NtSetTimerResolution")]
+        private static extern void NtSetTimerResolution(uint DesiredResolution, bool SetResolution, ref uint CurrentResolution);
+        private static uint CurrentResolution = 0;
         public static double[] _valuechange = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
         public static double[] _ValueChange = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+        public Valuechanges()
+        {
+            TimeBeginPeriod(1);
+            NtSetTimerResolution(1, true, ref CurrentResolution);
+        }
         public double this[int index]
         {
             get { return _ValueChange[index]; }
@@ -24,6 +36,13 @@ namespace controllers
     }
     public class ScpBus : IDisposable
     {
+        [DllImport("winmm.dll", EntryPoint = "timeBeginPeriod")]
+        private static extern uint TimeBeginPeriod(uint ms);
+        [DllImport("winmm.dll", EntryPoint = "timeEndPeriod")]
+        private static extern uint TimeEndPeriod(uint ms);
+        [DllImport("ntdll.dll", EntryPoint = "NtSetTimerResolution")]
+        private static extern void NtSetTimerResolution(uint DesiredResolution, bool SetResolution, ref uint CurrentResolution);
+        private static uint CurrentResolution = 0;
         private static ScpBus scpBus;
         private static X360Controller controller;
         public static Valuechanges ValueChange = new Valuechanges();
@@ -126,9 +145,15 @@ namespace controllers
         }
         private const string SCP_BUS_CLASS_GUID = "{F679F562-3164-42CE-A4DB-E7DDBE723909}";
         private readonly SafeFileHandle _deviceHandle;
-        public ScpBus() : this(0) { }
+        public ScpBus() : this(0)
+        {
+            TimeBeginPeriod(1);
+            NtSetTimerResolution(1, true, ref CurrentResolution);
+        }
         public ScpBus(int instance)
         {
+            TimeBeginPeriod(1);
+            NtSetTimerResolution(1, true, ref CurrentResolution);
             string devicePath = "";
             if (Find(new Guid(SCP_BUS_CLASS_GUID), ref devicePath, instance))
             {
@@ -280,8 +305,17 @@ namespace controllers
     }
     public class X360Controller
     {
+        [DllImport("winmm.dll", EntryPoint = "timeBeginPeriod")]
+        private static extern uint TimeBeginPeriod(uint ms);
+        [DllImport("winmm.dll", EntryPoint = "timeEndPeriod")]
+        private static extern uint TimeEndPeriod(uint ms);
+        [DllImport("ntdll.dll", EntryPoint = "NtSetTimerResolution")]
+        private static extern void NtSetTimerResolution(uint DesiredResolution, bool SetResolution, ref uint CurrentResolution);
+        private static uint CurrentResolution = 0;
         public X360Controller()
         {
+            TimeBeginPeriod(1);
+            NtSetTimerResolution(1, true, ref CurrentResolution);
             Buttons = X360Buttons.None;
             LeftTrigger = 0;
             RightTrigger = 0;
@@ -289,26 +323,6 @@ namespace controllers
             LeftStickY = 0;
             RightStickX = 0;
             RightStickY = 0;
-        }
-        public X360Controller(X360Buttons buttons, byte leftTrigger, byte rightTrigger, short leftStickX, short leftStickY, short rightStickX, short rightStickY)
-        {
-            Buttons = buttons;
-            LeftTrigger = leftTrigger;
-            RightTrigger = rightTrigger;
-            LeftStickX = leftStickX;
-            LeftStickY = leftStickY;
-            RightStickX = rightStickX;
-            RightStickY = rightStickY;
-        }
-        public X360Controller(X360Controller controller)
-        {
-            Buttons = controller.Buttons;
-            LeftTrigger = controller.LeftTrigger;
-            RightTrigger = controller.RightTrigger;
-            LeftStickX = controller.LeftStickX;
-            LeftStickY = controller.LeftStickY;
-            RightStickX = controller.RightStickX;
-            RightStickY = controller.RightStickY;
         }
         public X360Buttons Buttons { get; set; }
         public byte LeftTrigger { get; set; }
