@@ -29,7 +29,7 @@ namespace ciine
         public bool running;
         public static Valuechange ValueChange = new Valuechange();
         private WiiMote wm = new WiiMote();
-        private ScpBus scp = new ScpBus();
+        private XBoxController scp = new XBoxController();
         private void Form1_Load(object sender, EventArgs e)
         {
             TimeBeginPeriod(1);
@@ -43,7 +43,7 @@ namespace ciine
             {
                 running = false;
                 Thread.Sleep(100);
-                scp.UnLoadController();
+                scp.Disconnect();
                 wm.Close();
             }
             catch { }
@@ -62,7 +62,7 @@ namespace ciine
             wm.BeginPolling();
             Thread.Sleep(1000);
             wm.Init();
-            scp.LoadController();
+            scp.Connect();
             Task.Run(() => taskX());
         }
         private void taskX()
@@ -140,7 +140,7 @@ namespace ciine
                         controller1_send_down = wm.WiimoteNunchuckStateRawJoystickY <= -42f;
                     }
                 }
-                scp.SetController(controller1_send_back, controller1_send_start, controller1_send_A, controller1_send_B, controller1_send_X, controller1_send_Y, controller1_send_up, controller1_send_left, controller1_send_down, controller1_send_right, controller1_send_leftstick, controller1_send_rightstick, controller1_send_leftbumper, controller1_send_rightbumper, controller1_send_leftstickx, controller1_send_leftsticky, controller1_send_rightstickx, controller1_send_rightsticky, controller1_send_lefttriggerposition, controller1_send_righttriggerposition, controller1_send_xbox);
+                scp.Set(controller1_send_back, controller1_send_start, controller1_send_A, controller1_send_B, controller1_send_X, controller1_send_Y, controller1_send_up, controller1_send_left, controller1_send_down, controller1_send_right, controller1_send_leftstick, controller1_send_rightstick, controller1_send_leftbumper, controller1_send_rightbumper, controller1_send_leftstickx, controller1_send_leftsticky, controller1_send_rightstickx, controller1_send_rightsticky, controller1_send_lefttriggerposition, controller1_send_righttriggerposition, controller1_send_xbox);
                 Thread.Sleep(1);
             }
         }
