@@ -43,18 +43,16 @@ namespace controllers
         [DllImport("ntdll.dll", EntryPoint = "NtSetTimerResolution")]
         private static extern void NtSetTimerResolution(uint DesiredResolution, bool SetResolution, ref uint CurrentResolution);
         private static uint CurrentResolution = 0;
-        private static ScpBus scpBus;
         public static Valuechanges ValueChange = new Valuechanges();
         public void LoadController()
         {
-            scpBus = new ScpBus();
-            scpBus.PlugIn(1);
+            PlugIn(1);
         }
         public void UnLoadController()
         {
             SetController(false, false, false, false, false, false, false, false, false, false, false, false, false, false, 0, 0, 0, 0, 0, 0, false);
             Thread.Sleep(100);
-            scpBus.Unplug(1);
+            Unplug(1);
         }
         public void SetController(bool back, bool start, bool A, bool B, bool X, bool Y, bool up, bool left, bool down, bool right, bool leftstick, bool rightstick, bool leftbumper, bool rightbumper, double leftstickx, double leftsticky, double rightstickx, double rightsticky, double lefttriggerposition, double righttriggerposition, bool xbox)
         {
@@ -139,7 +137,7 @@ namespace controllers
             RightStickY = (short)rightsticky;
             LeftTrigger = (byte)lefttriggerposition;
             RightTrigger = (byte)righttriggerposition;
-            scpBus.Report(GetReport());
+            Report(GetReport());
         }
         private const string SCP_BUS_CLASS_GUID = "{F679F562-3164-42CE-A4DB-E7DDBE723909}";
         private readonly SafeFileHandle _deviceHandle;
