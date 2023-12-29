@@ -153,7 +153,7 @@ namespace controllers
             RightStickY = (short)rightsticky;
             LeftTrigger = (byte)lefttriggerposition;
             RightTrigger = (byte)righttriggerposition;
-            Report(number < 2 ? 1 : 2, GetReport());
+            Report(GetReport());
         }
         public XBoxController()
         {
@@ -188,18 +188,9 @@ namespace controllers
             buffer[7] = (byte)((controllerNumber >> 24) & 0xFF);
             return DeviceIoControl(_deviceHandle, 0x2A4004, buffer, buffer.Length, null, 0, ref transfered, IntPtr.Zero);
         }
-        public bool Report(int controllerNumber, byte[] controllerReport)
+        public bool Report(byte[] controllerReport)
         {
-            byte[] head = new byte[8];
-            head[0] = 0x1C;
-            head[4] = (byte)((controllerNumber) & 0xFF);
-            head[5] = (byte)((controllerNumber >> 8) & 0xFF);
-            head[6] = (byte)((controllerNumber >> 16) & 0xFF);
-            head[7] = (byte)((controllerNumber >> 24) & 0xFF);
-            byte[] fullReport = new byte[28];
-            Buffer.BlockCopy(head, 0, fullReport, 0, head.Length);
-            Buffer.BlockCopy(controllerReport, 0, fullReport, head.Length, controllerReport.Length);
-            return DeviceIoControl(_deviceHandle, 0x2A400C, fullReport, fullReport.Length, outputBuffer, outputBuffer?.Length ?? 0, ref transferred, IntPtr.Zero) && transferred > 0;
+            return DeviceIoControl(_deviceHandle, 0x2A400C, controllerReport, controllerReport.Length, outputBuffer, outputBuffer?.Length ?? 0, ref transferred, IntPtr.Zero) && transferred > 0;
         }
         private bool Find(Guid target, ref string path, int instance = 0)
         {
@@ -251,24 +242,24 @@ namespace controllers
         public short LeftStickY { get; set; }
         public short RightStickX { get; set; }
         public short RightStickY { get; set; }
+        byte[] fullReport = { 0x1C, 0, 0, 0, (1) & 0xFF, (1 >> 8) & 0xFF, (1 >> 16) & 0xFF, (1 >> 24) & 0xFF, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
         public byte[] GetReport()
         {
-            byte[] bytes = new byte[20];
-            bytes[0] = 0x00;                                 // Message type (input report)
-            bytes[1] = 0x14;                                 // Message size (20 bytes)
-            bytes[2] = (byte)((ushort)Buttons & 0xFF);       // Buttons low
-            bytes[3] = (byte)((ushort)Buttons >> 8 & 0xFF);  // Buttons high
-            bytes[4] = LeftTrigger;                          // Left trigger
-            bytes[5] = RightTrigger;                         // Right trigger
-            bytes[6] = (byte)(LeftStickX & 0xFF);            // Left stick X-axis low
-            bytes[7] = (byte)(LeftStickX >> 8 & 0xFF);       // Left stick X-axis high
-            bytes[8] = (byte)(LeftStickY & 0xFF);            // Left stick Y-axis low
-            bytes[9] = (byte)(LeftStickY >> 8 & 0xFF);       // Left stick Y-axis high
-            bytes[10] = (byte)(RightStickX & 0xFF);          // Right stick X-axis low
-            bytes[11] = (byte)(RightStickX >> 8 & 0xFF);     // Right stick X-axis high
-            bytes[12] = (byte)(RightStickY & 0xFF);          // Right stick Y-axis low
-            bytes[13] = (byte)(RightStickY >> 8 & 0xFF);     // Right stick Y-axis high
-            return bytes;
+            fullReport[8] = 0x00;
+            fullReport[9] = 0x14;
+            fullReport[10] = (byte)((ushort)Buttons & 0xFF);
+            fullReport[11] = (byte)((ushort)Buttons >> 8 & 0xFF);
+            fullReport[12] = LeftTrigger;
+            fullReport[13] = RightTrigger;
+            fullReport[14] = (byte)(LeftStickX & 0xFF);
+            fullReport[15] = (byte)(LeftStickX >> 8 & 0xFF);
+            fullReport[16] = (byte)(LeftStickY & 0xFF);
+            fullReport[17] = (byte)(LeftStickY >> 8 & 0xFF);
+            fullReport[18] = (byte)(RightStickX & 0xFF);
+            fullReport[19] = (byte)(RightStickX >> 8 & 0xFF);
+            fullReport[20] = (byte)(RightStickY & 0xFF);
+            fullReport[21] = (byte)(RightStickY >> 8 & 0xFF);
+            return fullReport;
         }
         [StructLayout(LayoutKind.Sequential)]
         internal struct SP_DEVICE_INTERFACE_DATA
