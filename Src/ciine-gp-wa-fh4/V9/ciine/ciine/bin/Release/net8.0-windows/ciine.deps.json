@@ -1,0 +1,47 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v8.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v8.0": {
+      "ciine/1.0.0": {
+        "dependencies": {
+          "Wiimote": "1.0.0",
+          "controllers": "1.0.0"
+        },
+        "runtime": {
+          "ciine.dll": {}
+        }
+      },
+      "controllers/1.0.0": {
+        "runtime": {
+          "controllers.dll": {}
+        }
+      },
+      "Wiimote/1.0.0": {
+        "runtime": {
+          "Wiimote.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "ciine/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "controllers/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Wiimote/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <ApplicationIcon>ciine.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="ciine.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\controllers\controllers.csproj" />
+    <ProjectReference Include="..\Wiimote\Wiimote.csproj" />
+  </ItemGroup>
+
+</Project>
