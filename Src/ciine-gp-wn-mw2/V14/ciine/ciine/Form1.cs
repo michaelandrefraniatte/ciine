@@ -83,13 +83,13 @@ namespace ciine
                 controller1_send_Y = wm.WiimoteButtonStateRight;
                 controller1_send_righttriggerposition = wm.WiimoteButtonStateB ? 255 : 0;
                 ValueChange[0] = wm.WiimoteButtonStateA ? 1 : 0;
-                if (Valuechange._ValueChange[0] > 0f & !getstate)
+                if (ValueChange._ValueChange[0] > 0f & !getstate)
                 {
                     getstate = true;
                 }
                 else
                 {
-                    if (Valuechange._ValueChange[0] > 0f & getstate)
+                    if (ValueChange._ValueChange[0] > 0f & getstate)
                     {
                         getstate = false;
                     }
@@ -159,8 +159,8 @@ namespace ciine
         [DllImport("ntdll.dll", EntryPoint = "NtSetTimerResolution")]
         private static extern void NtSetTimerResolution(uint DesiredResolution, bool SetResolution, ref uint CurrentResolution);
         private static uint CurrentResolution = 0;
-        public static double[] _valuechange = { 0 };
-        public static double[] _ValueChange = { 0 };
+        public double[] _valuechange = { 0 };
+        public double[] _ValueChange = { 0 };
         public Valuechange()
         {
             TimeBeginPeriod(1);
