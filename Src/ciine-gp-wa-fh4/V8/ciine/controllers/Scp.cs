@@ -242,11 +242,9 @@ namespace controllers
         public short LeftStickY { get; set; }
         public short RightStickX { get; set; }
         public short RightStickY { get; set; }
-        byte[] fullReport = { 0x1C, 0, 0, 0, (1) & 0xFF, (1 >> 8) & 0xFF, (1 >> 16) & 0xFF, (1 >> 24) & 0xFF, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+        byte[] fullReport = { 0x1C, 0, 0, 0, (1) & 0xFF, (1 >> 8) & 0xFF, (1 >> 16) & 0xFF, (1 >> 24) & 0xFF, 0x00, 0x14, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
         public byte[] GetReport()
         {
-            fullReport[8] = 0x00;
-            fullReport[9] = 0x14;
             fullReport[10] = (byte)((ushort)Buttons & 0xFF);
             fullReport[11] = (byte)((ushort)Buttons >> 8 & 0xFF);
             fullReport[12] = LeftTrigger;

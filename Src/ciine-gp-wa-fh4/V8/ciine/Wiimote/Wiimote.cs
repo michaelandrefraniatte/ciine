@@ -125,7 +125,7 @@ namespace WiiMoteAPI
                     reconnectingwiimotecount = 0;
             }
         }
-        private const string vendor_id = "57e", vendor_id_ = "057e", product_r1 = "0330", product_r2 = "0306", product_l = "2006";
+        private const string vendor_id = "57e", vendor_id_ = "057e", product_id = "0330", product_id_ = "0306";
         private enum EFileAttributes : uint
         {
             Overlapped = 0x40000000,
@@ -163,7 +163,7 @@ namespace WiiMoteAPI
                 diDetail.cbSize = 5;
                 if (SetupDiGetDeviceInterfaceDetail(hDevInfo, ref diData, ref diDetail, size, out size, new IntPtr()))
                 {
-                    if ((diDetail.DevicePath.Contains(vendor_id) | diDetail.DevicePath.Contains(vendor_id_)) & (diDetail.DevicePath.Contains(product_r1) | diDetail.DevicePath.Contains(product_r2)))
+                    if ((diDetail.DevicePath.Contains(vendor_id) | diDetail.DevicePath.Contains(vendor_id_)) & (diDetail.DevicePath.Contains(product_id) | diDetail.DevicePath.Contains(product_id_)))
                     {
                         if (handleunshared != null)
                         {
