@@ -77,7 +77,7 @@ namespace ciine
                 controller1_send_back = wm.WiimoteButtonStateOne;
                 controller1_send_start = wm.WiimoteButtonStateTwo;
                 countskip = wm.WiimoteButtonStateHome ? countskip + 1 : 0;
-                controller1_send_X = countskip >= 400 | ((wm.WiimoteRawValuesZ > 0 ? wm.WiimoteRawValuesZ : -wm.WiimoteRawValuesZ) >= 30f & (wm.WiimoteRawValuesY > 0 ? wm.WiimoteRawValuesY : -wm.WiimoteRawValuesY) >= 30f & (wm.WiimoteRawValuesX > 0 ? wm.WiimoteRawValuesX : -wm.WiimoteRawValuesX) >= 30f);
+                controller1_send_X = countskip > 300 | ((wm.WiimoteRawValuesZ > 0 ? wm.WiimoteRawValuesZ : -wm.WiimoteRawValuesZ) >= 30f & (wm.WiimoteRawValuesY > 0 ? wm.WiimoteRawValuesY : -wm.WiimoteRawValuesY) >= 30f & (wm.WiimoteRawValuesX > 0 ? wm.WiimoteRawValuesX : -wm.WiimoteRawValuesX) >= 30f);
                 controller1_send_leftbumper = wm.WiimoteButtonStateMinus | wm.WiimoteButtonStateUp;
                 controller1_send_rightbumper = wm.WiimoteButtonStatePlus | wm.WiimoteButtonStateUp;
                 controller1_send_B = wm.WiimoteButtonStateDown;
@@ -128,7 +128,7 @@ namespace ciine
                             controller1_send_leftsticky = 0;
                         controller1_send_right = false;
                         controller1_send_left = false;
-                        controller1_send_up = countskip < 400;
+                        controller1_send_up = (countskip > 0 & countskip < 100) | (countskip > 200 & countskip < 300);
                         controller1_send_down = false;
                     }
                     else
