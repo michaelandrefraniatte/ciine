@@ -234,12 +234,37 @@ namespace WiiMoteAPI
             {
                 if (reconnectingwiimotebool)
                 {
+                    ReconnectionInit();
                     WiimoteFound(path);
                     reconnectingwiimotecount = -15f;
                 }
                 else
                     reconnectingwiimotecount = 0;
             }
+        }
+        private void ReconnectionInit()
+        {
+            WiimoteButtonStateA = false;
+            WiimoteButtonStateB = false;
+            WiimoteButtonStateMinus = false;
+            WiimoteButtonStateHome = false;
+            WiimoteButtonStatePlus = false;
+            WiimoteButtonStateOne = false;
+            WiimoteButtonStateTwo = false;
+            WiimoteButtonStateUp = false;
+            WiimoteButtonStateDown = false;
+            WiimoteButtonStateLeft = false;
+            WiimoteButtonStateRight = false;
+            WiimoteRawValuesX = 0f;
+            WiimoteRawValuesY = 0f;
+            WiimoteRawValuesZ = 0f;
+            WiimoteNunchuckStateRawJoystickX = 0f;
+            WiimoteNunchuckStateRawJoystickY = 0f;
+            WiimoteNunchuckStateRawValuesX = 0f;
+            WiimoteNunchuckStateRawValuesY = 0f;
+            WiimoteNunchuckStateRawValuesZ = 0f;
+            WiimoteNunchuckStateC = false;
+            WiimoteNunchuckStateZ = false;
         }
         private const string vendor_id = "57e", vendor_id_ = "057e", product_id = "0330", product_id_ = "0306";
         private enum EFileAttributes : uint
