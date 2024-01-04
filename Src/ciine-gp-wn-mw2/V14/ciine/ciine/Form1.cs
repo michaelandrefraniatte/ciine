@@ -24,7 +24,7 @@ namespace ciine
         private static uint CurrentResolution = 0;
         private static bool controller1_send_back, controller1_send_start, controller1_send_A, controller1_send_B, controller1_send_X, controller1_send_Y, controller1_send_up, controller1_send_left, controller1_send_down, controller1_send_right, controller1_send_leftstick, controller1_send_rightstick, controller1_send_leftbumper, controller1_send_rightbumper, controller1_send_xbox;
         private static double controller1_send_leftstickx, controller1_send_leftsticky, controller1_send_rightstickx, controller1_send_rightsticky, controller1_send_lefttriggerposition, controller1_send_righttriggerposition;
-        private static double mousex = 0f, mousey = 0f, viewpower1x = 0f, viewpower2x = 1f, viewpower3x = 0f, viewpower1y = 0.25f, viewpower2y = 0.75f, viewpower3y = 0f, dzx = 2.0f, dzy = 2.0f, countup = 0, countxy = 0, county = 0;
+        private static double mousex = 0f, mousey = 0f, viewpower1x = 0f, viewpower2x = 1f, viewpower3x = 0f, viewpower1y = 0.25f, viewpower2y = 0.75f, viewpower3y = 0f, dzx = 2.0f, dzy = 2.0f, countup = 0, countupup = 0, countxy = 0, county = 0;
         private static bool getstate;
         public bool running;
         public static Valuechange ValueChange = new Valuechange();
@@ -116,6 +116,10 @@ namespace ciine
                 controller1_send_rightstickx = (short)(-mousex / 1024f * 32767f);
                 controller1_send_rightsticky = (short)(-mousey / 1024f * 32767f);
                 countup = wm.WiimoteButtonStateHome ? countup + 1 : 0;
+                if ((countup > 0 & countup < 300) | countupup > 0)
+                    countupup++;
+                if (countupup > 300)
+                    countupup = 0;
                 if (!wm.WiimoteButtonStateOne)
                 {
                     if (!wm.WiimoteButtonStateLeft)
@@ -134,7 +138,7 @@ namespace ciine
                             controller1_send_leftsticky = 0;
                         controller1_send_right = false;
                         controller1_send_left = false;
-                        controller1_send_up = (countup > 0 & countup < 100) | (countup > 200 & countup < 300) | countup > 300;
+                        controller1_send_up = (countupup > 0 & countupup < 100) | (countupup > 200 & countupup < 300) | countup > 300;
                         controller1_send_down = false;
                     }
                     else
