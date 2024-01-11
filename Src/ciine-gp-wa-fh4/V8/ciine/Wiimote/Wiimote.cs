@@ -69,6 +69,7 @@ namespace WiiMoteAPI
         public void BeginPolling()
         {
             Task.Run(() => taskD());
+            Task.Run(() => taskP());
         }
         public void taskD()
         {
@@ -76,14 +77,22 @@ namespace WiiMoteAPI
             {
                 if (!running)
                     break;
-                Reconnection();
                 try
                 {
                     mStream.Read(aBuffer, 0, 22);
                     reconnectingwiimotebool = false;
                 }
                 catch { }
+            }
+        }
+        public void taskP()
+        {
+            for (; ; )
+            {
+                if (!running)
+                    break;
                 ProcessStateLogic();
+                Thread.Sleep(1);
             }
         }
         public void Init()
@@ -108,47 +117,6 @@ namespace WiiMoteAPI
             WiimoteRawValuesX = aBuffer[3] - 135f + calibrationinit;
             WiimoteRawValuesY = aBuffer[4] - 135f + calibrationinit;
             WiimoteRawValuesZ = aBuffer[5] - 135f + calibrationinit;
-        }
-        public void Reconnection()
-        {
-            if (reconnectingwiimotecount == 0)
-                reconnectingwiimotebool = true;
-            reconnectingwiimotecount++;
-            if (reconnectingwiimotecount >= 15f)
-            {
-                if (reconnectingwiimotebool)
-                {
-                    ReconnectionInit();
-                    WiimoteFound(path);
-                    reconnectingwiimotecount = -15f;
-                }
-                else
-                    reconnectingwiimotecount = 0;
-            }
-        }
-        private void ReconnectionInit()
-        {
-            WiimoteButtonStateA = false;
-            WiimoteButtonStateB = false;
-            WiimoteButtonStateMinus = false;
-            WiimoteButtonStateHome = false;
-            WiimoteButtonStatePlus = false;
-            WiimoteButtonStateOne = false;
-            WiimoteButtonStateTwo = false;
-            WiimoteButtonStateUp = false;
-            WiimoteButtonStateDown = false;
-            WiimoteButtonStateLeft = false;
-            WiimoteButtonStateRight = false;
-            WiimoteRawValuesX = 0f;
-            WiimoteRawValuesY = 0f;
-            WiimoteRawValuesZ = 0f;
-            WiimoteNunchuckStateRawJoystickX = 0f;
-            WiimoteNunchuckStateRawJoystickY = 0f;
-            WiimoteNunchuckStateRawValuesX = 0f;
-            WiimoteNunchuckStateRawValuesY = 0f;
-            WiimoteNunchuckStateRawValuesZ = 0f;
-            WiimoteNunchuckStateC = false;
-            WiimoteNunchuckStateZ = false;
         }
         private const string vendor_id = "57e", vendor_id_ = "057e", product_id = "0330", product_id_ = "0306";
         private enum EFileAttributes : uint
