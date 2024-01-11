@@ -93,7 +93,7 @@ namespace WiiMoteAPI
                     mStream.Read(aBuffer, 0, 22);
                     reconnectingwiimotebool = false;
                 }
-                catch { }
+                catch { Thread.Sleep(1); }
             }
         }
         public void taskP()
