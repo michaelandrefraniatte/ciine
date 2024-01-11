@@ -56,11 +56,11 @@ namespace WiiMoteAPI
             TimeBeginPeriod(1);
             NtSetTimerResolution(1, true, ref CurrentResolution);
             running = true;
-            while (vallistirx.Count <= 2)
+            while (vallistirx.Count <= 20)
             {
                 vallistirx.Add(0);
             }
-            while (vallistiry.Count <= 2)
+            while (vallistiry.Count <= 20)
             {
                 vallistiry.Add(0);
             }
