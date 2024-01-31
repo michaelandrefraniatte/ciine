@@ -1,0 +1,8 @@
+C:\Users\micha\Documents\github\ciine\Src\ciine-km-ratchet\ciine\Mousehook\bin\Debug\Mousehook.dll
+C:\Users\micha\Documents\github\ciine\Src\ciine-km-ratchet\ciine\Mousehook\bin\Debug\Mousehook.pdb
+C:\Users\micha\Documents\github\ciine\Src\ciine-km-ratchet\ciine\Mousehook\obj\Debug\Mousehook.csproj.AssemblyReference.cache
+C:\Users\micha\Documents\github\ciine\Src\ciine-km-ratchet\ciine\Mousehook\obj\Debug\Mousehook.Form1.resources
+C:\Users\micha\Documents\github\ciine\Src\ciine-km-ratchet\ciine\Mousehook\obj\Debug\Mousehook.csproj.GenerateResource.cache
+C:\Users\micha\Documents\github\ciine\Src\ciine-km-ratchet\ciine\Mousehook\obj\Debug\Mousehook.csproj.CoreCompileInputs.cache
+C:\Users\micha\Documents\github\ciine\Src\ciine-km-ratchet\ciine\Mousehook\obj\Debug\Mousehook.dll
+C:\Users\micha\Documents\github\ciine\Src\ciine-km-ratchet\ciine\Mousehook\obj\Debug\Mousehook.pdb

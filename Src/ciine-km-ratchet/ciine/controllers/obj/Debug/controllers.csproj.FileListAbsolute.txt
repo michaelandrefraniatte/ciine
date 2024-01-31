@@ -1,0 +1,6 @@
+C:\Users\micha\Documents\github\ciine\Src\ciine-km-ratchet\ciine\controllers\bin\Debug\controllers.dll
+C:\Users\micha\Documents\github\ciine\Src\ciine-km-ratchet\ciine\controllers\bin\Debug\controllers.pdb
+C:\Users\micha\Documents\github\ciine\Src\ciine-km-ratchet\ciine\controllers\obj\Debug\controllers.csproj.AssemblyReference.cache
+C:\Users\micha\Documents\github\ciine\Src\ciine-km-ratchet\ciine\controllers\obj\Debug\controllers.csproj.CoreCompileInputs.cache
+C:\Users\micha\Documents\github\ciine\Src\ciine-km-ratchet\ciine\controllers\obj\Debug\controllers.dll
+C:\Users\micha\Documents\github\ciine\Src\ciine-km-ratchet\ciine\controllers\obj\Debug\controllers.pdb
