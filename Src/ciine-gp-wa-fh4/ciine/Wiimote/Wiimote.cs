@@ -44,6 +44,7 @@ namespace WiiMoteAPI
         private static SafeFileHandle handle = null, handleunshared = null;
         public bool reconnectingwiimotebool;
         public double reconnectingwiimotecount;
+        private bool isvalidhandle = false;
         public bool running;
         public double irxc, iryc, irx0, iry0, irx1, iry1, irx2, iry2, irx3, iry3, irx, iry, tempirx, tempiry, WiimoteIRSensors0X, WiimoteIRSensors0Y, WiimoteIRSensors1X, WiimoteIRSensors1Y, WiimoteRawValuesX, WiimoteRawValuesY, WiimoteRawValuesZ, calibrationinit, WiimoteIRSensors0Xcam, WiimoteIRSensors0Ycam, WiimoteIRSensors1Xcam, WiimoteIRSensors1Ycam, WiimoteIRSensorsXcam, WiimoteIRSensorsYcam;
         public bool WiimoteIR0foundcam, WiimoteIR1foundcam, WiimoteIRswitch, WiimoteIR1found, WiimoteIR0found, WiimoteButtonStateA, WiimoteButtonStateB, WiimoteButtonStateMinus, WiimoteButtonStateHome, WiimoteButtonStatePlus, WiimoteButtonStateOne, WiimoteButtonStateTwo, WiimoteButtonStateUp, WiimoteButtonStateDown, WiimoteButtonStateLeft, WiimoteButtonStateRight, WiimoteNunchuckStateC, WiimoteNunchuckStateZ;
@@ -137,7 +138,7 @@ namespace WiiMoteAPI
             [System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.ByValTStr, SizeConst = 256)]
             public string DevicePath;
         }
-        public bool ScanWiimote()
+        public void ScanWiimote()
         {
             do
                 Thread.Sleep(1);
@@ -165,29 +166,39 @@ namespace WiiMoteAPI
                             handleunshared = null;
                         }
                         path = diDetail.DevicePath;
-                        WiimoteFound(path);
-                        WiimoteFound(path);
-                        WiimoteFound(path);
+                        isvalidhandle = WiimoteFound(path);
+                        isvalidhandle = WiimoteFound(path);
+                        isvalidhandle = WiimoteFound(path);
                         handleunshared = CreateFile(path, FileAccess.ReadWrite, FileShare.None, IntPtr.Zero, FileMode.Open, (uint)EFileAttributes.Overlapped, IntPtr.Zero);
-                        return true;
+                        if (isvalidhandle)
+                        {
+                            break;
+                        }
                     }
                 }
                 index++;
             }
-            return false;
         }
-        public void WiimoteFound(string path)
+        public bool WiimoteFound(string path)
         {
-            handle = CreateFile(path, FileAccess.ReadWrite, FileShare.ReadWrite, IntPtr.Zero, FileMode.Open, (uint)EFileAttributes.Overlapped, IntPtr.Zero);
-            WriteData(handle, IR, (int)REGISTER_IR, new byte[] { 0x08 }, 1);
-            WriteData(handle, Type, (int)REGISTER_EXTENSION_INIT_1, new byte[] { 0x55 }, 1);
-            WriteData(handle, Type, (int)REGISTER_EXTENSION_INIT_2, new byte[] { 0x00 }, 1);
-            WriteData(handle, Type, (int)REGISTER_MOTIONPLUS_INIT, new byte[] { 0x04 }, 1);
-            ReadData(handle, 0x0016, 7);
-            ReadData(handle, (int)REGISTER_EXTENSION_TYPE, 6);
-            ReadData(handle, (int)REGISTER_EXTENSION_CALIBRATION, 16);
-            ReadData(handle, (int)REGISTER_EXTENSION_CALIBRATION, 32);
-            mStream = new FileStream(handle, FileAccess.Read, 22, true);
+            try
+            {
+                handle = CreateFile(path, FileAccess.ReadWrite, FileShare.ReadWrite, IntPtr.Zero, FileMode.Open, (uint)EFileAttributes.Overlapped, IntPtr.Zero);
+                WriteData(handle, IR, (int)REGISTER_IR, new byte[] { 0x08 }, 1);
+                WriteData(handle, Type, (int)REGISTER_EXTENSION_INIT_1, new byte[] { 0x55 }, 1);
+                WriteData(handle, Type, (int)REGISTER_EXTENSION_INIT_2, new byte[] { 0x00 }, 1);
+                WriteData(handle, Type, (int)REGISTER_MOTIONPLUS_INIT, new byte[] { 0x04 }, 1);
+                ReadData(handle, 0x0016, 7);
+                ReadData(handle, (int)REGISTER_EXTENSION_TYPE, 6);
+                ReadData(handle, (int)REGISTER_EXTENSION_CALIBRATION, 16);
+                ReadData(handle, (int)REGISTER_EXTENSION_CALIBRATION, 32);
+                mStream = new FileStream(handle, FileAccess.Read, 22, true);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
         private void ReadData(SafeFileHandle _hFile, int address, short size)
         {
