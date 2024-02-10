@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Runtime.InteropServices.ComTypes;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -13,9 +12,9 @@ namespace WiiMoteAPI
     public class WiiMote
     {
         [DllImport("MotionInputPairing.dll", EntryPoint = "wiimoteconnect")]
-        public static extern bool wiimoteconnect();
+        private static extern bool wiimoteconnect();
         [DllImport("MotionInputPairing.dll", EntryPoint = "wiimotedisconnect")]
-        public static extern bool wiimotedisconnect();
+        private static extern bool wiimotedisconnect();
         [DllImport("hid.dll")]
         private static extern void HidD_GetHidGuid(out Guid gHid);
         [DllImport("hid.dll")]
@@ -40,19 +39,22 @@ namespace WiiMoteAPI
         private static extern void NtSetTimerResolution(uint DesiredResolution, bool SetResolution, ref uint CurrentResolution);
         private static uint CurrentResolution = 0;
         private const double REGISTER_IR = 0x04b00030, REGISTER_EXTENSION_INIT_1 = 0x04a400f0, REGISTER_EXTENSION_INIT_2 = 0x04a400fb, REGISTER_EXTENSION_TYPE = 0x04a400fa, REGISTER_EXTENSION_CALIBRATION = 0x04a40020, REGISTER_MOTIONPLUS_INIT = 0x04a600fe;
-        public string path;
-        public byte[] mBuff = new byte[22], aBuffer = new byte[22];
+        private string path;
+        private byte[] mBuff = new byte[22], aBuffer = new byte[22];
         private const byte Type = 0x12, IR = 0x13, WriteMemory = 0x16, ReadMemory = 0x16, IRExtensionAccel = 0x37;
         private static FileStream mStream;
         private static SafeFileHandle handle = null, handleunshared = null;
-        public bool reconnectingwiimotebool;
-        public double reconnectingwiimotecount;
+        private bool reconnectingwiimotebool;
+        private double reconnectingwiimotecount;
         private bool isvalidhandle = false;
-        public bool running;
-        public List<double> vallistirx = new List<double>(), vallistiry = new List<double>();
-        public double irxc, iryc, irx0, iry0, irx1, iry1, irx2, iry2, irx3, iry3, irx, iry, WiimoteIRSensors0X, WiimoteIRSensors0Y, WiimoteIRSensors1X, WiimoteIRSensors1Y, WiimoteRawValuesX, WiimoteRawValuesY, WiimoteRawValuesZ, calibrationinit, WiimoteIRSensors0Xcam, WiimoteIRSensors0Ycam, WiimoteIRSensors1Xcam, WiimoteIRSensors1Ycam, WiimoteIRSensorsXcam, WiimoteIRSensorsYcam;
-        public bool WiimoteIR0foundcam, WiimoteIR1foundcam, WiimoteIRswitch, WiimoteIR1found, WiimoteIR0found, WiimoteButtonStateA, WiimoteButtonStateB, WiimoteButtonStateMinus, WiimoteButtonStateHome, WiimoteButtonStatePlus, WiimoteButtonStateOne, WiimoteButtonStateTwo, WiimoteButtonStateUp, WiimoteButtonStateDown, WiimoteButtonStateLeft, WiimoteButtonStateRight, WiimoteNunchuckStateC, WiimoteNunchuckStateZ;
-        public double WiimoteIR0notfound, stickviewxinit, stickviewyinit, WiimoteNunchuckStateRawValuesX, WiimoteNunchuckStateRawValuesY, WiimoteNunchuckStateRawValuesZ, WiimoteNunchuckStateRawJoystickX, WiimoteNunchuckStateRawJoystickY, centery = 80f;
+        private bool running;
+        private List<double> vallistirx = new List<double>(), vallistiry = new List<double>();
+        private double irxc, iryc, irx2, iry2, irx3, iry3, WiimoteIRSensors0X, WiimoteIRSensors0Y, WiimoteIRSensors1X, WiimoteIRSensors1Y, calibrationinit, WiimoteIRSensors0Xcam, WiimoteIRSensors0Ycam, WiimoteIRSensors1Xcam, WiimoteIRSensors1Ycam, WiimoteIRSensorsXcam, WiimoteIRSensorsYcam;
+        public double irx, iry, WiimoteRawValuesX, WiimoteRawValuesY, WiimoteRawValuesZ;
+        public bool WiimoteButtonStateA, WiimoteButtonStateB, WiimoteButtonStateMinus, WiimoteButtonStateHome, WiimoteButtonStatePlus, WiimoteButtonStateOne, WiimoteButtonStateTwo, WiimoteButtonStateUp, WiimoteButtonStateDown, WiimoteButtonStateLeft, WiimoteButtonStateRight, WiimoteNunchuckStateC, WiimoteNunchuckStateZ;
+        private bool WiimoteIR0foundcam, WiimoteIR1foundcam, WiimoteIRswitch, WiimoteIR1found, WiimoteIR0found;
+        public double WiimoteNunchuckStateRawValuesX, WiimoteNunchuckStateRawValuesY, WiimoteNunchuckStateRawValuesZ, WiimoteNunchuckStateRawJoystickX, WiimoteNunchuckStateRawJoystickY;
+        private double WiimoteIR0notfound, stickviewxinit, stickviewyinit, centery = 80f;
         public WiiMote()
         {
             TimeBeginPeriod(1);
@@ -84,7 +86,7 @@ namespace WiiMoteAPI
             Task.Run(() => taskD());
             Task.Run(() => taskP());
         }
-        public void taskD()
+        private void taskD()
         {
             for (; ; )
             {
@@ -98,7 +100,7 @@ namespace WiiMoteAPI
                 catch { Thread.Sleep(10); }
             }
         }
-        public void taskP()
+        private void taskP()
         {
             for (; ; )
             {
@@ -115,7 +117,7 @@ namespace WiiMoteAPI
             stickviewxinit = -aBuffer[16] + 125f;
             stickviewyinit = -aBuffer[17] + 125f;
         }
-        public void ProcessStateLogic()
+        private void ProcessStateLogic()
         {
             WiimoteIR0found = (aBuffer[6] | ((aBuffer[8] >> 4) & 0x03) << 8) > 1 & (aBuffer[6] | ((aBuffer[8] >> 4) & 0x03) << 8) < 1023;
             WiimoteIR1found = (aBuffer[9] | ((aBuffer[8] >> 0) & 0x03) << 8) > 1 & (aBuffer[9] | ((aBuffer[8] >> 0) & 0x03) << 8) < 1023;
@@ -237,7 +239,7 @@ namespace WiiMoteAPI
             double scaled = minScale + (double)(value - min) / (max - min) * (maxScale - minScale);
             return scaled;
         }
-        public void Reconnection()
+        private void Reconnection()
         {
             if (reconnectingwiimotecount == 0)
                 reconnectingwiimotebool = true;
@@ -284,14 +286,14 @@ namespace WiiMoteAPI
             Overlapped = 0x40000000,
             Normal = 0x80
         };
-        struct SP_DEVICE_INTERFACE_DATA
+        private struct SP_DEVICE_INTERFACE_DATA
         {
             public int cbSize;
             public Guid InterfaceClassGuid;
             public int Flags;
             public IntPtr RESERVED;
         }
-        struct SP_DEVICE_INTERFACE_DETAIL_DATA
+        private struct SP_DEVICE_INTERFACE_DETAIL_DATA
         {
             public UInt32 cbSize;
             [System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.ByValTStr, SizeConst = 256)]
@@ -338,7 +340,7 @@ namespace WiiMoteAPI
                 index++;
             }
         }
-        public bool WiimoteFound(string path)
+        private bool WiimoteFound(string path)
         {
             try
             {

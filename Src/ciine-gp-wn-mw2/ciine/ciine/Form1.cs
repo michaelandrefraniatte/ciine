@@ -26,8 +26,8 @@ namespace ciine
         private static double controller1_send_leftstickx, controller1_send_leftsticky, controller1_send_rightstickx, controller1_send_rightsticky, controller1_send_lefttriggerposition, controller1_send_righttriggerposition;
         private static double mousex = 0f, mousey = 0f, viewpower1x = 0f, viewpower2x = 1f, viewpower3x = 0f, viewpower1y = 0.25f, viewpower2y = 0.75f, viewpower3y = 0f, dzx = 2.0f, dzy = 2.0f, countup = 0, countupup = 0, countxy = 0, county = 0;
         private static bool getstate;
-        public bool running;
-        public static Valuechange ValueChange = new Valuechange();
+        private bool running;
+        private static Valuechange ValueChange = new Valuechange();
         private WiiMote wm = new WiiMote();
         private XBoxController scp = new XBoxController();
         private void Form1_KeyDown(object sender, KeyEventArgs e)

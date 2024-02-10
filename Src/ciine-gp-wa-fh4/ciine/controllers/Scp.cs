@@ -44,11 +44,11 @@ namespace controllers
         private static extern void NtSetTimerResolution(uint DesiredResolution, bool SetResolution, ref uint CurrentResolution);
         private static uint CurrentResolution = 0;
         private int number;
-        public Valuechanges ValueChange = new Valuechanges();
+        private Valuechanges ValueChange = new Valuechanges();
         private const string SCP_BUS_CLASS_GUID = "{F679F562-3164-42CE-A4DB-E7DDBE723909}";
         private SafeFileHandle _deviceHandle;
-        int transferred = 0;
-        byte[] outputBuffer = null;
+        private int transferred = 0;
+        private byte[] outputBuffer = null;
         public void Connect(int number = 0)
         {
             this.number = number;
@@ -160,7 +160,7 @@ namespace controllers
             TimeBeginPeriod(1);
             NtSetTimerResolution(1, true, ref CurrentResolution);
         }
-        public bool PlugIn(int controllerNumber)
+        private bool PlugIn(int controllerNumber)
         {
             int transfered = 0;
             byte[] buffer = new byte[16];
@@ -174,7 +174,7 @@ namespace controllers
             buffer[7] = (byte)((controllerNumber >> 24) & 0xFF);
             return DeviceIoControl(_deviceHandle, 0x2A4000, buffer, buffer.Length, null, 0, ref transfered, IntPtr.Zero);
         }
-        public bool Unplug(int controllerNumber)
+        private bool Unplug(int controllerNumber)
         {
             int transfered = 0;
             byte[] buffer = new byte[16];
@@ -188,7 +188,7 @@ namespace controllers
             buffer[7] = (byte)((controllerNumber >> 24) & 0xFF);
             return DeviceIoControl(_deviceHandle, 0x2A4004, buffer, buffer.Length, null, 0, ref transfered, IntPtr.Zero);
         }
-        public bool Report(byte[] controllerReport)
+        private bool Report(byte[] controllerReport)
         {
             return DeviceIoControl(_deviceHandle, 0x2A400C, controllerReport, controllerReport.Length, outputBuffer, outputBuffer?.Length ?? 0, ref transferred, IntPtr.Zero) && transferred > 0;
         }
@@ -235,15 +235,15 @@ namespace controllers
             SafeFileHandle handle = CreateFile(devicePath, GENERIC_WRITE | GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, IntPtr.Zero, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL | FILE_FLAG_OVERLAPPED, UIntPtr.Zero);
             return handle;
         }
-        public X360Buttons Buttons { get; set; }
-        public byte LeftTrigger { get; set; }
-        public byte RightTrigger { get; set; }
-        public short LeftStickX { get; set; }
-        public short LeftStickY { get; set; }
-        public short RightStickX { get; set; }
-        public short RightStickY { get; set; }
-        byte[] fullReport = { 0x1C, 0, 0, 0, (1) & 0xFF, (1 >> 8) & 0xFF, (1 >> 16) & 0xFF, (1 >> 24) & 0xFF, 0x00, 0x14, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-        public byte[] GetReport()
+        private X360Buttons Buttons { get; set; }
+        private byte LeftTrigger { get; set; }
+        private byte RightTrigger { get; set; }
+        private short LeftStickX { get; set; }
+        private short LeftStickY { get; set; }
+        private short RightStickX { get; set; }
+        private short RightStickY { get; set; }
+        private byte[] fullReport = { 0x1C, 0, 0, 0, (1) & 0xFF, (1 >> 8) & 0xFF, (1 >> 16) & 0xFF, (1 >> 24) & 0xFF, 0x00, 0x14, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+        private byte[] GetReport()
         {
             fullReport[10] = (byte)((ushort)Buttons & 0xFF);
             fullReport[11] = (byte)((ushort)Buttons >> 8 & 0xFF);
@@ -292,7 +292,7 @@ namespace controllers
         [return: MarshalAs(UnmanagedType.Bool)]
         internal static extern bool SetupDiGetDeviceInterfaceDetail(IntPtr hDevInfo, ref SP_DEVICE_INTERFACE_DATA deviceInterfaceData, IntPtr deviceInterfaceDetailData, int deviceInterfaceDetailDataSize, ref int requiredSize, ref SP_DEVICE_INTERFACE_DATA deviceInfoData);
         [Flags]
-        public enum X360Buttons
+        private enum X360Buttons
         {
             None = 0,
             Up = 1 << 0,
