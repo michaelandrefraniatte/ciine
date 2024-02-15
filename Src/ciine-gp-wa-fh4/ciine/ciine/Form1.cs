@@ -40,6 +40,12 @@ namespace ciine
                 const string caption = "About";
                 MessageBox.Show(message, caption, MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
+            if (keyData == Keys.F2)
+            {
+                const string message = "• Accelerometer: left stick.\n\r\n\r• Left: down.\n\r\n\r• Up: left.\n\r\n\r• Down: right.\n\r\n\r• Right: up.\n\r\n\r• B: a.\n\r\n\r• One and Two: b.\n\r\n\r• A: y.\n\r\n\r• Home: x.\n\r\n\r• Plus: right bumper.\n\r\n\r• Minus: left bumper.\n\r\n\r• One: left trigger.\n\r\n\r• Two: right trigger.";
+                const string caption = "Help";
+                MessageBox.Show(message, caption, MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
             if (keyData == Keys.Escape)
             {
                 this.Close();
