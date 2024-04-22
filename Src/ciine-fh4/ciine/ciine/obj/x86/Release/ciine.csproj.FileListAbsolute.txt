@@ -26,3 +26,10 @@ C:\Users\micha\Documents\perso\ciine-fh4\ciine\ciine\obj\x86\Release\ciine.cspro
 C:\Users\micha\Documents\perso\ciine-fh4\ciine\ciine\obj\x86\Release\ciine.csproj.CoreCompileInputs.cache
 C:\Users\micha\Documents\perso\ciine-fh4\ciine\ciine\obj\x86\Release\ciine.exe
 C:\Users\micha\Documents\perso\ciine-fh4\ciine\ciine\obj\x86\Release\ciine.pdb
+C:\Users\micha\Documents\github\ciine\Src\ciine-fh4\ciine\ciine\obj\x86\Release\ciine.csproj.AssemblyReference.cache
+C:\Users\micha\Documents\github\ciine\Src\ciine-fh4\ciine\ciine\obj\x86\Release\ciine.csproj.CoreCompileInputs.cache
+C:\Users\micha\Documents\github\ciine\Src\ciine-fh4\ciine\ciine\obj\x86\Release\ciine.exe
+C:\Users\micha\Documents\github\ciine\Src\ciine-fh4\ciine\ciine\obj\x86\Release\ciine.pdb
+C:\Users\micha\Documents\github\ciine\Src\ciine-fh4\ciine\ciine\bin\x86\Release\ciine.exe.config
+C:\Users\micha\Documents\github\ciine\Src\ciine-fh4\ciine\ciine\bin\x86\Release\ciine.exe
+C:\Users\micha\Documents\github\ciine\Src\ciine-fh4\ciine\ciine\bin\x86\Release\ciine.pdb

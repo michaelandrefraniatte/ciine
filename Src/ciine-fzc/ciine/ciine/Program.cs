@@ -80,6 +80,7 @@ namespace StringHandle
                             thread = new Thread(threadstart);
                             thread.Start();
                         }
+                        public static void Main() {}
                         private void FormClose()
                         {
                             try
@@ -584,8 +585,12 @@ namespace StringHandle
             handler = new ConsoleEventDelegate(ConsoleEventCallback);
             SetConsoleCtrlHandler(handler, true);
             parameters = new System.CodeDom.Compiler.CompilerParameters();
-            parameters.GenerateExecutable = false;
-            parameters.GenerateInMemory = true;
+            parameters.GenerateExecutable = true;
+            parameters.GenerateInMemory = false;
+            parameters.IncludeDebugInformation = true;
+            parameters.TreatWarningsAsErrors = false;
+            parameters.WarningLevel = 0;
+            parameters.CompilerOptions = "/optimize+ /platform:x86 /target:exe /unsafe";
             parameters.ReferencedAssemblies.Add("System.Windows.Forms.dll");
             parameters.ReferencedAssemblies.Add("System.Drawing.dll");
             parameters.ReferencedAssemblies.Add(Application.StartupPath + @"\System.Windows.Forms.dll");
@@ -612,7 +617,7 @@ namespace StringHandle
             obj = Activator.CreateInstance(program);
             program.InvokeMember("Load", BindingFlags.Default | BindingFlags.InvokeMethod, null, obj, new object[] { });
             Console.WriteLine("fzc");
-            Console.Read();
+            Console.ReadKey();
         }
         private static void MinimizeConsoleWindow()
         {

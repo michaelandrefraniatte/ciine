@@ -80,6 +80,7 @@ namespace StringHandle
                             thread = new Thread(threadstart);
                             thread.Start();
                         }
+                        public static void Main() {}
                         private void FormClose()
                         {
                             try
@@ -134,21 +135,21 @@ namespace StringHandle
                                 controller1_send_lefttriggerposition = wm.WiimoteButtonStateOne ? 255 : 0;
                                 controller1_send_righttriggerposition = wm.WiimoteButtonStateTwo ? 255 : 0;
                                 ValueChange[0] = wm.WiimoteButtonStatePlus ? 1 : 0;
-                                if ((countrightbumperleftbumper > 0 & countrightbumperleftbumper < 50 & ValueChange._ValueChange[0] < 0f) | countleftbumper > 0)
+                                if ((countrightbumperleftbumper > 0 & countrightbumperleftbumper < 300 & ValueChange._ValueChange[0] < 0f) | countleftbumper > 0)
                                     countleftbumper++;
-                                if (countleftbumper > 15)
+                                if (countleftbumper > 100)
                                     countleftbumper = 0;
                                 countrightbumperleftbumper = wm.WiimoteButtonStatePlus ? countrightbumperleftbumper + 1 : 0;
                                 controller1_send_leftbumper = countleftbumper > 0;
-                                controller1_send_rightbumper = countrightbumperleftbumper > 50;
+                                controller1_send_rightbumper = countrightbumperleftbumper > 300;
                                 ValueChange[1] = wm.WiimoteButtonStateMinus ? 1 : 0;
-                                if ((countstartback > 0 & countstartback < 50 & ValueChange._ValueChange[1] < 0f) | countback > 0)
+                                if ((countstartback > 0 & countstartback < 300 & ValueChange._ValueChange[1] < 0f) | countback > 0)
                                     countback++;
-                                if (countback > 15)
+                                if (countback > 100)
                                     countback = 0;
                                 countstartback = wm.WiimoteButtonStateMinus ? countstartback + 1 : 0;
                                 controller1_send_back = countback > 0;
-                                controller1_send_start = countstartback > 50;
+                                controller1_send_start = countstartback > 300;
                                 scp.Set(controller1_send_back, controller1_send_start, controller1_send_A, controller1_send_B, controller1_send_X, controller1_send_Y, controller1_send_up, controller1_send_left, controller1_send_down, controller1_send_right, controller1_send_leftstick, controller1_send_rightstick, controller1_send_leftbumper, controller1_send_rightbumper, controller1_send_leftstickx, controller1_send_leftsticky, controller1_send_rightstickx, controller1_send_rightsticky, controller1_send_lefttriggerposition, controller1_send_righttriggerposition, controller1_send_xbox);
                                 Thread.Sleep(1);
                             }
@@ -551,8 +552,12 @@ namespace StringHandle
             handler = new ConsoleEventDelegate(ConsoleEventCallback);
             SetConsoleCtrlHandler(handler, true);
             parameters = new System.CodeDom.Compiler.CompilerParameters();
-            parameters.GenerateExecutable = false;
-            parameters.GenerateInMemory = true;
+            parameters.GenerateExecutable = true;
+            parameters.GenerateInMemory = false;
+            parameters.IncludeDebugInformation = true;
+            parameters.TreatWarningsAsErrors = false;
+            parameters.WarningLevel = 0;
+            parameters.CompilerOptions = "/optimize+ /platform:x86 /target:exe /unsafe";
             parameters.ReferencedAssemblies.Add("System.Windows.Forms.dll");
             parameters.ReferencedAssemblies.Add("System.Drawing.dll");
             parameters.ReferencedAssemblies.Add(Application.StartupPath + @"\System.Windows.Forms.dll");
@@ -579,7 +584,7 @@ namespace StringHandle
             obj = Activator.CreateInstance(program);
             program.InvokeMember("Load", BindingFlags.Default | BindingFlags.InvokeMethod, null, obj, new object[] { });
             Console.WriteLine("fh4");
-            Console.Read();
+            Console.ReadKey();
         }
         private static void MinimizeConsoleWindow()
         {
