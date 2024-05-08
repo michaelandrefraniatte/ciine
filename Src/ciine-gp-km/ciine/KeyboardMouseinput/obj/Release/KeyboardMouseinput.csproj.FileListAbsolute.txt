@@ -7,3 +7,12 @@ C:\Users\micha\Documents\github\ciine\Src\ciine-gp-km\V2\ciine\KeyboardMouseinpu
 C:\Users\micha\Documents\github\ciine\Src\ciine-gp-km\V2\ciine\KeyboardMouseinput\bin\Release\SharpDX.DirectInput.dll
 C:\Users\micha\Documents\github\ciine\Src\ciine-gp-km\V2\ciine\KeyboardMouseinput\bin\Release\SharpDX.dll
 C:\Users\micha\Documents\github\ciine\Src\ciine-gp-km\V2\ciine\KeyboardMouseinput\obj\Release\KeyboardMouseinput.csproj.CopyComplete
+C:\Users\micha\Documents\github\ciine\Src\ciine-gp-km\ciine\KeyboardMouseinput\bin\Release\KeyboardMouseinput.dll
+C:\Users\micha\Documents\github\ciine\Src\ciine-gp-km\ciine\KeyboardMouseinput\bin\Release\KeyboardMouseinput.pdb
+C:\Users\micha\Documents\github\ciine\Src\ciine-gp-km\ciine\KeyboardMouseinput\bin\Release\SharpDX.DirectInput.dll
+C:\Users\micha\Documents\github\ciine\Src\ciine-gp-km\ciine\KeyboardMouseinput\bin\Release\SharpDX.dll
+C:\Users\micha\Documents\github\ciine\Src\ciine-gp-km\ciine\KeyboardMouseinput\obj\Release\KeyboardMouseinput.csproj.AssemblyReference.cache
+C:\Users\micha\Documents\github\ciine\Src\ciine-gp-km\ciine\KeyboardMouseinput\obj\Release\KeyboardMouseinput.csproj.CoreCompileInputs.cache
+C:\Users\micha\Documents\github\ciine\Src\ciine-gp-km\ciine\KeyboardMouseinput\obj\Release\Keyboard.9D5ADF66.Up2Date
+C:\Users\micha\Documents\github\ciine\Src\ciine-gp-km\ciine\KeyboardMouseinput\obj\Release\KeyboardMouseinput.dll
+C:\Users\micha\Documents\github\ciine\Src\ciine-gp-km\ciine\KeyboardMouseinput\obj\Release\KeyboardMouseinput.pdb

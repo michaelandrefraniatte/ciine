@@ -12,6 +12,6 @@ C:\Users\micha\Documents\github\ciine\Src\ciine-km-ratchet\ciine\ciine\obj\Debug
 C:\Users\micha\Documents\github\ciine\Src\ciine-km-ratchet\ciine\ciine\obj\Debug\ciine.Properties.Resources.resources
 C:\Users\micha\Documents\github\ciine\Src\ciine-km-ratchet\ciine\ciine\obj\Debug\ciine.csproj.GenerateResource.cache
 C:\Users\micha\Documents\github\ciine\Src\ciine-km-ratchet\ciine\ciine\obj\Debug\ciine.csproj.CoreCompileInputs.cache
-C:\Users\micha\Documents\github\ciine\Src\ciine-km-ratchet\ciine\ciine\obj\Debug\ciine.csproj.CopyComplete
 C:\Users\micha\Documents\github\ciine\Src\ciine-km-ratchet\ciine\ciine\obj\Debug\ciine.exe
 C:\Users\micha\Documents\github\ciine\Src\ciine-km-ratchet\ciine\ciine\obj\Debug\ciine.pdb
+C:\Users\micha\Documents\github\ciine\Src\ciine-km-ratchet\ciine\ciine\obj\Debug\ciine.csproj.Up2Date

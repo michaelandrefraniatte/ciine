@@ -6,3 +6,11 @@ C:\Users\micha\Documents\github\ciine\Src\ciine-gp-joys\V2\ciine-gp-joys\Joyconr
 C:\Users\micha\Documents\github\ciine\Src\ciine-gp-joys\V2\ciine-gp-joys\Joyconright\obj\Release\Joyconright.pdb
 C:\Users\micha\Documents\github\ciine\Src\ciine-gp-joys\V2\ciine-gp-joys\Joyconright\bin\Release\System.Numerics.Vectors.dll
 C:\Users\micha\Documents\github\ciine\Src\ciine-gp-joys\V2\ciine-gp-joys\Joyconright\obj\Release\Joyconright.csproj.CopyComplete
+C:\Users\micha\Documents\github\ciine\Src\ciine-gp-joys\Joyconright\bin\Release\Joyconright.dll
+C:\Users\micha\Documents\github\ciine\Src\ciine-gp-joys\Joyconright\bin\Release\Joyconright.pdb
+C:\Users\micha\Documents\github\ciine\Src\ciine-gp-joys\Joyconright\bin\Release\System.Numerics.Vectors.dll
+C:\Users\micha\Documents\github\ciine\Src\ciine-gp-joys\Joyconright\obj\Release\Joyconright.csproj.AssemblyReference.cache
+C:\Users\micha\Documents\github\ciine\Src\ciine-gp-joys\Joyconright\obj\Release\Joyconright.csproj.CoreCompileInputs.cache
+C:\Users\micha\Documents\github\ciine\Src\ciine-gp-joys\Joyconright\obj\Release\Joyconri.400E3E80.Up2Date
+C:\Users\micha\Documents\github\ciine\Src\ciine-gp-joys\Joyconright\obj\Release\Joyconright.dll
+C:\Users\micha\Documents\github\ciine\Src\ciine-gp-joys\Joyconright\obj\Release\Joyconright.pdb

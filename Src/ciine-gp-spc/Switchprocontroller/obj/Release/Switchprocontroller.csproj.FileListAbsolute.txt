@@ -6,3 +6,11 @@ C:\Users\micha\Documents\github\ciine\Src\ciine-gp-spc\V2\ciine-gp-spc\Switchpro
 C:\Users\micha\Documents\github\ciine\Src\ciine-gp-spc\V2\ciine-gp-spc\Switchprocontroller\obj\Release\Switchprocontroller.pdb
 C:\Users\micha\Documents\github\ciine\Src\ciine-gp-spc\V2\ciine-gp-spc\Switchprocontroller\bin\Release\System.Numerics.Vectors.dll
 C:\Users\micha\Documents\github\ciine\Src\ciine-gp-spc\V2\ciine-gp-spc\Switchprocontroller\obj\Release\Switchprocontroller.csproj.CopyComplete
+C:\Users\micha\Documents\github\ciine\Src\ciine-gp-spc\Switchprocontroller\bin\Release\Switchprocontroller.dll
+C:\Users\micha\Documents\github\ciine\Src\ciine-gp-spc\Switchprocontroller\bin\Release\Switchprocontroller.pdb
+C:\Users\micha\Documents\github\ciine\Src\ciine-gp-spc\Switchprocontroller\bin\Release\System.Numerics.Vectors.dll
+C:\Users\micha\Documents\github\ciine\Src\ciine-gp-spc\Switchprocontroller\obj\Release\Switchprocontroller.csproj.AssemblyReference.cache
+C:\Users\micha\Documents\github\ciine\Src\ciine-gp-spc\Switchprocontroller\obj\Release\Switchprocontroller.csproj.CoreCompileInputs.cache
+C:\Users\micha\Documents\github\ciine\Src\ciine-gp-spc\Switchprocontroller\obj\Release\Switchpr.7DD67F22.Up2Date
+C:\Users\micha\Documents\github\ciine\Src\ciine-gp-spc\Switchprocontroller\obj\Release\Switchprocontroller.dll
+C:\Users\micha\Documents\github\ciine\Src\ciine-gp-spc\Switchprocontroller\obj\Release\Switchprocontroller.pdb
