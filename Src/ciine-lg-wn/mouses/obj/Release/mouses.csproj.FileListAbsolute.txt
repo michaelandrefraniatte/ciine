@@ -10,3 +10,9 @@ C:\Users\micha\Documents\File\perso\ciine\Src\ciine-lg\mouses\obj\Release\mouses
 C:\Users\micha\Documents\File\perso\ciine\Src\ciine-lg\mouses\obj\Release\mouses.csproj.CoreCompileInputs.cache
 C:\Users\micha\Documents\File\perso\ciine\Src\ciine-lg\mouses\obj\Release\mouses.dll
 C:\Users\micha\Documents\File\perso\ciine\Src\ciine-lg\mouses\obj\Release\mouses.pdb
+C:\Users\micha\Documents\github\ciine\Src\ciine-lg-wn\mouses\bin\Release\mouses.dll
+C:\Users\micha\Documents\github\ciine\Src\ciine-lg-wn\mouses\bin\Release\mouses.pdb
+C:\Users\micha\Documents\github\ciine\Src\ciine-lg-wn\mouses\obj\Release\mouses.csproj.AssemblyReference.cache
+C:\Users\micha\Documents\github\ciine\Src\ciine-lg-wn\mouses\obj\Release\mouses.csproj.CoreCompileInputs.cache
+C:\Users\micha\Documents\github\ciine\Src\ciine-lg-wn\mouses\obj\Release\mouses.dll
+C:\Users\micha\Documents\github\ciine\Src\ciine-lg-wn\mouses\obj\Release\mouses.pdb

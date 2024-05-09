@@ -18,3 +18,13 @@ C:\Users\micha\Documents\File\perso\ciine\Src\ciine-rw-ds4\Dualshock4\obj\Releas
 C:\Users\micha\Documents\File\perso\ciine\Src\ciine-rw-ds4\Dualshock4\obj\Release\Dualshock4.csproj.CopyComplete
 C:\Users\micha\Documents\File\perso\ciine\Src\ciine-rw-ds4\Dualshock4\obj\Release\Dualshock4.dll
 C:\Users\micha\Documents\File\perso\ciine\Src\ciine-rw-ds4\Dualshock4\obj\Release\Dualshock4.pdb
+C:\Users\micha\Documents\github\ciine\Src\ciine-rw-ds4\Dualshock4\bin\Release\Dualshock4.dll
+C:\Users\micha\Documents\github\ciine\Src\ciine-rw-ds4\Dualshock4\bin\Release\Dualshock4.pdb
+C:\Users\micha\Documents\github\ciine\Src\ciine-rw-ds4\Dualshock4\bin\Release\Device.Net.dll
+C:\Users\micha\Documents\github\ciine\Src\ciine-rw-ds4\Dualshock4\bin\Release\Hid.Net.dll
+C:\Users\micha\Documents\github\ciine\Src\ciine-rw-ds4\Dualshock4\bin\Release\Microsoft.Extensions.Logging.Abstractions.dll
+C:\Users\micha\Documents\github\ciine\Src\ciine-rw-ds4\Dualshock4\obj\Release\Dualshock4.csproj.AssemblyReference.cache
+C:\Users\micha\Documents\github\ciine\Src\ciine-rw-ds4\Dualshock4\obj\Release\Dualshock4.csproj.CoreCompileInputs.cache
+C:\Users\micha\Documents\github\ciine\Src\ciine-rw-ds4\Dualshock4\obj\Release\Dualshock4.csproj.Up2Date
+C:\Users\micha\Documents\github\ciine\Src\ciine-rw-ds4\Dualshock4\obj\Release\Dualshock4.dll
+C:\Users\micha\Documents\github\ciine\Src\ciine-rw-ds4\Dualshock4\obj\Release\Dualshock4.pdb

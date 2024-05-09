@@ -10,3 +10,9 @@ C:\Users\micha\Documents\File\perso\ciine\controllers\obj\Release\controllers.cs
 C:\Users\micha\Documents\File\perso\ciine\controllers\obj\Release\controllers.csproj.CoreCompileInputs.cache
 C:\Users\micha\Documents\File\perso\ciine\controllers\obj\Release\controllers.dll
 C:\Users\micha\Documents\File\perso\ciine\controllers\obj\Release\controllers.pdb
+C:\Users\micha\Documents\github\ciine\Src\ciine-gp-wj-fzc\controllers\bin\Release\controllers.dll
+C:\Users\micha\Documents\github\ciine\Src\ciine-gp-wj-fzc\controllers\bin\Release\controllers.pdb
+C:\Users\micha\Documents\github\ciine\Src\ciine-gp-wj-fzc\controllers\obj\Release\controllers.csproj.AssemblyReference.cache
+C:\Users\micha\Documents\github\ciine\Src\ciine-gp-wj-fzc\controllers\obj\Release\controllers.csproj.CoreCompileInputs.cache
+C:\Users\micha\Documents\github\ciine\Src\ciine-gp-wj-fzc\controllers\obj\Release\controllers.dll
+C:\Users\micha\Documents\github\ciine\Src\ciine-gp-wj-fzc\controllers\obj\Release\controllers.pdb

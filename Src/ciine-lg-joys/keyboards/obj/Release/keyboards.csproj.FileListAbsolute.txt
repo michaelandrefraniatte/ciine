@@ -10,3 +10,9 @@ C:\Users\micha\Documents\File\perso\ciine\Src\ciine-lg\keyboards\obj\Release\key
 C:\Users\micha\Documents\File\perso\ciine\Src\ciine-lg\keyboards\obj\Release\keyboards.csproj.CoreCompileInputs.cache
 C:\Users\micha\Documents\File\perso\ciine\Src\ciine-lg\keyboards\obj\Release\keyboards.dll
 C:\Users\micha\Documents\File\perso\ciine\Src\ciine-lg\keyboards\obj\Release\keyboards.pdb
+C:\Users\micha\Documents\github\ciine\Src\ciine-lg-joys\keyboards\bin\Release\keyboards.dll
+C:\Users\micha\Documents\github\ciine\Src\ciine-lg-joys\keyboards\bin\Release\keyboards.pdb
+C:\Users\micha\Documents\github\ciine\Src\ciine-lg-joys\keyboards\obj\Release\keyboards.csproj.AssemblyReference.cache
+C:\Users\micha\Documents\github\ciine\Src\ciine-lg-joys\keyboards\obj\Release\keyboards.csproj.CoreCompileInputs.cache
+C:\Users\micha\Documents\github\ciine\Src\ciine-lg-joys\keyboards\obj\Release\keyboards.dll
+C:\Users\micha\Documents\github\ciine\Src\ciine-lg-joys\keyboards\obj\Release\keyboards.pdb
