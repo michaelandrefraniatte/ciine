@@ -135,21 +135,21 @@ namespace StringHandle
                                 controller1_send_lefttriggerposition = wm.WiimoteButtonStateOne ? 255 : 0;
                                 controller1_send_righttriggerposition = wm.WiimoteButtonStateTwo ? 255 : 0;
                                 ValueChange[0] = wm.WiimoteButtonStatePlus ? 1 : 0;
-                                if ((countrightbumperleftbumper > 0 & countrightbumperleftbumper < 300 & ValueChange._ValueChange[0] < 0f) | countleftbumper > 0)
+                                if ((countrightbumperleftbumper > 0 & countrightbumperleftbumper < 150 & ValueChange._ValueChange[0] < 0f) | countleftbumper > 0)
                                     countleftbumper++;
-                                if (countleftbumper > 100)
+                                if (countleftbumper > 50)
                                     countleftbumper = 0;
                                 countrightbumperleftbumper = wm.WiimoteButtonStatePlus ? countrightbumperleftbumper + 1 : 0;
                                 controller1_send_leftbumper = countleftbumper > 0;
-                                controller1_send_rightbumper = countrightbumperleftbumper > 300;
+                                controller1_send_rightbumper = countrightbumperleftbumper > 150;
                                 ValueChange[1] = wm.WiimoteButtonStateMinus ? 1 : 0;
-                                if ((countstartback > 0 & countstartback < 300 & ValueChange._ValueChange[1] < 0f) | countback > 0)
+                                if ((countstartback > 0 & countstartback < 150 & ValueChange._ValueChange[1] < 0f) | countback > 0)
                                     countback++;
-                                if (countback > 100)
+                                if (countback > 50)
                                     countback = 0;
                                 countstartback = wm.WiimoteButtonStateMinus ? countstartback + 1 : 0;
                                 controller1_send_back = countback > 0;
-                                controller1_send_start = countstartback > 300;
+                                controller1_send_start = countstartback > 150;
                                 scp.Set(controller1_send_back, controller1_send_start, controller1_send_A, controller1_send_B, controller1_send_X, controller1_send_Y, controller1_send_up, controller1_send_left, controller1_send_down, controller1_send_right, controller1_send_leftstick, controller1_send_rightstick, controller1_send_leftbumper, controller1_send_rightbumper, controller1_send_leftstickx, controller1_send_leftsticky, controller1_send_rightstickx, controller1_send_rightsticky, controller1_send_lefttriggerposition, controller1_send_righttriggerposition, controller1_send_xbox);
                                 Thread.Sleep(1);
                             }

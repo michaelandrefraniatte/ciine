@@ -138,13 +138,13 @@ namespace StringHandle
                                 controller1_send_back = wm.WiimoteButtonStateOne;
                                 controller1_send_start = wm.WiimoteButtonStateTwo;
                                 ValueChange[1] = wm.WiimoteButtonStateRight ? 1 : 0;
-                                if ((countxy > 0 & countxy < 300 & ValueChange._ValueChange[1] < 0f) | county > 0)
+                                if ((countxy > 0 & countxy < 150 & ValueChange._ValueChange[1] < 0f) | county > 0)
                                     county++;
-                                if (county > 100)
+                                if (county > 50)
                                     county = 0;
                                 countxy = wm.WiimoteButtonStateRight ? countxy + 1 : 0;
                                 controller1_send_Y = county > 0;
-                                controller1_send_X = countxy > 300 | ((wm.WiimoteRawValuesZ > 0 ? wm.WiimoteRawValuesZ : -wm.WiimoteRawValuesZ) >= 30f & (wm.WiimoteRawValuesY > 0 ? wm.WiimoteRawValuesY : -wm.WiimoteRawValuesY) >= 30f & (wm.WiimoteRawValuesX > 0 ? wm.WiimoteRawValuesX : -wm.WiimoteRawValuesX) >= 30f);
+                                controller1_send_X = countxy > 150 | ((wm.WiimoteRawValuesZ > 0 ? wm.WiimoteRawValuesZ : -wm.WiimoteRawValuesZ) >= 30f & (wm.WiimoteRawValuesY > 0 ? wm.WiimoteRawValuesY : -wm.WiimoteRawValuesY) >= 30f & (wm.WiimoteRawValuesX > 0 ? wm.WiimoteRawValuesX : -wm.WiimoteRawValuesX) >= 30f);
                                 controller1_send_leftbumper = wm.WiimoteButtonStateMinus | wm.WiimoteButtonStateUp;
                                 controller1_send_rightbumper = wm.WiimoteButtonStatePlus | wm.WiimoteButtonStateUp;
                                 controller1_send_B = wm.WiimoteButtonStateDown;
@@ -159,9 +159,9 @@ namespace StringHandle
                                 controller1_send_rightstickx = (short)(-mousex / 1024f * 32767f);
                                 controller1_send_rightsticky = (short)(-mousey / 1024f * 32767f);
                                 countup = wm.WiimoteButtonStateHome ? countup + 1 : 0;
-                                if ((countup > 0 & countup < 300) | countupup > 0)
+                                if ((countup > 0 & countup < 150) | countupup > 0)
                                     countupup++;
-                                if (countupup > 300)
+                                if (countupup > 150)
                                     countupup = 0;
                                 if (!wm.WiimoteButtonStateOne)
                                 {
@@ -181,7 +181,7 @@ namespace StringHandle
                                             controller1_send_leftsticky = 0;
                                         controller1_send_right = false;
                                         controller1_send_left = false;
-                                        controller1_send_up = (countupup > 0 & countupup < 100) | (countupup > 200 & countupup < 300) | countup > 300;
+                                        controller1_send_up = (countupup > 0 & countupup < 50) | (countupup > 100 & countupup < 150) | countup > 150;
                                         controller1_send_down = false;
                                     }
                                     else
