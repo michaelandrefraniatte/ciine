@@ -16,6 +16,7 @@ using System.Globalization;
 using NAudio.CoreAudioApi;
 using NAudio.Wave;
 using NAudio.Extras;
+using ciine;
 
 namespace ciine
 {
@@ -80,6 +81,8 @@ namespace ciine
         private static Process processcapturevideo, processmerge;
         private valuechanged ValueChanged = new valuechanged();
         private static Form2 form2;
+        private static Form3 form3;
+        private static bool form3visible;
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
             OnKeyDown(e.KeyData);
@@ -257,6 +260,13 @@ namespace ciine
                 {
                     getstate = false;
                 }
+                if (form3visible)
+                {
+                    Form3.ir1x = wm.ir1x;
+                    Form3.ir1y = wm.ir1y;
+                    Form3.ir2x = wm.ir2x;
+                    Form3.ir2y = wm.ir2y;
+                }
                 scp.Set(controller1_send_back, controller1_send_start, controller1_send_A, controller1_send_B, controller1_send_X, controller1_send_Y, controller1_send_up, controller1_send_left, controller1_send_down, controller1_send_right, controller1_send_leftstick, controller1_send_rightstick, controller1_send_leftbumper, controller1_send_rightbumper, controller1_send_leftstickx, controller1_send_leftsticky, controller1_send_rightstickx, controller1_send_rightsticky, controller1_send_lefttriggerposition, controller1_send_righttriggerposition, controller1_send_xbox);
                 Thread.Sleep(1);
             }
@@ -296,6 +306,12 @@ namespace ciine
                         form2 = new Form2();
                         form2.Show();
                     }
+                    if (Application.OpenForms["Form3"] == null)
+                    {
+                        form3visible = true;
+                        form3 = new Form3();
+                        form3.Show();
+                    }
                 }
                 finally
                 {
@@ -318,6 +334,11 @@ namespace ciine
                         {
                             form2.Close();
                         }
+                        if (Application.OpenForms["Form3"] != null)
+                        {
+                            form3visible = false;
+                            form3.Close();
+                        }
                     }
                     finally
                     {
@@ -325,6 +346,23 @@ namespace ciine
                         Task.Run(() => StopCapture());
                     }
                 }
+            }
+            ValueChanged[21] = GetAsyncKeyState(Keys.Escape);
+            if (valuechanged._ValueChanged[21] & valuechanged._valuechanged[21] & capturing)
+            {
+                try
+                {
+                    if (Application.OpenForms["Form2"] != null)
+                    {
+                        form2.Close();
+                    }
+                    if (Application.OpenForms["Form3"] != null)
+                    {
+                        form3visible = false;
+                        form3.Close();
+                    }
+                }
+                catch { }
             }
         }
         private static void StartCapture()
@@ -621,6 +659,7 @@ namespace WiiMoteAPI
         private bool isvalidhandle = false;
         private bool running;
         private List<double> vallistirx = new List<double>(), vallistiry = new List<double>();
+        public double ir1x, ir1y, ir2x, ir2y;
         private double irxc, iryc, irx2, iry2, irx3, iry3, WiimoteIRSensors0X, WiimoteIRSensors0Y, WiimoteIRSensors1X, WiimoteIRSensors1Y, calibrationinit, WiimoteIRSensors0Xcam, WiimoteIRSensors0Ycam, WiimoteIRSensors1Xcam, WiimoteIRSensors1Ycam, WiimoteIRSensorsXcam, WiimoteIRSensorsYcam;
         public double irx, iry, WiimoteRawValuesX, WiimoteRawValuesY, WiimoteRawValuesZ;
         public bool WiimoteButtonStateA, WiimoteButtonStateB, WiimoteButtonStateMinus, WiimoteButtonStateHome, WiimoteButtonStatePlus, WiimoteButtonStateOne, WiimoteButtonStateTwo, WiimoteButtonStateUp, WiimoteButtonStateDown, WiimoteButtonStateLeft, WiimoteButtonStateRight, WiimoteNunchuckStateC, WiimoteNunchuckStateZ;
@@ -762,6 +801,10 @@ namespace WiiMoteAPI
                 irx2 = WiimoteIRSensors1Xcam + WiimoteIRSensorsXcam;
                 iry2 = WiimoteIRSensors1Ycam + WiimoteIRSensorsYcam;
             }
+            ir1x = irx2;
+            ir1y = iry2;
+            ir2x = irx3;
+            ir2y = iry3;
             irxc = irx2 + irx3;
             iryc = iry2 + iry3;
             if (WiimoteIR0found | WiimoteIR1found)
@@ -1247,8 +1290,8 @@ namespace ValueStateChanged
 {
     public class valuechanged
     {
-        public static bool[] _valuechanged = { false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false };
-        public static bool[] _ValueChanged = { false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false };
+        public static bool[] _valuechanged = { false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false };
+        public static bool[] _ValueChanged = { false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false };
         public bool this[int index]
         {
             get { return _ValueChanged[index]; }
