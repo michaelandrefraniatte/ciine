@@ -81,8 +81,7 @@ namespace ciine
         private static Process processcapturevideo, processmerge;
         private valuechanged ValueChanged = new valuechanged();
         private static Form2 form2;
-        private static Form3 form3;
-        private static bool form3visible;
+        private static bool form2visible;
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
             OnKeyDown(e.KeyData);
@@ -260,12 +259,12 @@ namespace ciine
                 {
                     getstate = false;
                 }
-                if (form3visible)
+                if (form2visible)
                 {
-                    Form3.ir1x = wm.ir1x;
-                    Form3.ir1y = wm.ir1y;
-                    Form3.ir2x = wm.ir2x;
-                    Form3.ir2y = wm.ir2y;
+                    Form2.ir1x = wm.ir1x;
+                    Form2.ir1y = wm.ir1y;
+                    Form2.ir2x = wm.ir2x;
+                    Form2.ir2y = wm.ir2y;
                 }
                 scp.Set(controller1_send_back, controller1_send_start, controller1_send_A, controller1_send_B, controller1_send_X, controller1_send_Y, controller1_send_up, controller1_send_left, controller1_send_down, controller1_send_right, controller1_send_leftstick, controller1_send_rightstick, controller1_send_leftbumper, controller1_send_rightbumper, controller1_send_leftstickx, controller1_send_leftsticky, controller1_send_rightstickx, controller1_send_rightsticky, controller1_send_lefttriggerposition, controller1_send_righttriggerposition, controller1_send_xbox);
                 Thread.Sleep(1);
@@ -303,14 +302,9 @@ namespace ciine
                 {
                     if (Application.OpenForms["Form2"] == null)
                     {
+                        form2visible = true;
                         form2 = new Form2();
                         form2.Show();
-                    }
-                    if (Application.OpenForms["Form3"] == null)
-                    {
-                        form3visible = true;
-                        form3 = new Form3();
-                        form3.Show();
                     }
                 }
                 finally
@@ -332,12 +326,8 @@ namespace ciine
                     {
                         if (Application.OpenForms["Form2"] != null)
                         {
+                            form2visible = false;
                             form2.Close();
-                        }
-                        if (Application.OpenForms["Form3"] != null)
-                        {
-                            form3visible = false;
-                            form3.Close();
                         }
                     }
                     finally
@@ -354,12 +344,8 @@ namespace ciine
                 {
                     if (Application.OpenForms["Form2"] != null)
                     {
+                        form2visible = false;
                         form2.Close();
-                    }
-                    if (Application.OpenForms["Form3"] != null)
-                    {
-                        form3visible = false;
-                        form3.Close();
                     }
                 }
                 catch { }

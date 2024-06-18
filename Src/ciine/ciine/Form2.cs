@@ -24,7 +24,7 @@ namespace ciine
         public static extern void NtSetTimerResolution(uint DesiredResolution, bool SetResolution, ref uint CurrentResolution);
         public static uint CurrentResolution = 0;
         public static bool closed = false;
-        public static int x, y, Width, Height;
+        public static int Width = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Width, Height = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Height;
         public WebView2 webView21 = new WebView2();
         public static List<double> List_A = new List<double>(), List_B = new List<double>(), List_X = new List<double>(), List_Y = new List<double>(), List_LB = new List<double>(), List_RB = new List<double>(), List_LT = new List<double>(), List_RT = new List<double>(), List_MAP = new List<double>(), List_MENU = new List<double>(), List_LSTICK = new List<double>(), List_RSTICK = new List<double>(), List_DU = new List<double>(), List_DD = new List<double>(), List_DL = new List<double>(), List_DR = new List<double>(), List_XBOX = new List<double>();
         public static bool Controller_A, Controller_B, Controller_X, Controller_Y, Controller_LB, Controller_RB, Controller_MAP, Controller_MENU, Controller_LSTICK, Controller_RSTICK, Controller_DU, Controller_DD, Controller_DL, Controller_DR, Controller_XBOX;
@@ -52,6 +52,7 @@ namespace ciine
         public static double Controller1ThumbLeftY;
         public static double Controller1ThumbRightX;
         public static double Controller1ThumbRightY;
+        public static double ir1x, ir1y, ir2x, ir2y;
         private async void Form2_Load(object sender, EventArgs e)
         {
             TimeBeginPeriod(1);
@@ -64,11 +65,12 @@ namespace ciine
             webView21.CoreWebView2.SetVirtualHostNameToFolderMapping("appassets", "assets", CoreWebView2HostResourceAccessKind.DenyCors);
             webView21.CoreWebView2.Settings.AreDevToolsEnabled = true;
             webView21.KeyDown += WebView21_KeyDown;
-            webView21.Source = new Uri("https://appassets/motion/index.html");
+            webView21.Source = new Uri("https://appassets/index.html");
             webView21.Dock = DockStyle.Fill;
             webView21.DefaultBackgroundColor = System.Drawing.Color.Transparent;
             this.Controls.Add(webView21);
-            this.Location = new System.Drawing.Point((Width - this.Size.Width) / 2, Height - this.Size.Height);
+            this.Location = new System.Drawing.Point(0, 0);
+            this.Size = new System.Drawing.Size(Width, Height);
             try
             {
                 var controllers = new[] { new Controller(UserIndex.One) };
@@ -104,6 +106,14 @@ namespace ciine
                 const string caption = "About";
                 MessageBox.Show(message, caption, MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
+        }
+        public async void SetDots(double ir1x, double ir1y, double ir2x, double ir2y)
+        {
+            try
+            {
+                await execScriptHelper($"setDots('{ir1x.ToString()}', '{ir1y.ToString()}', '{ir2x.ToString()}', '{ir2y.ToString()}');");
+            }
+            catch { }
         }
         public async void SetController(bool ControllerButtonAPressed, bool ControllerButtonBPressed, bool ControllerButtonXPressed, bool ControllerButtonYPressed, bool ControllerButtonStartPressed, bool ControllerButtonBackPressed, bool ControllerButtonDownPressed, bool ControllerButtonUpPressed, bool ControllerButtonLeftPressed, bool ControllerButtonRightPressed, bool ControllerButtonShoulderLeftPressed, bool ControllerButtonShoulderRightPressed, bool ControllerThumbpadLeftPressed, bool ControllerThumbpadRightPressed, double ControllerTriggerLeftPosition, double ControllerTriggerRightPosition, double ControllerThumbLeftX, double ControllerThumbLeftY, double ControllerThumbRightX, double ControllerThumbRightY)
         {
@@ -276,6 +286,7 @@ namespace ciine
         }
         private void timer1_Tick(object sender, EventArgs e)
         {
+            SetDots(ir1x, ir1y, ir2x, ir2y);
             taskEmulate();
         }
         private async void taskEmulate()
