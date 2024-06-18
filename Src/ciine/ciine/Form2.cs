@@ -319,6 +319,9 @@ namespace ciine
                 ComputeData();
                 string stringinject = @"
                         try {
+                            var h = window.innerHeight;
+                            var width = h * 9 / 16 + 'px';
+                            var left = h * 9 / 16 / 2 + 'px';
                             var parentcanvas = document.getElementById('parentcanvas');
                             if (parentcanvas == null) {
                                 parentcanvas = document.createElement('div');
@@ -327,9 +330,9 @@ namespace ciine
                             }
                             parentcanvas.style.position = 'absolute';
                             parentcanvas.style.display = 'inline-block';
-                            parentcanvas.style.width = '768px';
+                            parentcanvas.style.width = width;
                             parentcanvas.style.height = '500px';
-                            parentcanvas.style.left = 'calc(50% - 384px)';
+                            parentcanvas.style.left = 'calc(50% - left)';
                             parentcanvas.style.bottom = '0px';
                             parentcanvas.style.backgroundColor = 'transparent';
                             var canvas = document.getElementsByTagName('canvas');
