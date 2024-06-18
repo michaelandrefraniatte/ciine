@@ -14,6 +14,7 @@ using System.Diagnostics;
 using System.Drawing.Drawing2D;
 using System.Drawing.Text;
 using System.Drawing;
+using System.Threading;
 
 namespace ciine
 {
@@ -30,35 +31,35 @@ namespace ciine
         [DllImport("ntdll.dll", EntryPoint = "NtSetTimerResolution")]
         public static extern void NtSetTimerResolution(uint DesiredResolution, bool SetResolution, ref uint CurrentResolution);
         public static uint CurrentResolution = 0;
-        public static bool closed = false;
-        public static int Width = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Width, Height = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Height;
+        public bool closed = false;
+        public int width = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Width, height = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Height;
         public WebView2 webView21 = new WebView2();
-        public static List<double> List_A = new List<double>(), List_B = new List<double>(), List_X = new List<double>(), List_Y = new List<double>(), List_LB = new List<double>(), List_RB = new List<double>(), List_LT = new List<double>(), List_RT = new List<double>(), List_MAP = new List<double>(), List_MENU = new List<double>(), List_LSTICK = new List<double>(), List_RSTICK = new List<double>(), List_DU = new List<double>(), List_DD = new List<double>(), List_DL = new List<double>(), List_DR = new List<double>(), List_XBOX = new List<double>();
-        public static bool Controller_A, Controller_B, Controller_X, Controller_Y, Controller_LB, Controller_RB, Controller_MAP, Controller_MENU, Controller_LSTICK, Controller_RSTICK, Controller_DU, Controller_DD, Controller_DL, Controller_DR, Controller_XBOX;
-        public static double Controller_LT, Controller_RT, Controller_LX, Controller_LY, Controller_RX, Controller_RY;
-        private static Controller[] controller = new Controller[] { null };
-        public static int xnum;
-        private static State state;
-        public static bool Controller1ButtonAPressed;
-        public static bool Controller1ButtonBPressed;
-        public static bool Controller1ButtonXPressed;
-        public static bool Controller1ButtonYPressed;
-        public static bool Controller1ButtonStartPressed;
-        public static bool Controller1ButtonBackPressed;
-        public static bool Controller1ButtonDownPressed;
-        public static bool Controller1ButtonUpPressed;
-        public static bool Controller1ButtonLeftPressed;
-        public static bool Controller1ButtonRightPressed;
-        public static bool Controller1ButtonShoulderLeftPressed;
-        public static bool Controller1ButtonShoulderRightPressed;
-        public static bool Controller1ThumbpadLeftPressed;
-        public static bool Controller1ThumbpadRightPressed;
-        public static double Controller1TriggerLeftPosition;
-        public static double Controller1TriggerRightPosition;
-        public static double Controller1ThumbLeftX;
-        public static double Controller1ThumbLeftY;
-        public static double Controller1ThumbRightX;
-        public static double Controller1ThumbRightY;
+        public List<double> List_A = new List<double>(), List_B = new List<double>(), List_X = new List<double>(), List_Y = new List<double>(), List_LB = new List<double>(), List_RB = new List<double>(), List_LT = new List<double>(), List_RT = new List<double>(), List_MAP = new List<double>(), List_MENU = new List<double>(), List_LSTICK = new List<double>(), List_RSTICK = new List<double>(), List_DU = new List<double>(), List_DD = new List<double>(), List_DL = new List<double>(), List_DR = new List<double>(), List_XBOX = new List<double>();
+        public bool Controller_A, Controller_B, Controller_X, Controller_Y, Controller_LB, Controller_RB, Controller_MAP, Controller_MENU, Controller_LSTICK, Controller_RSTICK, Controller_DU, Controller_DD, Controller_DL, Controller_DR, Controller_XBOX;
+        public double Controller_LT, Controller_RT, Controller_LX, Controller_LY, Controller_RX, Controller_RY;
+        private Controller[] controller = new Controller[] { null };
+        public int xnum;
+        private State state;
+        public bool Controller1ButtonAPressed;
+        public bool Controller1ButtonBPressed;
+        public bool Controller1ButtonXPressed;
+        public bool Controller1ButtonYPressed;
+        public bool Controller1ButtonStartPressed;
+        public bool Controller1ButtonBackPressed;
+        public bool Controller1ButtonDownPressed;
+        public bool Controller1ButtonUpPressed;
+        public bool Controller1ButtonLeftPressed;
+        public bool Controller1ButtonRightPressed;
+        public bool Controller1ButtonShoulderLeftPressed;
+        public bool Controller1ButtonShoulderRightPressed;
+        public bool Controller1ThumbpadLeftPressed;
+        public bool Controller1ThumbpadRightPressed;
+        public double Controller1TriggerLeftPosition;
+        public double Controller1TriggerRightPosition;
+        public double Controller1ThumbLeftX;
+        public double Controller1ThumbLeftY;
+        public double Controller1ThumbRightX;
+        public double Controller1ThumbRightY;
         public static double ir1x, ir1y, ir2x, ir2y;
         public int numBars = 100;
         public float[] barDataLeft = new float[100];
@@ -78,13 +79,16 @@ namespace ciine
         public BasicSpectrumProvider spectrumProviderLeft;
         public BasicSpectrumProvider spectrumProviderRight;
         public CSCore.IWaveSource finalSource;
-        private static Bitmap bmp;
-        private async void Form2_Load(object sender, EventArgs e)
+        private Bitmap bmp;
+        private void Form2_Load(object sender, EventArgs e)
         {
             TimeBeginPeriod(1);
             NtSetTimerResolution(1, true, ref CurrentResolution);
-            Width = Screen.PrimaryScreen.Bounds.Width;
-            Height = Screen.PrimaryScreen.Bounds.Height;
+        }
+        private async void Form2_Shown(object sender, EventArgs e)
+        {
+            width = Screen.PrimaryScreen.Bounds.Width;
+            height = Screen.PrimaryScreen.Bounds.Height;
             CoreWebView2EnvironmentOptions options = new CoreWebView2EnvironmentOptions("--disable-web-security --allow-file-access-from-files --allow-file-access", "en");
             CoreWebView2Environment environment = await CoreWebView2Environment.CreateAsync(null, null, options);
             await webView21.EnsureCoreWebView2Async(environment);
@@ -96,7 +100,7 @@ namespace ciine
             webView21.DefaultBackgroundColor = System.Drawing.Color.Transparent;
             this.Controls.Add(webView21);
             this.Location = new System.Drawing.Point(0, 0);
-            this.Size = new System.Drawing.Size(Width, Height);
+            this.Size = new System.Drawing.Size(width, height);
             try
             {
                 var controllers = new[] { new Controller(UserIndex.One) };
@@ -118,8 +122,7 @@ namespace ciine
             Task.Run(() => GetAudioByteArray());
             this.pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
             this.pictureBox1.Size = new Size(170 - 15, 170 - 15);
-            this.pictureBox1.Location = new Point((Width - this.pictureBox1.Width) / 2, 0);
-            Task.Run(() => Start());
+            this.pictureBox1.Location = new Point((width - this.pictureBox1.Width) / 2, 0);
         }
         private void Form2_KeyDown(object sender, KeyEventArgs e)
         {
@@ -136,30 +139,6 @@ namespace ciine
                 const string message = "• Author: Michaël André Franiatte.\n\r\n\r• Contact: michael.franiatte@gmail.com.\n\r\n\r• Publisher: https://github.com/michaelandrefraniatte.\n\r\n\r• Copyrights: All rights reserved, no permissions granted.\n\r\n\r• License: Not open source, not free of charge to use.";
                 const string caption = "About";
                 MessageBox.Show(message, caption, MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-        }
-        private void Start()
-        {
-            while (!closed)
-            {
-                try
-                {
-                    bmp = new Bitmap(170 - 15, 170 - 15);
-                    Graphics graphics = Graphics.FromImage(bmp as Image);
-                    graphics.PixelOffsetMode = PixelOffsetMode.HighSpeed;
-                    graphics.SmoothingMode = SmoothingMode.HighSpeed;
-                    graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.Low;
-                    graphics.CompositingMode = CompositingMode.SourceCopy;
-                    graphics.CompositingQuality = CompositingQuality.HighSpeed;
-                    graphics.Clear(Color.Transparent);
-                    graphics.CopyFromScreen(15, 15, 0, 0, bmp.Size);
-                    this.pictureBox1.Image = bmp;
-                    graphics.Dispose();
-                }
-                finally
-                {
-                    System.Threading.Thread.Sleep(40);
-                }
             }
         }
         public async void SetDots(double ir1x, double ir1y, double ir2x, double ir2y)
@@ -341,12 +320,29 @@ namespace ciine
         }
         private async void timer1_Tick(object sender, EventArgs e)
         {
-            SetDots(ir1x, ir1y, ir2x, ir2y);
-            taskEmulate();
-            try
+            if (!closed)
             {
-                ComputeData();
-                string stringinject = @"
+                try
+                {
+                    bmp = new Bitmap(170 - 15, 170 - 15);
+                    Graphics graphics = Graphics.FromImage(bmp as Image);
+                    graphics.PixelOffsetMode = PixelOffsetMode.HighSpeed;
+                    graphics.SmoothingMode = SmoothingMode.HighSpeed;
+                    graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.Low;
+                    graphics.CompositingMode = CompositingMode.SourceCopy;
+                    graphics.CompositingQuality = CompositingQuality.HighSpeed;
+                    graphics.Clear(Color.Transparent);
+                    graphics.CopyFromScreen(15, 15, 0, 0, bmp.Size);
+                    this.pictureBox1.Image = bmp;
+                    graphics.Dispose();
+                }
+                catch { }
+                SetDots(ir1x, ir1y, ir2x, ir2y);
+                taskEmulate();
+                try
+                {
+                    ComputeData();
+                    string stringinject = @"
                         try {
                             var h = window.innerHeight;
                             var width = h * 9 / 16 + 'px';
@@ -360,7 +356,7 @@ namespace ciine
                             parentcanvas.style.position = 'absolute';
                             parentcanvas.style.display = 'inline-block';
                             parentcanvas.style.width = width;
-                            parentcanvas.style.height = '500px';
+                            parentcanvas.style.height = '1000px';
                             parentcanvas.style.left = 'calc(50% - left)';
                             parentcanvas.style.bottom = '0px';
                             parentcanvas.style.backgroundColor = 'transparent';
@@ -393,9 +389,10 @@ namespace ciine
                         }
                         catch {}
                     ";
-                await execScriptHelper(stringinject.Replace("rawdata100", (int)barDataLeft[0] + ", " + (int)barDataLeft[1] + ", " + (int)barDataLeft[2] + ", " + (int)barDataLeft[3] + ", " + (int)barDataLeft[4] + ", " + (int)barDataLeft[5] + ", " + (int)barDataLeft[6] + ", " + (int)barDataLeft[7] + ", " + (int)barDataLeft[8] + ", " + (int)barDataLeft[9] + ", " + (int)barDataLeft[10] + ", " + (int)barDataLeft[11] + ", " + (int)barDataLeft[12] + ", " + (int)barDataLeft[13] + ", " + (int)barDataLeft[14] + ", " + (int)barDataLeft[15] + ", " + (int)barDataLeft[16] + ", " + (int)barDataLeft[17] + ", " + (int)barDataLeft[18] + ", " + (int)barDataLeft[19] + ", " + (int)barDataLeft[20] + ", " + (int)barDataLeft[21] + ", " + (int)barDataLeft[22] + ", " + (int)barDataLeft[23] + ", " + (int)barDataLeft[24] + ", " + (int)barDataLeft[25] + ", " + (int)barDataLeft[26] + ", " + (int)barDataLeft[27] + ", " + (int)barDataLeft[28] + ", " + (int)barDataLeft[29] + ", " + (int)barDataLeft[30] + ", " + (int)barDataLeft[31] + ", " + (int)barDataLeft[32] + ", " + (int)barDataLeft[33] + ", " + (int)barDataLeft[34] + ", " + (int)barDataLeft[35] + ", " + (int)barDataLeft[36] + ", " + (int)barDataLeft[37] + ", " + (int)barDataLeft[38] + ", " + (int)barDataLeft[39] + ", " + (int)barDataLeft[40] + ", " + (int)barDataLeft[41] + ", " + (int)barDataLeft[42] + ", " + (int)barDataLeft[43] + ", " + (int)barDataLeft[44] + ", " + (int)barDataLeft[45] + ", " + (int)barDataLeft[46] + ", " + (int)barDataLeft[47] + ", " + (int)barDataLeft[48] + ", " + (int)barDataLeft[49] + ", " + (int)barDataLeft[50] + ", " + (int)barDataLeft[51] + ", " + (int)barDataLeft[52] + ", " + (int)barDataLeft[53] + ", " + (int)barDataLeft[54] + ", " + (int)barDataLeft[55] + ", " + (int)barDataLeft[56] + ", " + (int)barDataLeft[57] + ", " + (int)barDataLeft[58] + ", " + (int)barDataLeft[59] + ", " + (int)barDataLeft[60] + ", " + (int)barDataLeft[61] + ", " + (int)barDataLeft[62] + ", " + (int)barDataLeft[63] + ", " + (int)barDataLeft[64] + ", " + (int)barDataLeft[65] + ", " + (int)barDataLeft[66] + ", " + (int)barDataLeft[67] + ", " + (int)barDataLeft[68] + ", " + (int)barDataLeft[69] + ", " + (int)barDataLeft[70] + ", " + (int)barDataLeft[71] + ", " + (int)barDataLeft[72] + ", " + (int)barDataLeft[73] + ", " + (int)barDataLeft[74] + ", " + (int)barDataLeft[75] + ", " + (int)barDataLeft[76] + ", " + (int)barDataLeft[77] + ", " + (int)barDataLeft[78] + ", " + (int)barDataLeft[79] + ", " + (int)barDataLeft[80] + ", " + (int)barDataLeft[81] + ", " + (int)barDataLeft[82] + ", " + (int)barDataLeft[83] + ", " + (int)barDataLeft[84] + ", " + (int)barDataLeft[85] + ", " + (int)barDataLeft[86] + ", " + (int)barDataLeft[87] + ", " + (int)barDataLeft[88] + ", " + (int)barDataLeft[89] + ", " + (int)barDataLeft[90] + ", " + (int)barDataLeft[91] + ", " + (int)barDataLeft[92] + ", " + (int)barDataLeft[93] + ", " + (int)barDataLeft[94] + ", " + (int)barDataLeft[95] + ", " + (int)barDataLeft[96] + ", " + (int)barDataLeft[97] + ", " + (int)barDataLeft[98] + ", " + (int)barDataLeft[99] + ", " + (int)barDataRight[0] + ", " + (int)barDataRight[1] + ", " + (int)barDataRight[2] + ", " + (int)barDataRight[3] + ", " + (int)barDataRight[4] + ", " + (int)barDataRight[5] + ", " + (int)barDataRight[6] + ", " + (int)barDataRight[7] + ", " + (int)barDataRight[8] + ", " + (int)barDataRight[9] + ", " + (int)barDataRight[10] + ", " + (int)barDataRight[11] + ", " + (int)barDataRight[12] + ", " + (int)barDataRight[13] + ", " + (int)barDataRight[14] + ", " + (int)barDataRight[15] + ", " + (int)barDataRight[16] + ", " + (int)barDataRight[17] + ", " + (int)barDataRight[18] + ", " + (int)barDataRight[19] + ", " + (int)barDataRight[20] + ", " + (int)barDataRight[21] + ", " + (int)barDataRight[22] + ", " + (int)barDataRight[23] + ", " + (int)barDataRight[24] + ", " + (int)barDataRight[25] + ", " + (int)barDataRight[26] + ", " + (int)barDataRight[27] + ", " + (int)barDataRight[28] + ", " + (int)barDataRight[29] + ", " + (int)barDataRight[30] + ", " + (int)barDataRight[31] + ", " + (int)barDataRight[32] + ", " + (int)barDataRight[33] + ", " + (int)barDataRight[34] + ", " + (int)barDataRight[35] + ", " + (int)barDataRight[36] + ", " + (int)barDataRight[37] + ", " + (int)barDataRight[38] + ", " + (int)barDataRight[39] + ", " + (int)barDataRight[40] + ", " + (int)barDataRight[41] + ", " + (int)barDataRight[42] + ", " + (int)barDataRight[43] + ", " + (int)barDataRight[44] + ", " + (int)barDataRight[45] + ", " + (int)barDataRight[46] + ", " + (int)barDataRight[47] + ", " + (int)barDataRight[48] + ", " + (int)barDataRight[49] + ", " + (int)barDataRight[50] + ", " + (int)barDataRight[51] + ", " + (int)barDataRight[52] + ", " + (int)barDataRight[53] + ", " + (int)barDataRight[54] + ", " + (int)barDataRight[55] + ", " + (int)barDataRight[56] + ", " + (int)barDataRight[57] + ", " + (int)barDataRight[58] + ", " + (int)barDataRight[59] + ", " + (int)barDataRight[60] + ", " + (int)barDataRight[61] + ", " + (int)barDataRight[62] + ", " + (int)barDataRight[63] + ", " + (int)barDataRight[64] + ", " + (int)barDataRight[65] + ", " + (int)barDataRight[66] + ", " + (int)barDataRight[67] + ", " + (int)barDataRight[68] + ", " + (int)barDataRight[69] + ", " + (int)barDataRight[70] + ", " + (int)barDataRight[71] + ", " + (int)barDataRight[72] + ", " + (int)barDataRight[73] + ", " + (int)barDataRight[74] + ", " + (int)barDataRight[75] + ", " + (int)barDataRight[76] + ", " + (int)barDataRight[77] + ", " + (int)barDataRight[78] + ", " + (int)barDataRight[79] + ", " + (int)barDataRight[80] + ", " + (int)barDataRight[81] + ", " + (int)barDataRight[82] + ", " + (int)barDataRight[83] + ", " + (int)barDataRight[84] + ", " + (int)barDataRight[85] + ", " + (int)barDataRight[86] + ", " + (int)barDataRight[87] + ", " + (int)barDataRight[88] + ", " + (int)barDataRight[89] + ", " + (int)barDataRight[90] + ", " + (int)barDataRight[91] + ", " + (int)barDataRight[92] + ", " + (int)barDataRight[93] + ", " + (int)barDataRight[94] + ", " + (int)barDataRight[95] + ", " + (int)barDataRight[96] + ", " + (int)barDataRight[97] + ", " + (int)barDataRight[98] + ", " + (int)barDataRight[99]));
+                    await execScriptHelper(stringinject.Replace("rawdata100", (int)barDataLeft[0] + ", " + (int)barDataLeft[1] + ", " + (int)barDataLeft[2] + ", " + (int)barDataLeft[3] + ", " + (int)barDataLeft[4] + ", " + (int)barDataLeft[5] + ", " + (int)barDataLeft[6] + ", " + (int)barDataLeft[7] + ", " + (int)barDataLeft[8] + ", " + (int)barDataLeft[9] + ", " + (int)barDataLeft[10] + ", " + (int)barDataLeft[11] + ", " + (int)barDataLeft[12] + ", " + (int)barDataLeft[13] + ", " + (int)barDataLeft[14] + ", " + (int)barDataLeft[15] + ", " + (int)barDataLeft[16] + ", " + (int)barDataLeft[17] + ", " + (int)barDataLeft[18] + ", " + (int)barDataLeft[19] + ", " + (int)barDataLeft[20] + ", " + (int)barDataLeft[21] + ", " + (int)barDataLeft[22] + ", " + (int)barDataLeft[23] + ", " + (int)barDataLeft[24] + ", " + (int)barDataLeft[25] + ", " + (int)barDataLeft[26] + ", " + (int)barDataLeft[27] + ", " + (int)barDataLeft[28] + ", " + (int)barDataLeft[29] + ", " + (int)barDataLeft[30] + ", " + (int)barDataLeft[31] + ", " + (int)barDataLeft[32] + ", " + (int)barDataLeft[33] + ", " + (int)barDataLeft[34] + ", " + (int)barDataLeft[35] + ", " + (int)barDataLeft[36] + ", " + (int)barDataLeft[37] + ", " + (int)barDataLeft[38] + ", " + (int)barDataLeft[39] + ", " + (int)barDataLeft[40] + ", " + (int)barDataLeft[41] + ", " + (int)barDataLeft[42] + ", " + (int)barDataLeft[43] + ", " + (int)barDataLeft[44] + ", " + (int)barDataLeft[45] + ", " + (int)barDataLeft[46] + ", " + (int)barDataLeft[47] + ", " + (int)barDataLeft[48] + ", " + (int)barDataLeft[49] + ", " + (int)barDataLeft[50] + ", " + (int)barDataLeft[51] + ", " + (int)barDataLeft[52] + ", " + (int)barDataLeft[53] + ", " + (int)barDataLeft[54] + ", " + (int)barDataLeft[55] + ", " + (int)barDataLeft[56] + ", " + (int)barDataLeft[57] + ", " + (int)barDataLeft[58] + ", " + (int)barDataLeft[59] + ", " + (int)barDataLeft[60] + ", " + (int)barDataLeft[61] + ", " + (int)barDataLeft[62] + ", " + (int)barDataLeft[63] + ", " + (int)barDataLeft[64] + ", " + (int)barDataLeft[65] + ", " + (int)barDataLeft[66] + ", " + (int)barDataLeft[67] + ", " + (int)barDataLeft[68] + ", " + (int)barDataLeft[69] + ", " + (int)barDataLeft[70] + ", " + (int)barDataLeft[71] + ", " + (int)barDataLeft[72] + ", " + (int)barDataLeft[73] + ", " + (int)barDataLeft[74] + ", " + (int)barDataLeft[75] + ", " + (int)barDataLeft[76] + ", " + (int)barDataLeft[77] + ", " + (int)barDataLeft[78] + ", " + (int)barDataLeft[79] + ", " + (int)barDataLeft[80] + ", " + (int)barDataLeft[81] + ", " + (int)barDataLeft[82] + ", " + (int)barDataLeft[83] + ", " + (int)barDataLeft[84] + ", " + (int)barDataLeft[85] + ", " + (int)barDataLeft[86] + ", " + (int)barDataLeft[87] + ", " + (int)barDataLeft[88] + ", " + (int)barDataLeft[89] + ", " + (int)barDataLeft[90] + ", " + (int)barDataLeft[91] + ", " + (int)barDataLeft[92] + ", " + (int)barDataLeft[93] + ", " + (int)barDataLeft[94] + ", " + (int)barDataLeft[95] + ", " + (int)barDataLeft[96] + ", " + (int)barDataLeft[97] + ", " + (int)barDataLeft[98] + ", " + (int)barDataLeft[99] + ", " + (int)barDataRight[0] + ", " + (int)barDataRight[1] + ", " + (int)barDataRight[2] + ", " + (int)barDataRight[3] + ", " + (int)barDataRight[4] + ", " + (int)barDataRight[5] + ", " + (int)barDataRight[6] + ", " + (int)barDataRight[7] + ", " + (int)barDataRight[8] + ", " + (int)barDataRight[9] + ", " + (int)barDataRight[10] + ", " + (int)barDataRight[11] + ", " + (int)barDataRight[12] + ", " + (int)barDataRight[13] + ", " + (int)barDataRight[14] + ", " + (int)barDataRight[15] + ", " + (int)barDataRight[16] + ", " + (int)barDataRight[17] + ", " + (int)barDataRight[18] + ", " + (int)barDataRight[19] + ", " + (int)barDataRight[20] + ", " + (int)barDataRight[21] + ", " + (int)barDataRight[22] + ", " + (int)barDataRight[23] + ", " + (int)barDataRight[24] + ", " + (int)barDataRight[25] + ", " + (int)barDataRight[26] + ", " + (int)barDataRight[27] + ", " + (int)barDataRight[28] + ", " + (int)barDataRight[29] + ", " + (int)barDataRight[30] + ", " + (int)barDataRight[31] + ", " + (int)barDataRight[32] + ", " + (int)barDataRight[33] + ", " + (int)barDataRight[34] + ", " + (int)barDataRight[35] + ", " + (int)barDataRight[36] + ", " + (int)barDataRight[37] + ", " + (int)barDataRight[38] + ", " + (int)barDataRight[39] + ", " + (int)barDataRight[40] + ", " + (int)barDataRight[41] + ", " + (int)barDataRight[42] + ", " + (int)barDataRight[43] + ", " + (int)barDataRight[44] + ", " + (int)barDataRight[45] + ", " + (int)barDataRight[46] + ", " + (int)barDataRight[47] + ", " + (int)barDataRight[48] + ", " + (int)barDataRight[49] + ", " + (int)barDataRight[50] + ", " + (int)barDataRight[51] + ", " + (int)barDataRight[52] + ", " + (int)barDataRight[53] + ", " + (int)barDataRight[54] + ", " + (int)barDataRight[55] + ", " + (int)barDataRight[56] + ", " + (int)barDataRight[57] + ", " + (int)barDataRight[58] + ", " + (int)barDataRight[59] + ", " + (int)barDataRight[60] + ", " + (int)barDataRight[61] + ", " + (int)barDataRight[62] + ", " + (int)barDataRight[63] + ", " + (int)barDataRight[64] + ", " + (int)barDataRight[65] + ", " + (int)barDataRight[66] + ", " + (int)barDataRight[67] + ", " + (int)barDataRight[68] + ", " + (int)barDataRight[69] + ", " + (int)barDataRight[70] + ", " + (int)barDataRight[71] + ", " + (int)barDataRight[72] + ", " + (int)barDataRight[73] + ", " + (int)barDataRight[74] + ", " + (int)barDataRight[75] + ", " + (int)barDataRight[76] + ", " + (int)barDataRight[77] + ", " + (int)barDataRight[78] + ", " + (int)barDataRight[79] + ", " + (int)barDataRight[80] + ", " + (int)barDataRight[81] + ", " + (int)barDataRight[82] + ", " + (int)barDataRight[83] + ", " + (int)barDataRight[84] + ", " + (int)barDataRight[85] + ", " + (int)barDataRight[86] + ", " + (int)barDataRight[87] + ", " + (int)barDataRight[88] + ", " + (int)barDataRight[89] + ", " + (int)barDataRight[90] + ", " + (int)barDataRight[91] + ", " + (int)barDataRight[92] + ", " + (int)barDataRight[93] + ", " + (int)barDataRight[94] + ", " + (int)barDataRight[95] + ", " + (int)barDataRight[96] + ", " + (int)barDataRight[97] + ", " + (int)barDataRight[98] + ", " + (int)barDataRight[99]));
+                }
+                catch { }
             }
-            catch { }
         }
         private async void taskEmulate()
         {
@@ -476,12 +473,12 @@ namespace ciine
         }
         private void Form2_FormClosed(object sender, FormClosedEventArgs e)
         {
-            closed = true;
         }
         private void Form2_FormClosing(object sender, FormClosingEventArgs e)
         {
+            closed = true;
+            Thread.Sleep(100);
             capture.Stop();
-            webView21.Dispose();
         }
         public void GetAudioByteArray()
         {
