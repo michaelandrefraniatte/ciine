@@ -78,6 +78,7 @@ namespace ciine
         public BasicSpectrumProvider spectrumProviderLeft;
         public BasicSpectrumProvider spectrumProviderRight;
         public CSCore.IWaveSource finalSource;
+        private static Bitmap bmp;
         private async void Form2_Load(object sender, EventArgs e)
         {
             TimeBeginPeriod(1);
@@ -115,6 +116,10 @@ namespace ciine
             }
             catch { }
             Task.Run(() => GetAudioByteArray());
+            this.pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
+            this.pictureBox1.Size = new Size(170 - 15, 170 - 15);
+            this.pictureBox1.Location = new Point((Width - this.pictureBox1.Width) / 2, 0);
+            Task.Run(() => Start());
         }
         private void Form2_KeyDown(object sender, KeyEventArgs e)
         {
@@ -131,6 +136,30 @@ namespace ciine
                 const string message = "• Author: Michaël André Franiatte.\n\r\n\r• Contact: michael.franiatte@gmail.com.\n\r\n\r• Publisher: https://github.com/michaelandrefraniatte.\n\r\n\r• Copyrights: All rights reserved, no permissions granted.\n\r\n\r• License: Not open source, not free of charge to use.";
                 const string caption = "About";
                 MessageBox.Show(message, caption, MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+        private void Start()
+        {
+            while (!closed)
+            {
+                try
+                {
+                    bmp = new Bitmap(170 - 15, 170 - 15);
+                    Graphics graphics = Graphics.FromImage(bmp as Image);
+                    graphics.PixelOffsetMode = PixelOffsetMode.HighSpeed;
+                    graphics.SmoothingMode = SmoothingMode.HighSpeed;
+                    graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.Low;
+                    graphics.CompositingMode = CompositingMode.SourceCopy;
+                    graphics.CompositingQuality = CompositingQuality.HighSpeed;
+                    graphics.Clear(Color.Transparent);
+                    graphics.CopyFromScreen(15, 15, 0, 0, bmp.Size);
+                    this.pictureBox1.Image = bmp;
+                    graphics.Dispose();
+                }
+                finally
+                {
+                    System.Threading.Thread.Sleep(40);
+                }
             }
         }
         public async void SetDots(double ir1x, double ir1y, double ir2x, double ir2y)
