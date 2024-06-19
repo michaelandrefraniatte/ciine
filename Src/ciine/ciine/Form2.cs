@@ -132,33 +132,34 @@ namespace ciine
             }
             catch { }
             Task.Run(() => GetAudioByteArray());
-            pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
-            pictureBox2.SizeMode = PictureBoxSizeMode.StretchImage;
             CaptureDevice = new FilterInfoCollection(FilterCategory.VideoInputDevice);
             if (CaptureDevice.Count > 0)
             {
+                pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
+                pictureBox2.SizeMode = PictureBoxSizeMode.StretchImage;
                 this.pictureBox1.Size = new Size(170 - 15, 170 - 15);
                 this.pictureBox1.Location = new Point((width - this.pictureBox1.Width) / 2 - (170 - 15) / 2 - 5, 0);
+                this.pictureBox2.Size = new Size(170 - 15, 170 - 15);
+                this.pictureBox2.Location = new Point((width - this.pictureBox2.Width) / 2 + (170 - 15) / 2 + 5, 0);
                 gp = new GraphicsPath();
                 gp.AddEllipse(pictureBox1.DisplayRectangle);
                 pictureBox1.Region = new Region(gp);
                 gp = new GraphicsPath();
                 gp.AddEllipse(pictureBox2.DisplayRectangle);
                 pictureBox2.Region = new Region(gp);
+                shadowControls.Add(pictureBox1);
+                shadowControls.Add(pictureBox2);
+                this.Refresh();
                 FinalFrame = new VideoCaptureDevice(CaptureDevice[0].MonikerString);
                 videoCapabilities = FinalFrame.VideoCapabilities;
                 FinalFrame.VideoResolution = videoCapabilities[1];
                 initratio = Convert.ToDouble(FinalFrame.VideoResolution.FrameSize.Width) / Convert.ToDouble(FinalFrame.VideoResolution.FrameSize.Height);
-                this.pictureBox2.Size = new Size(170 - 15, 170 - 15);
-                this.pictureBox2.Location = new Point((width - this.pictureBox2.Width) / 2 + (170 - 15) / 2 + 5, 0);
                 FinalFrame.NewFrame += FinalFrame_NewFrame;
                 FinalFrame.Start();
-                shadowControls.Add(pictureBox1);
-                shadowControls.Add(pictureBox2);
-                this.Refresh();
             }
             else
             {
+                pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
                 this.pictureBox1.Size = new Size(170 - 15, 170 - 15);
                 this.pictureBox1.Location = new Point((width - this.pictureBox1.Width) / 2, 0);
             }
@@ -570,6 +571,13 @@ namespace ciine
         }
         private void Form2_FormClosed(object sender, FormClosedEventArgs e)
         {
+            try
+            {
+                FinalFrame.NewFrame -= FinalFrame_NewFrame;
+                if (FinalFrame.IsRunning)
+                    FinalFrame.Stop();
+            }
+            catch { }
         }
         private void Form2_FormClosing(object sender, FormClosingEventArgs e)
         {
