@@ -36,54 +36,54 @@ namespace ciine
         [DllImport("ntdll.dll", EntryPoint = "NtSetTimerResolution")]
         public static extern void NtSetTimerResolution(uint DesiredResolution, bool SetResolution, ref uint CurrentResolution);
         public static uint CurrentResolution = 0;
-        public bool closed = false;
-        public int width = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Width, height = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Height;
-        public WebView2 webView21 = new WebView2();
-        public List<double> List_A = new List<double>(), List_B = new List<double>(), List_X = new List<double>(), List_Y = new List<double>(), List_LB = new List<double>(), List_RB = new List<double>(), List_LT = new List<double>(), List_RT = new List<double>(), List_MAP = new List<double>(), List_MENU = new List<double>(), List_LSTICK = new List<double>(), List_RSTICK = new List<double>(), List_DU = new List<double>(), List_DD = new List<double>(), List_DL = new List<double>(), List_DR = new List<double>(), List_XBOX = new List<double>();
-        public bool Controller_A, Controller_B, Controller_X, Controller_Y, Controller_LB, Controller_RB, Controller_MAP, Controller_MENU, Controller_LSTICK, Controller_RSTICK, Controller_DU, Controller_DD, Controller_DL, Controller_DR, Controller_XBOX;
-        public double Controller_LT, Controller_RT, Controller_LX, Controller_LY, Controller_RX, Controller_RY;
+        private bool closed = false;
+        private int width, height;
+        private WebView2 webView21 = new WebView2();
+        private List<double> List_A = new List<double>(), List_B = new List<double>(), List_X = new List<double>(), List_Y = new List<double>(), List_LB = new List<double>(), List_RB = new List<double>(), List_LT = new List<double>(), List_RT = new List<double>(), List_MAP = new List<double>(), List_MENU = new List<double>(), List_LSTICK = new List<double>(), List_RSTICK = new List<double>(), List_DU = new List<double>(), List_DD = new List<double>(), List_DL = new List<double>(), List_DR = new List<double>(), List_XBOX = new List<double>();
+        private bool Controller_A, Controller_B, Controller_X, Controller_Y, Controller_LB, Controller_RB, Controller_MAP, Controller_MENU, Controller_LSTICK, Controller_RSTICK, Controller_DU, Controller_DD, Controller_DL, Controller_DR, Controller_XBOX;
+        private double Controller_LT, Controller_RT, Controller_LX, Controller_LY, Controller_RX, Controller_RY;
         private Controller[] controller = new Controller[] { null };
-        public int xnum;
+        private int xnum;
         private State state;
-        public bool Controller1ButtonAPressed;
-        public bool Controller1ButtonBPressed;
-        public bool Controller1ButtonXPressed;
-        public bool Controller1ButtonYPressed;
-        public bool Controller1ButtonStartPressed;
-        public bool Controller1ButtonBackPressed;
-        public bool Controller1ButtonDownPressed;
-        public bool Controller1ButtonUpPressed;
-        public bool Controller1ButtonLeftPressed;
-        public bool Controller1ButtonRightPressed;
-        public bool Controller1ButtonShoulderLeftPressed;
-        public bool Controller1ButtonShoulderRightPressed;
-        public bool Controller1ThumbpadLeftPressed;
-        public bool Controller1ThumbpadRightPressed;
-        public double Controller1TriggerLeftPosition;
-        public double Controller1TriggerRightPosition;
-        public double Controller1ThumbLeftX;
-        public double Controller1ThumbLeftY;
-        public double Controller1ThumbRightX;
-        public double Controller1ThumbRightY;
+        private bool Controller1ButtonAPressed;
+        private bool Controller1ButtonBPressed;
+        private bool Controller1ButtonXPressed;
+        private bool Controller1ButtonYPressed;
+        private bool Controller1ButtonStartPressed;
+        private bool Controller1ButtonBackPressed;
+        private bool Controller1ButtonDownPressed;
+        private bool Controller1ButtonUpPressed;
+        private bool Controller1ButtonLeftPressed;
+        private bool Controller1ButtonRightPressed;
+        private bool Controller1ButtonShoulderLeftPressed;
+        private bool Controller1ButtonShoulderRightPressed;
+        private bool Controller1ThumbpadLeftPressed;
+        private bool Controller1ThumbpadRightPressed;
+        private double Controller1TriggerLeftPosition;
+        private double Controller1TriggerRightPosition;
+        private double Controller1ThumbLeftX;
+        private double Controller1ThumbLeftY;
+        private double Controller1ThumbRightX;
+        private double Controller1ThumbRightY;
         public static double ir1x, ir1y, ir2x, ir2y;
-        public int numBars = 100;
-        public float[] barDataLeft = new float[100];
-        public float[] barDataRight = new float[100];
-        public int minFreq = 0;
-        public int maxFreq = 23000;
-        public int barSpacing = 0;
-        public bool logScale = true;
-        public bool isAverage = false;
-        public float highScaleAverage = 1000f;
-        public float highScaleNotAverage = 1000f;
-        public LineSpectrum lineSpectrumLeft;
-        public LineSpectrum lineSpectrumRight;
-        public CSCore.SoundIn.WasapiCapture capture;
-        public CSCore.DSP.FftSize fftSize;
-        public float[] fftBuffer;
-        public BasicSpectrumProvider spectrumProviderLeft;
-        public BasicSpectrumProvider spectrumProviderRight;
-        public CSCore.IWaveSource finalSource;
+        private int numBars = 100;
+        private float[] barDataLeft = new float[100];
+        private float[] barDataRight = new float[100];
+        private int minFreq = 0;
+        private int maxFreq = 23000;
+        private int barSpacing = 0;
+        private bool logScale = true;
+        private bool isAverage = false;
+        private float highScaleAverage = 1000f;
+        private float highScaleNotAverage = 1000f;
+        private LineSpectrum lineSpectrumLeft;
+        private LineSpectrum lineSpectrumRight;
+        private CSCore.SoundIn.WasapiCapture capture;
+        private CSCore.DSP.FftSize fftSize;
+        private float[] fftBuffer;
+        private BasicSpectrumProvider spectrumProviderLeft;
+        private BasicSpectrumProvider spectrumProviderRight;
+        private CSCore.IWaveSource finalSource;
         private Bitmap bmp;
         public static int minimapstart, minimapend;
         private FilterInfoCollection CaptureDevice;
@@ -102,37 +102,6 @@ namespace ciine
         {
             width = Screen.PrimaryScreen.Bounds.Width;
             height = Screen.PrimaryScreen.Bounds.Height;
-            CoreWebView2EnvironmentOptions options = new CoreWebView2EnvironmentOptions("--disable-web-security --allow-file-access-from-files --allow-file-access", "en");
-            CoreWebView2Environment environment = await CoreWebView2Environment.CreateAsync(null, null, options);
-            await webView21.EnsureCoreWebView2Async(environment);
-            webView21.CoreWebView2.SetVirtualHostNameToFolderMapping("appassets", "assets", CoreWebView2HostResourceAccessKind.DenyCors);
-            webView21.CoreWebView2.Settings.AreDevToolsEnabled = true;
-            webView21.KeyDown += WebView21_KeyDown;
-            webView21.Source = new Uri("https://appassets/index.html");
-            webView21.Dock = DockStyle.Fill;
-            webView21.DefaultBackgroundColor = System.Drawing.Color.Transparent;
-            this.Controls.Add(webView21);
-            this.Location = new System.Drawing.Point(0, 0);
-            this.Size = new System.Drawing.Size(width, height);
-            try
-            {
-                var controllers = new[] { new Controller(UserIndex.One) };
-                xnum = 0;
-                foreach (var selectControler in controllers)
-                {
-                    if (selectControler.IsConnected)
-                    {
-                        controller[xnum] = selectControler;
-                        xnum++;
-                        if (xnum > 0)
-                        {
-                            break;
-                        }
-                    }
-                }
-            }
-            catch { }
-            Task.Run(() => GetAudioByteArray());
             CaptureDevice = new FilterInfoCollection(FilterCategory.VideoInputDevice);
             if (CaptureDevice.Count > 0)
             {
@@ -164,6 +133,38 @@ namespace ciine
                 this.pictureBox1.Size = new Size(minimapend - minimapstart, minimapend - minimapstart);
                 this.pictureBox1.Location = new Point((width - this.pictureBox1.Width) / 2, 0);
             }
+            Thread.Sleep(1000);
+            CoreWebView2EnvironmentOptions options = new CoreWebView2EnvironmentOptions("--disable-web-security --allow-file-access-from-files --allow-file-access", "en");
+            CoreWebView2Environment environment = await CoreWebView2Environment.CreateAsync(null, null, options);
+            await webView21.EnsureCoreWebView2Async(environment);
+            webView21.CoreWebView2.SetVirtualHostNameToFolderMapping("appassets", "assets", CoreWebView2HostResourceAccessKind.DenyCors);
+            webView21.CoreWebView2.Settings.AreDevToolsEnabled = true;
+            webView21.KeyDown += WebView21_KeyDown;
+            webView21.Source = new Uri("https://appassets/index.html");
+            webView21.Dock = DockStyle.Fill;
+            webView21.DefaultBackgroundColor = System.Drawing.Color.Transparent;
+            this.Controls.Add(webView21);
+            this.Location = new System.Drawing.Point(0, 0);
+            this.Size = new System.Drawing.Size(width, height);
+            try
+            {
+                var controllers = new[] { new Controller(UserIndex.One) };
+                xnum = 0;
+                foreach (var selectControler in controllers)
+                {
+                    if (selectControler.IsConnected)
+                    {
+                        controller[xnum] = selectControler;
+                        xnum++;
+                        if (xnum > 0)
+                        {
+                            break;
+                        }
+                    }
+                }
+            }
+            catch { }
+            Task.Run(() => GetAudioByteArray());
             Task.Run(() => FadeOut());
         }
         private void FadeOut()
@@ -213,7 +214,7 @@ namespace ciine
             Bitmap bmpCrop = bmp.Clone(CropArea, bmp.PixelFormat);
             return bmpCrop;
         }
-        public async void SetDots(double ir1x, double ir1y, double ir2x, double ir2y)
+        private async void SetDots(double ir1x, double ir1y, double ir2x, double ir2y)
         {
             try
             {
@@ -221,7 +222,7 @@ namespace ciine
             }
             catch { }
         }
-        public async void SetController(bool ControllerButtonAPressed, bool ControllerButtonBPressed, bool ControllerButtonXPressed, bool ControllerButtonYPressed, bool ControllerButtonStartPressed, bool ControllerButtonBackPressed, bool ControllerButtonDownPressed, bool ControllerButtonUpPressed, bool ControllerButtonLeftPressed, bool ControllerButtonRightPressed, bool ControllerButtonShoulderLeftPressed, bool ControllerButtonShoulderRightPressed, bool ControllerThumbpadLeftPressed, bool ControllerThumbpadRightPressed, double ControllerTriggerLeftPosition, double ControllerTriggerRightPosition, double ControllerThumbLeftX, double ControllerThumbLeftY, double ControllerThumbRightX, double ControllerThumbRightY)
+        private async void SetController(bool ControllerButtonAPressed, bool ControllerButtonBPressed, bool ControllerButtonXPressed, bool ControllerButtonYPressed, bool ControllerButtonStartPressed, bool ControllerButtonBackPressed, bool ControllerButtonDownPressed, bool ControllerButtonUpPressed, bool ControllerButtonLeftPressed, bool ControllerButtonRightPressed, bool ControllerButtonShoulderLeftPressed, bool ControllerButtonShoulderRightPressed, bool ControllerThumbpadLeftPressed, bool ControllerThumbpadRightPressed, double ControllerTriggerLeftPosition, double ControllerTriggerRightPosition, double ControllerThumbLeftX, double ControllerThumbLeftY, double ControllerThumbRightX, double ControllerThumbRightY)
         {
             try
             {
@@ -597,7 +598,7 @@ namespace ciine
             Thread.Sleep(100);
             capture.Stop();
         }
-        public void GetAudioByteArray()
+        private void GetAudioByteArray()
         {
             capture = new CSCore.SoundIn.WasapiLoopbackCapture();
             capture.Initialize();
@@ -629,16 +630,16 @@ namespace ciine
             capture.DataAvailable += Capture_DataAvailable;
             capture.Start();
         }
-        public void Capture_DataAvailable(object sender, CSCore.SoundIn.DataAvailableEventArgs e)
+        private void Capture_DataAvailable(object sender, CSCore.SoundIn.DataAvailableEventArgs e)
         {
             finalSource.Read(e.Data, e.Offset, e.ByteCount);
         }
-        public void NotificationSource_SingleBlockRead(object sender, CSCore.Streams.SingleBlockReadEventArgs e)
+        private void NotificationSource_SingleBlockRead(object sender, CSCore.Streams.SingleBlockReadEventArgs e)
         {
             spectrumProviderLeft.Add(e.Left, 0);
             spectrumProviderRight.Add(0, e.Right);
         }
-        public float[] GetFFtDataLeft()
+        private float[] GetFFtDataLeft()
         {
             lock (barDataLeft)
             {
@@ -662,7 +663,7 @@ namespace ciine
                 return null;
             }
         }
-        public float[] GetFFtDataRight()
+        private float[] GetFFtDataRight()
         {
             lock (barDataRight)
             {
@@ -686,7 +687,7 @@ namespace ciine
                 return null;
             }
         }
-        public void ComputeData()
+        private void ComputeData()
         {
             try
             {
