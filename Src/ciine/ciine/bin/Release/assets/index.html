@@ -389,6 +389,57 @@
 
     <script>
 
+        function setAudioVision(rawdata100) {
+            try {
+                var widthsize = window.innerHeight * 9 / 16 + 'px';
+                var widthposition = (window.innerWidth - window.innerHeight * 9 / 16) / 2 + 'px';
+                var parentcanvas = document.getElementById('parentcanvas');
+                if (parentcanvas == null) {
+                    parentcanvas = document.createElement('div');
+                    document.body.insertBefore(parentcanvas, document.body.firstChild);
+                    parentcanvas.id = 'parentcanvas';
+                }
+                parentcanvas = document.getElementById('parentcanvas');
+                parentcanvas.style.position = 'absolute';
+                parentcanvas.style.display = 'inline-block';
+                parentcanvas.style.width = widthsize;
+                parentcanvas.style.height = '1000px';
+                parentcanvas.style.left = widthposition;
+                parentcanvas.style.bottom = '0px';
+                parentcanvas.style.backgroundColor = 'transparent';
+                var canvas = document.getElementById('canvas');
+                if (canvas == null) {
+                    canvas = document.createElement('canvas');
+                    parentcanvas.append(canvas);
+                    canvas.id = 'canvas';
+                }
+                canvas = document.getElementById('canvas');
+                canvas.width = parentcanvas.clientWidth;
+                canvas.height = parentcanvas.clientHeight;
+                var WIDTH = canvas.width;
+                var HEIGHT = canvas.height;
+                var ctx = canvas.getContext('2d');
+                ctx.fillStyle = 'transparent';
+                ctx.fillRect(0, 0, WIDTH, HEIGHT);
+                var audiorawdata = rawdata100;
+                var barWidth = WIDTH / 199;
+                var barHeight = HEIGHT;
+                var x = 0;
+                for (var i = 1; i < 200; i += 1) {
+                    barHeight = audiorawdata[i] / 2;
+                    ctx.fillStyle = 'white';
+                    ctx.strokeStyle = 'white';
+                    ctx.fillRect(x, HEIGHT - barHeight, barWidth, barHeight);
+                    x += barWidth;
+                }
+                ctx.stroke();
+            }
+            catch { }
+        }
+    </script>
+
+    <script>
+
         var Controller_A;
         var Controller_B;
         var Controller_X;

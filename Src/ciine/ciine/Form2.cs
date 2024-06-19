@@ -396,77 +396,29 @@ namespace ciine
         {
             if (!closed)
             {
-                try
-                {
-                    bmp = new Bitmap(minimapend - minimapstart, minimapend - minimapstart);
-                    Graphics graphics = Graphics.FromImage(bmp as Image);
-                    graphics.PixelOffsetMode = PixelOffsetMode.HighSpeed;
-                    graphics.SmoothingMode = SmoothingMode.HighSpeed;
-                    graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.Low;
-                    graphics.CompositingMode = CompositingMode.SourceCopy;
-                    graphics.CompositingQuality = CompositingQuality.HighSpeed;
-                    graphics.Clear(Color.Transparent);
-                    graphics.CopyFromScreen(minimapstart, minimapstart, 0, 0, bmp.Size);
-                    this.pictureBox1.Image = bmp;
-                    graphics.Dispose();
-                }
-                catch { }
+                SetMinimap();
                 SetDots(ir1x, ir1y, ir2x, ir2y);
                 taskEmulate();
-                try
-                {
-                    ComputeData();
-                    string stringinject = @"
-                        try {
-                            var widthsize = window.innerHeight * 9 / 16 + 'px';
-                            var widthsizemid = window.innerHeight * 9 / 16 / 2 + 'px';
-                            var parentcanvas = document.getElementById('parentcanvas');
-                            if (parentcanvas == null) {
-                                parentcanvas = document.createElement('div');
-                                document.body.insertBefore(parentcanvas, document.body.firstChild);
-                                parentcanvas.id = 'parentcanvas';
-                            }
-                            parentcanvas = document.getElementById('parentcanvas');
-                            parentcanvas.style.position = 'absolute';
-                            parentcanvas.style.display = 'inline-block';
-                            parentcanvas.style.width = widthsize;
-                            parentcanvas.style.height = '1000px';
-                            parentcanvas.style.left = 'calc(50% - widthsizemid)';
-                            parentcanvas.style.bottom = '0px';
-                            parentcanvas.style.backgroundColor = 'transparent';
-                            var canvas = document.getElementById('canvas');
-                            if (canvas == null) {
-                                canvas = document.createElement('canvas');
-                                parentcanvas.append(canvas);
-                                canvas.id = 'canvas';
-                            }
-                            canvas = document.getElementById('canvas');
-                            canvas.width = parentcanvas.clientWidth;
-                            canvas.height = parentcanvas.clientHeight;
-                            var WIDTH = canvas.width;
-                            var HEIGHT = canvas.height;
-                            var ctx = canvas.getContext('2d');
-                            ctx.fillStyle = 'transparent';
-                            ctx.fillRect(0, 0, WIDTH, HEIGHT);
-                            var audiorawdata = [rawdata100];
-                            var barWidth = WIDTH / 199;
-                            var barHeight = HEIGHT;
-                            var x = 0;
-                            for (var i = 1; i < 200; i += 1) {
-                                barHeight = audiorawdata[i] / 2;
-                                ctx.fillStyle = 'white';
-                                ctx.strokeStyle = 'white';
-                                ctx.fillRect(x, HEIGHT - barHeight, barWidth, barHeight);
-                                x += barWidth;
-                            }
-                            ctx.stroke();
-                        }
-                        catch {}
-                    ";
-                    await execScriptHelper(stringinject.Replace("rawdata100", (int)barDataLeft[0] + ", " + (int)barDataLeft[1] + ", " + (int)barDataLeft[2] + ", " + (int)barDataLeft[3] + ", " + (int)barDataLeft[4] + ", " + (int)barDataLeft[5] + ", " + (int)barDataLeft[6] + ", " + (int)barDataLeft[7] + ", " + (int)barDataLeft[8] + ", " + (int)barDataLeft[9] + ", " + (int)barDataLeft[10] + ", " + (int)barDataLeft[11] + ", " + (int)barDataLeft[12] + ", " + (int)barDataLeft[13] + ", " + (int)barDataLeft[14] + ", " + (int)barDataLeft[15] + ", " + (int)barDataLeft[16] + ", " + (int)barDataLeft[17] + ", " + (int)barDataLeft[18] + ", " + (int)barDataLeft[19] + ", " + (int)barDataLeft[20] + ", " + (int)barDataLeft[21] + ", " + (int)barDataLeft[22] + ", " + (int)barDataLeft[23] + ", " + (int)barDataLeft[24] + ", " + (int)barDataLeft[25] + ", " + (int)barDataLeft[26] + ", " + (int)barDataLeft[27] + ", " + (int)barDataLeft[28] + ", " + (int)barDataLeft[29] + ", " + (int)barDataLeft[30] + ", " + (int)barDataLeft[31] + ", " + (int)barDataLeft[32] + ", " + (int)barDataLeft[33] + ", " + (int)barDataLeft[34] + ", " + (int)barDataLeft[35] + ", " + (int)barDataLeft[36] + ", " + (int)barDataLeft[37] + ", " + (int)barDataLeft[38] + ", " + (int)barDataLeft[39] + ", " + (int)barDataLeft[40] + ", " + (int)barDataLeft[41] + ", " + (int)barDataLeft[42] + ", " + (int)barDataLeft[43] + ", " + (int)barDataLeft[44] + ", " + (int)barDataLeft[45] + ", " + (int)barDataLeft[46] + ", " + (int)barDataLeft[47] + ", " + (int)barDataLeft[48] + ", " + (int)barDataLeft[49] + ", " + (int)barDataLeft[50] + ", " + (int)barDataLeft[51] + ", " + (int)barDataLeft[52] + ", " + (int)barDataLeft[53] + ", " + (int)barDataLeft[54] + ", " + (int)barDataLeft[55] + ", " + (int)barDataLeft[56] + ", " + (int)barDataLeft[57] + ", " + (int)barDataLeft[58] + ", " + (int)barDataLeft[59] + ", " + (int)barDataLeft[60] + ", " + (int)barDataLeft[61] + ", " + (int)barDataLeft[62] + ", " + (int)barDataLeft[63] + ", " + (int)barDataLeft[64] + ", " + (int)barDataLeft[65] + ", " + (int)barDataLeft[66] + ", " + (int)barDataLeft[67] + ", " + (int)barDataLeft[68] + ", " + (int)barDataLeft[69] + ", " + (int)barDataLeft[70] + ", " + (int)barDataLeft[71] + ", " + (int)barDataLeft[72] + ", " + (int)barDataLeft[73] + ", " + (int)barDataLeft[74] + ", " + (int)barDataLeft[75] + ", " + (int)barDataLeft[76] + ", " + (int)barDataLeft[77] + ", " + (int)barDataLeft[78] + ", " + (int)barDataLeft[79] + ", " + (int)barDataLeft[80] + ", " + (int)barDataLeft[81] + ", " + (int)barDataLeft[82] + ", " + (int)barDataLeft[83] + ", " + (int)barDataLeft[84] + ", " + (int)barDataLeft[85] + ", " + (int)barDataLeft[86] + ", " + (int)barDataLeft[87] + ", " + (int)barDataLeft[88] + ", " + (int)barDataLeft[89] + ", " + (int)barDataLeft[90] + ", " + (int)barDataLeft[91] + ", " + (int)barDataLeft[92] + ", " + (int)barDataLeft[93] + ", " + (int)barDataLeft[94] + ", " + (int)barDataLeft[95] + ", " + (int)barDataLeft[96] + ", " + (int)barDataLeft[97] + ", " + (int)barDataLeft[98] + ", " + (int)barDataLeft[99] + ", " + (int)barDataRight[0] + ", " + (int)barDataRight[1] + ", " + (int)barDataRight[2] + ", " + (int)barDataRight[3] + ", " + (int)barDataRight[4] + ", " + (int)barDataRight[5] + ", " + (int)barDataRight[6] + ", " + (int)barDataRight[7] + ", " + (int)barDataRight[8] + ", " + (int)barDataRight[9] + ", " + (int)barDataRight[10] + ", " + (int)barDataRight[11] + ", " + (int)barDataRight[12] + ", " + (int)barDataRight[13] + ", " + (int)barDataRight[14] + ", " + (int)barDataRight[15] + ", " + (int)barDataRight[16] + ", " + (int)barDataRight[17] + ", " + (int)barDataRight[18] + ", " + (int)barDataRight[19] + ", " + (int)barDataRight[20] + ", " + (int)barDataRight[21] + ", " + (int)barDataRight[22] + ", " + (int)barDataRight[23] + ", " + (int)barDataRight[24] + ", " + (int)barDataRight[25] + ", " + (int)barDataRight[26] + ", " + (int)barDataRight[27] + ", " + (int)barDataRight[28] + ", " + (int)barDataRight[29] + ", " + (int)barDataRight[30] + ", " + (int)barDataRight[31] + ", " + (int)barDataRight[32] + ", " + (int)barDataRight[33] + ", " + (int)barDataRight[34] + ", " + (int)barDataRight[35] + ", " + (int)barDataRight[36] + ", " + (int)barDataRight[37] + ", " + (int)barDataRight[38] + ", " + (int)barDataRight[39] + ", " + (int)barDataRight[40] + ", " + (int)barDataRight[41] + ", " + (int)barDataRight[42] + ", " + (int)barDataRight[43] + ", " + (int)barDataRight[44] + ", " + (int)barDataRight[45] + ", " + (int)barDataRight[46] + ", " + (int)barDataRight[47] + ", " + (int)barDataRight[48] + ", " + (int)barDataRight[49] + ", " + (int)barDataRight[50] + ", " + (int)barDataRight[51] + ", " + (int)barDataRight[52] + ", " + (int)barDataRight[53] + ", " + (int)barDataRight[54] + ", " + (int)barDataRight[55] + ", " + (int)barDataRight[56] + ", " + (int)barDataRight[57] + ", " + (int)barDataRight[58] + ", " + (int)barDataRight[59] + ", " + (int)barDataRight[60] + ", " + (int)barDataRight[61] + ", " + (int)barDataRight[62] + ", " + (int)barDataRight[63] + ", " + (int)barDataRight[64] + ", " + (int)barDataRight[65] + ", " + (int)barDataRight[66] + ", " + (int)barDataRight[67] + ", " + (int)barDataRight[68] + ", " + (int)barDataRight[69] + ", " + (int)barDataRight[70] + ", " + (int)barDataRight[71] + ", " + (int)barDataRight[72] + ", " + (int)barDataRight[73] + ", " + (int)barDataRight[74] + ", " + (int)barDataRight[75] + ", " + (int)barDataRight[76] + ", " + (int)barDataRight[77] + ", " + (int)barDataRight[78] + ", " + (int)barDataRight[79] + ", " + (int)barDataRight[80] + ", " + (int)barDataRight[81] + ", " + (int)barDataRight[82] + ", " + (int)barDataRight[83] + ", " + (int)barDataRight[84] + ", " + (int)barDataRight[85] + ", " + (int)barDataRight[86] + ", " + (int)barDataRight[87] + ", " + (int)barDataRight[88] + ", " + (int)barDataRight[89] + ", " + (int)barDataRight[90] + ", " + (int)barDataRight[91] + ", " + (int)barDataRight[92] + ", " + (int)barDataRight[93] + ", " + (int)barDataRight[94] + ", " + (int)barDataRight[95] + ", " + (int)barDataRight[96] + ", " + (int)barDataRight[97] + ", " + (int)barDataRight[98] + ", " + (int)barDataRight[99]));
-                }
-                catch { }
+                SetAudioVision((int)barDataLeft[0] + ", " + (int)barDataLeft[1] + ", " + (int)barDataLeft[2] + ", " + (int)barDataLeft[3] + ", " + (int)barDataLeft[4] + ", " + (int)barDataLeft[5] + ", " + (int)barDataLeft[6] + ", " + (int)barDataLeft[7] + ", " + (int)barDataLeft[8] + ", " + (int)barDataLeft[9] + ", " + (int)barDataLeft[10] + ", " + (int)barDataLeft[11] + ", " + (int)barDataLeft[12] + ", " + (int)barDataLeft[13] + ", " + (int)barDataLeft[14] + ", " + (int)barDataLeft[15] + ", " + (int)barDataLeft[16] + ", " + (int)barDataLeft[17] + ", " + (int)barDataLeft[18] + ", " + (int)barDataLeft[19] + ", " + (int)barDataLeft[20] + ", " + (int)barDataLeft[21] + ", " + (int)barDataLeft[22] + ", " + (int)barDataLeft[23] + ", " + (int)barDataLeft[24] + ", " + (int)barDataLeft[25] + ", " + (int)barDataLeft[26] + ", " + (int)barDataLeft[27] + ", " + (int)barDataLeft[28] + ", " + (int)barDataLeft[29] + ", " + (int)barDataLeft[30] + ", " + (int)barDataLeft[31] + ", " + (int)barDataLeft[32] + ", " + (int)barDataLeft[33] + ", " + (int)barDataLeft[34] + ", " + (int)barDataLeft[35] + ", " + (int)barDataLeft[36] + ", " + (int)barDataLeft[37] + ", " + (int)barDataLeft[38] + ", " + (int)barDataLeft[39] + ", " + (int)barDataLeft[40] + ", " + (int)barDataLeft[41] + ", " + (int)barDataLeft[42] + ", " + (int)barDataLeft[43] + ", " + (int)barDataLeft[44] + ", " + (int)barDataLeft[45] + ", " + (int)barDataLeft[46] + ", " + (int)barDataLeft[47] + ", " + (int)barDataLeft[48] + ", " + (int)barDataLeft[49] + ", " + (int)barDataLeft[50] + ", " + (int)barDataLeft[51] + ", " + (int)barDataLeft[52] + ", " + (int)barDataLeft[53] + ", " + (int)barDataLeft[54] + ", " + (int)barDataLeft[55] + ", " + (int)barDataLeft[56] + ", " + (int)barDataLeft[57] + ", " + (int)barDataLeft[58] + ", " + (int)barDataLeft[59] + ", " + (int)barDataLeft[60] + ", " + (int)barDataLeft[61] + ", " + (int)barDataLeft[62] + ", " + (int)barDataLeft[63] + ", " + (int)barDataLeft[64] + ", " + (int)barDataLeft[65] + ", " + (int)barDataLeft[66] + ", " + (int)barDataLeft[67] + ", " + (int)barDataLeft[68] + ", " + (int)barDataLeft[69] + ", " + (int)barDataLeft[70] + ", " + (int)barDataLeft[71] + ", " + (int)barDataLeft[72] + ", " + (int)barDataLeft[73] + ", " + (int)barDataLeft[74] + ", " + (int)barDataLeft[75] + ", " + (int)barDataLeft[76] + ", " + (int)barDataLeft[77] + ", " + (int)barDataLeft[78] + ", " + (int)barDataLeft[79] + ", " + (int)barDataLeft[80] + ", " + (int)barDataLeft[81] + ", " + (int)barDataLeft[82] + ", " + (int)barDataLeft[83] + ", " + (int)barDataLeft[84] + ", " + (int)barDataLeft[85] + ", " + (int)barDataLeft[86] + ", " + (int)barDataLeft[87] + ", " + (int)barDataLeft[88] + ", " + (int)barDataLeft[89] + ", " + (int)barDataLeft[90] + ", " + (int)barDataLeft[91] + ", " + (int)barDataLeft[92] + ", " + (int)barDataLeft[93] + ", " + (int)barDataLeft[94] + ", " + (int)barDataLeft[95] + ", " + (int)barDataLeft[96] + ", " + (int)barDataLeft[97] + ", " + (int)barDataLeft[98] + ", " + (int)barDataLeft[99] + ", " + (int)barDataRight[0] + ", " + (int)barDataRight[1] + ", " + (int)barDataRight[2] + ", " + (int)barDataRight[3] + ", " + (int)barDataRight[4] + ", " + (int)barDataRight[5] + ", " + (int)barDataRight[6] + ", " + (int)barDataRight[7] + ", " + (int)barDataRight[8] + ", " + (int)barDataRight[9] + ", " + (int)barDataRight[10] + ", " + (int)barDataRight[11] + ", " + (int)barDataRight[12] + ", " + (int)barDataRight[13] + ", " + (int)barDataRight[14] + ", " + (int)barDataRight[15] + ", " + (int)barDataRight[16] + ", " + (int)barDataRight[17] + ", " + (int)barDataRight[18] + ", " + (int)barDataRight[19] + ", " + (int)barDataRight[20] + ", " + (int)barDataRight[21] + ", " + (int)barDataRight[22] + ", " + (int)barDataRight[23] + ", " + (int)barDataRight[24] + ", " + (int)barDataRight[25] + ", " + (int)barDataRight[26] + ", " + (int)barDataRight[27] + ", " + (int)barDataRight[28] + ", " + (int)barDataRight[29] + ", " + (int)barDataRight[30] + ", " + (int)barDataRight[31] + ", " + (int)barDataRight[32] + ", " + (int)barDataRight[33] + ", " + (int)barDataRight[34] + ", " + (int)barDataRight[35] + ", " + (int)barDataRight[36] + ", " + (int)barDataRight[37] + ", " + (int)barDataRight[38] + ", " + (int)barDataRight[39] + ", " + (int)barDataRight[40] + ", " + (int)barDataRight[41] + ", " + (int)barDataRight[42] + ", " + (int)barDataRight[43] + ", " + (int)barDataRight[44] + ", " + (int)barDataRight[45] + ", " + (int)barDataRight[46] + ", " + (int)barDataRight[47] + ", " + (int)barDataRight[48] + ", " + (int)barDataRight[49] + ", " + (int)barDataRight[50] + ", " + (int)barDataRight[51] + ", " + (int)barDataRight[52] + ", " + (int)barDataRight[53] + ", " + (int)barDataRight[54] + ", " + (int)barDataRight[55] + ", " + (int)barDataRight[56] + ", " + (int)barDataRight[57] + ", " + (int)barDataRight[58] + ", " + (int)barDataRight[59] + ", " + (int)barDataRight[60] + ", " + (int)barDataRight[61] + ", " + (int)barDataRight[62] + ", " + (int)barDataRight[63] + ", " + (int)barDataRight[64] + ", " + (int)barDataRight[65] + ", " + (int)barDataRight[66] + ", " + (int)barDataRight[67] + ", " + (int)barDataRight[68] + ", " + (int)barDataRight[69] + ", " + (int)barDataRight[70] + ", " + (int)barDataRight[71] + ", " + (int)barDataRight[72] + ", " + (int)barDataRight[73] + ", " + (int)barDataRight[74] + ", " + (int)barDataRight[75] + ", " + (int)barDataRight[76] + ", " + (int)barDataRight[77] + ", " + (int)barDataRight[78] + ", " + (int)barDataRight[79] + ", " + (int)barDataRight[80] + ", " + (int)barDataRight[81] + ", " + (int)barDataRight[82] + ", " + (int)barDataRight[83] + ", " + (int)barDataRight[84] + ", " + (int)barDataRight[85] + ", " + (int)barDataRight[86] + ", " + (int)barDataRight[87] + ", " + (int)barDataRight[88] + ", " + (int)barDataRight[89] + ", " + (int)barDataRight[90] + ", " + (int)barDataRight[91] + ", " + (int)barDataRight[92] + ", " + (int)barDataRight[93] + ", " + (int)barDataRight[94] + ", " + (int)barDataRight[95] + ", " + (int)barDataRight[96] + ", " + (int)barDataRight[97] + ", " + (int)barDataRight[98] + ", " + (int)barDataRight[99]);
             }
+        }
+        private void SetMinimap()
+        {
+            try
+            {
+                bmp = new Bitmap(minimapend - minimapstart, minimapend - minimapstart);
+                Graphics graphics = Graphics.FromImage(bmp as Image);
+                graphics.PixelOffsetMode = PixelOffsetMode.HighSpeed;
+                graphics.SmoothingMode = SmoothingMode.HighSpeed;
+                graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.Low;
+                graphics.CompositingMode = CompositingMode.SourceCopy;
+                graphics.CompositingQuality = CompositingQuality.HighSpeed;
+                graphics.Clear(Color.Transparent);
+                graphics.CopyFromScreen(minimapstart, minimapstart, 0, 0, bmp.Size);
+                this.pictureBox1.Image = bmp;
+                graphics.Dispose();
+            }
+            catch { }
         }
         private async void taskEmulate()
         {
@@ -623,6 +575,15 @@ namespace ciine
         {
             closed = true;
             Thread.Sleep(100);
+        }
+        private async void SetAudioVision(string rawdata100)
+        {
+            try
+            {
+                ComputeData();
+                await execScriptHelper($"setAudioVision([{rawdata100.ToString()}]);");
+            }
+            catch { }
         }
         private void GetAudioByteArray()
         {

@@ -402,7 +402,12 @@ namespace ciine
             outputtemp = output;
             Task.Run(() => processcapturevideo.StandardInput.WriteLine('q'));
             Task.Run(() => capture.StopRecording());
-            Thread.Sleep(20000);
+            Thread.Sleep(4000);
+            do
+            {
+                Thread.Sleep(1000);
+
+            } while (new FileInfo(outputaudiotemp).Length <= 0 | new FileInfo(outputvideotemp).Length <= 0);
             processmerge = new Process();
             processmerge.StartInfo.CreateNoWindow = true;
             processmerge.StartInfo.UseShellExecute = false;
