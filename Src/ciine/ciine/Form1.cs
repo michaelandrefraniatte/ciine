@@ -567,6 +567,7 @@ namespace ciine
                         inc++;
                         if (inc > 1)
                         {
+                            MessageBox.Show("Closing echo! You don't have a second audio card enable.");
                             break;
                         }
                     }
