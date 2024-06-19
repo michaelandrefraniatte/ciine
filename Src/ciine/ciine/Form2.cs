@@ -85,6 +85,7 @@ namespace ciine
         public BasicSpectrumProvider spectrumProviderRight;
         public CSCore.IWaveSource finalSource;
         private Bitmap bmp;
+        public static int minimapstart, minimapend;
         private FilterInfoCollection CaptureDevice;
         private VideoCaptureDevice FinalFrame;
         private VideoCapabilities[] videoCapabilities;
@@ -137,10 +138,10 @@ namespace ciine
             {
                 pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
                 pictureBox2.SizeMode = PictureBoxSizeMode.StretchImage;
-                this.pictureBox1.Size = new Size(170 - 15, 170 - 15);
-                this.pictureBox1.Location = new Point((width - this.pictureBox1.Width) / 2 - (170 - 15) / 2 - 5, 0);
-                this.pictureBox2.Size = new Size(170 - 15, 170 - 15);
-                this.pictureBox2.Location = new Point((width - this.pictureBox2.Width) / 2 + (170 - 15) / 2 + 5, 0);
+                this.pictureBox1.Size = new Size(minimapend - minimapstart, minimapend - minimapstart);
+                this.pictureBox1.Location = new Point((width - this.pictureBox1.Width) / 2 - (minimapend - minimapstart) / 2 - 5, 0);
+                this.pictureBox2.Size = new Size(minimapend - minimapstart, minimapend - minimapstart);
+                this.pictureBox2.Location = new Point((width - this.pictureBox2.Width) / 2 + (minimapend - minimapstart) / 2 + 5, 0);
                 gp = new GraphicsPath();
                 gp.AddEllipse(pictureBox1.DisplayRectangle);
                 pictureBox1.Region = new Region(gp);
@@ -160,7 +161,7 @@ namespace ciine
             else
             {
                 pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
-                this.pictureBox1.Size = new Size(170 - 15, 170 - 15);
+                this.pictureBox1.Size = new Size(minimapend - minimapstart, minimapend - minimapstart);
                 this.pictureBox1.Location = new Point((width - this.pictureBox1.Width) / 2, 0);
             }
         }
@@ -384,7 +385,7 @@ namespace ciine
             {
                 try
                 {
-                    bmp = new Bitmap(170 - 15, 170 - 15);
+                    bmp = new Bitmap(minimapend - minimapstart, minimapend - minimapstart);
                     Graphics graphics = Graphics.FromImage(bmp as Image);
                     graphics.PixelOffsetMode = PixelOffsetMode.HighSpeed;
                     graphics.SmoothingMode = SmoothingMode.HighSpeed;
@@ -392,7 +393,7 @@ namespace ciine
                     graphics.CompositingMode = CompositingMode.SourceCopy;
                     graphics.CompositingQuality = CompositingQuality.HighSpeed;
                     graphics.Clear(Color.Transparent);
-                    graphics.CopyFromScreen(15, 15, 0, 0, bmp.Size);
+                    graphics.CopyFromScreen(minimapstart, minimapstart, 0, 0, bmp.Size);
                     this.pictureBox1.Image = bmp;
                     graphics.Dispose();
                 }

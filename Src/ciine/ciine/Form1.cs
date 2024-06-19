@@ -126,6 +126,10 @@ namespace ciine
                     commandgpu = createdfile.ReadLine();
                     createdfile.ReadLine();
                     videodelay = createdfile.ReadLine();
+                    createdfile.ReadLine();
+                    Form2.minimapstart = Convert.ToInt32(createdfile.ReadLine());
+                    createdfile.ReadLine();
+                    Form2.minimapend = Convert.ToInt32(createdfile.ReadLine());
                 }
                 double ticks = double.Parse(videodelay);
                 TimeSpan time = TimeSpan.FromMilliseconds(ticks);
