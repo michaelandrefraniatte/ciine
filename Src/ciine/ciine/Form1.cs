@@ -45,9 +45,9 @@ namespace ciine
         [DllImport("ntdll.dll", EntryPoint = "NtSetTimerResolution")]
         private static extern void NtSetTimerResolution(uint DesiredResolution, bool SetResolution, ref uint CurrentResolution);
         private static uint CurrentResolution = 0;
-        private static bool controller1_send_back, controller1_send_start, controller1_send_A, controller1_send_B, controller1_send_X, controller1_send_Y, controller1_send_up, controller1_send_left, controller1_send_down, controller1_send_right, controller1_send_leftstick, controller1_send_rightstick, controller1_send_leftbumper, controller1_send_rightbumper, controller1_send_xbox;
-        private static double controller1_send_leftstickx, controller1_send_leftsticky, controller1_send_rightstickx, controller1_send_rightsticky, controller1_send_lefttriggerposition, controller1_send_righttriggerposition;
-        private static double mousex = 0f, mousey = 0f, viewpower1x = 0f, viewpower2x = 1f, viewpower3x = 0f, viewpower1y = 0.25f, viewpower2y = 0.75f, viewpower3y = 0f, dzx = 2.0f, dzy = 2.0f, countup = 0, countupup = 0, countxy = 0, county = 0;
+        private bool controller1_send_back, controller1_send_start, controller1_send_A, controller1_send_B, controller1_send_X, controller1_send_Y, controller1_send_up, controller1_send_left, controller1_send_down, controller1_send_right, controller1_send_leftstick, controller1_send_rightstick, controller1_send_leftbumper, controller1_send_rightbumper, controller1_send_xbox;
+        private double controller1_send_leftstickx, controller1_send_leftsticky, controller1_send_rightstickx, controller1_send_rightsticky, controller1_send_lefttriggerposition, controller1_send_righttriggerposition;
+        private double mousex = 0f, mousey = 0f, viewpower1x = 0f, viewpower2x = 1f, viewpower3x = 0f, viewpower1y = 0.25f, viewpower2y = 0.75f, viewpower3y = 0f, dzx = 2.0f, dzy = 2.0f, countup = 0, countupup = 0, countxy = 0, county = 0;
         private WiiMote wm = new WiiMote();
         private XBoxController scp = new XBoxController();
         private const int GWL_STYLE = -16;
@@ -60,27 +60,27 @@ namespace ciine
         private const uint WS_POPUP = 0x80000000;
         private const uint WS_TABSTOP = 0x00010000;
         private const uint WS_VISIBLE = 0x10000000;
-        private static int width, height;
-        private static bool running, getstate, closed, capturedevicefirst, ison;
-        public static int processid = 0;
-        private static List<string> servBLs = new List<string>();
-        private static string procnamesbl = "", servNames = "";
-        private static ServiceController[] services;
-        private static TimeSpan timeout = new TimeSpan(0, 0, 1);
+        private int width, height;
+        private bool running, getstate, closed, capturedevicefirst, ison;
+        public int processid = 0;
+        private List<string> servBLs = new List<string>();
+        private string procnamesbl = "", servNames = "";
+        private ServiceController[] services;
+        private TimeSpan timeout = new TimeSpan(0, 0, 1);
         private NAudio.Wave.WasapiLoopbackCapture waveIn = null;
         private BufferedWaveProvider waveProvider = null;
         private NAudio.Wave.WasapiOut waveOut = null;
         private Equalizer equalizer;
         private EqualizerBand[] bands;
-        private static string outputvideo, outputaudio, output, outputvideotemp, outputaudiotemp, outputtemp, cpuorgpu, commandcpu, commandgpu, videodelay, ss;
-        private static bool capturing;
-        private static WasapiOut wasapiOut;
-        private static WasapiLoopbackCapture capture;
-        private static WaveFileWriter writer;
-        private static Process processcapturevideo, processmerge;
+        private string outputvideo, outputaudio, output, outputvideotemp, outputaudiotemp, outputtemp, cpuorgpu, commandcpu, commandgpu, videodelay, ss;
+        private bool capturing;
+        private WasapiOut wasapiOut;
+        private WasapiLoopbackCapture capture;
+        private WaveFileWriter writer;
+        private Process processcapturevideo, processmerge;
         private valuechanged ValueChanged = new valuechanged();
-        private static Form2 form2;
-        private static bool form2visible;
+        private Form2 form2;
+        private bool form2visible;
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
             OnKeyDown(e.KeyData);
@@ -350,7 +350,7 @@ namespace ciine
                 catch { }
             }
         }
-        private static void StartCapture()
+        private void StartCapture()
         {
             Task.Run(() =>
             {
@@ -391,7 +391,7 @@ namespace ciine
                 processcapturevideo.BeginErrorReadLine();
             });
         }
-        private static void ErrorDataReceived(object sender, DataReceivedEventArgs e)
+        private void ErrorDataReceived(object sender, DataReceivedEventArgs e)
         {
             if (e.Data.IndexOf("frame= ") != -1 & capturing)
             {
@@ -399,7 +399,7 @@ namespace ciine
                 processcapturevideo.CancelErrorRead();
             }
         }
-        private static void StopCapture()
+        private void StopCapture()
         {
             outputaudiotemp = outputaudio;
             outputvideotemp = outputvideo;
