@@ -164,6 +164,17 @@ namespace ciine
                 this.pictureBox1.Size = new Size(minimapend - minimapstart, minimapend - minimapstart);
                 this.pictureBox1.Location = new Point((width - this.pictureBox1.Width) / 2, 0);
             }
+            Task.Run(() => FadeOut());
+        }
+        private void FadeOut()
+        {
+            float opacity = 0;
+            for (int i = 1; i <= 4000; i++)
+            {
+                opacity += 1f / 4000f;
+                this.Opacity = opacity;
+                Thread.Sleep(1);
+            }
         }
         private void Form2_KeyDown(object sender, KeyEventArgs e)
         {

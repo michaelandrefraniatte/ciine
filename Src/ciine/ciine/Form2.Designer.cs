@@ -74,7 +74,8 @@
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "Form2";
-            this.Text = "XCOverlay";
+            this.Opacity = 0D;
+            this.Text = "ciine overlay";
             this.TopMost = true;
             this.TransparencyKey = System.Drawing.Color.Magenta;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form2_FormClosing);
