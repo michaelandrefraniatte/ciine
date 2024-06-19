@@ -309,57 +309,41 @@ namespace ciine
             ValueChanged[20] = GetAsyncKeyState(Keys.NumPad0);
             if (valuechanged._ValueChanged[19] & valuechanged._valuechanged[19] & !capturing)
             {
-                try
+                capturing = true;
+                if (Application.OpenForms["Form2"] == null)
                 {
-                    if (Application.OpenForms["Form2"] == null)
-                    {
-                        form2visible = true;
-                        form2 = new Form2();
-                        form2.Show();
-                    }
+                    form2visible = true;
+                    form2 = new Form2();
+                    form2.Show();
                 }
-                finally
-                {
-                    capturing = true;
-                    string localDate = DateTime.Now.ToString();
-                    string name = localDate.Replace(" ", "-").Replace("/", "-").Replace(":", "-");
-                    outputvideo = name + ".mkv";
-                    outputaudio = name + ".wav";
-                    output = name + ".mp4";
-                    Task.Run(() => StartCapture());
-                }
+                string localDate = DateTime.Now.ToString();
+                string name = localDate.Replace(" ", "-").Replace("/", "-").Replace(":", "-");
+                outputvideo = name + ".mkv";
+                outputaudio = name + ".wav";
+                output = name + ".mp4";
+                Task.Run(() => StartCapture());
             }
             else
             {
                 if (valuechanged._ValueChanged[20] & valuechanged._valuechanged[20] & capturing)
                 {
-                    try
-                    {
-                        if (Application.OpenForms["Form2"] != null)
-                        {
-                            form2visible = false;
-                            form2.Close();
-                        }
-                    }
-                    finally
-                    {
-                        capturing = false;
-                        Task.Run(() => StopCapture());
-                    }
-                }
-            }
-            ValueChanged[21] = GetAsyncKeyState(Keys.Escape);
-            if (valuechanged._ValueChanged[21] & valuechanged._valuechanged[21] & capturing)
-            {
-                try
-                {
+                    capturing = false;
                     if (Application.OpenForms["Form2"] != null)
                     {
                         form2visible = false;
                         form2.Close();
                     }
+                    Task.Run(() => StopCapture());
                 }
-                catch { }
+            }
+            ValueChanged[21] = GetAsyncKeyState(Keys.Escape);
+            if (valuechanged._ValueChanged[21] & valuechanged._valuechanged[21] & capturing)
+            {
+                if (Application.OpenForms["Form2"] != null)
+                {
+                    form2visible = false;
+                    form2.Close();
+                }
             }
         }
         private void StartCapture()
