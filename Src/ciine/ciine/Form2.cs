@@ -133,7 +133,6 @@ namespace ciine
                 this.pictureBox1.Size = new Size(minimapend - minimapstart, minimapend - minimapstart);
                 this.pictureBox1.Location = new Point((width - this.pictureBox1.Width) / 2, 0);
             }
-            Task.Run(() => GetAudioByteArray());
             Thread.Sleep(1000);
             CoreWebView2EnvironmentOptions options = new CoreWebView2EnvironmentOptions("--disable-web-security --allow-file-access-from-files --allow-file-access", "en");
             CoreWebView2Environment environment = await CoreWebView2Environment.CreateAsync(null, null, options);
@@ -165,6 +164,7 @@ namespace ciine
                 }
             }
             catch { }
+            Task.Run(() => GetAudioByteArray());
             Task.Run(() => FadeOut());
         }
         private void FadeOut()
@@ -417,9 +417,9 @@ namespace ciine
                     ComputeData();
                     string stringinject = @"
                         try {
-                            var h = window.innerHeight;
-                            var width = h * 9 / 16 + 'px';
-                            var left = h * 9 / 16 / 2 + 'px';
+                            var height = window.innerHeight;
+                            var width = height * 9 / 16 + 'px';
+                            var left = height * 9 / 16 / 2 + 'px';
                             var parentcanvas = document.getElementById('parentcanvas');
                             if (parentcanvas == null) {
                                 parentcanvas = document.createElement('div');
@@ -586,21 +586,28 @@ namespace ciine
         {
             try
             {
-                capture.DataAvailable -= Capture_DataAvailable;
-                capture.Stop();
-                capture.Dispose();
+                webView21.Dispose();
             }
             finally
             {
                 try
                 {
-                    if (FinalFrame.IsRunning)
-                    {
-                        FinalFrame.NewFrame -= FinalFrame_NewFrame;
-                        FinalFrame.Stop();
-                    }
+                    capture.DataAvailable -= Capture_DataAvailable;
+                    capture.Stop();
+                    capture.Dispose();
                 }
-                catch { }
+                finally
+                {
+                    try
+                    {
+                        if (FinalFrame.IsRunning)
+                        {
+                            FinalFrame.NewFrame -= FinalFrame_NewFrame;
+                            FinalFrame.Stop();
+                        }
+                    }
+                    catch { }
+                }
             }
         }
         private void Form2_FormClosing(object sender, FormClosingEventArgs e)
