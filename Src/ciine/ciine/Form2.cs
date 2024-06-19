@@ -139,9 +139,9 @@ namespace ciine
                 pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
                 pictureBox2.SizeMode = PictureBoxSizeMode.StretchImage;
                 this.pictureBox1.Size = new Size(minimapend - minimapstart, minimapend - minimapstart);
-                this.pictureBox1.Location = new Point((width - this.pictureBox1.Width) / 2 - (minimapend - minimapstart) / 2 - 5, 5);
+                this.pictureBox1.Location = new Point((width - this.pictureBox1.Width) / 2 - this.pictureBox1.Width / 2 - 5, 5);
                 this.pictureBox2.Size = new Size(minimapend - minimapstart, minimapend - minimapstart);
-                this.pictureBox2.Location = new Point((width - this.pictureBox2.Width) / 2 + (minimapend - minimapstart) / 2 + 5, 5);
+                this.pictureBox2.Location = new Point((width - this.pictureBox2.Width) / 2 + this.pictureBox2.Width / 2 + 5, 5);
                 gp = new GraphicsPath();
                 gp.AddEllipse(pictureBox1.DisplayRectangle);
                 pictureBox1.Region = new Region(gp);
