@@ -133,6 +133,7 @@ namespace ciine
                 this.pictureBox1.Size = new Size(minimapend - minimapstart, minimapend - minimapstart);
                 this.pictureBox1.Location = new Point((width - this.pictureBox1.Width) / 2, 0);
             }
+            Task.Run(() => GetAudioByteArray());
             Thread.Sleep(1000);
             CoreWebView2EnvironmentOptions options = new CoreWebView2EnvironmentOptions("--disable-web-security --allow-file-access-from-files --allow-file-access", "en");
             CoreWebView2Environment environment = await CoreWebView2Environment.CreateAsync(null, null, options);
@@ -164,7 +165,6 @@ namespace ciine
                 }
             }
             catch { }
-            Task.Run(() => GetAudioByteArray());
             Task.Run(() => FadeOut());
         }
         private void FadeOut()
@@ -586,49 +586,61 @@ namespace ciine
         {
             try
             {
-                FinalFrame.NewFrame -= FinalFrame_NewFrame;
-                if (FinalFrame.IsRunning)
-                    FinalFrame.Stop();
+                capture.DataAvailable -= Capture_DataAvailable;
+                capture.Stop();
+                capture.Dispose();
             }
-            catch { }
+            finally
+            {
+                try
+                {
+                    if (FinalFrame.IsRunning)
+                    {
+                        FinalFrame.NewFrame -= FinalFrame_NewFrame;
+                        FinalFrame.Stop();
+                    }
+                }
+                catch { }
+            }
         }
         private void Form2_FormClosing(object sender, FormClosingEventArgs e)
         {
             closed = true;
             Thread.Sleep(100);
-            capture.Stop();
         }
         private void GetAudioByteArray()
         {
             capture = new CSCore.SoundIn.WasapiLoopbackCapture();
             capture.Initialize();
-            CSCore.IWaveSource source = new CSCore.Streams.SoundInSource(capture);
-            fftBuffer = new float[(int)CSCore.DSP.FftSize.Fft4096];
-            spectrumProviderLeft = new BasicSpectrumProvider(capture.WaveFormat.Channels, capture.WaveFormat.SampleRate, CSCore.DSP.FftSize.Fft4096);
-            lineSpectrumLeft = new LineSpectrum(CSCore.DSP.FftSize.Fft4096)
+            using (CSCore.IWaveSource source = new CSCore.Streams.SoundInSource(capture))
             {
-                SpectrumProvider = spectrumProviderLeft,
-                UseAverage = true,
-                BarCount = numBars,
-                BarSpacing = 2,
-                IsXLogScale = false,
-                ScalingStrategy = ScalingStrategy.Sqrt
-            };
-            spectrumProviderRight = new BasicSpectrumProvider(capture.WaveFormat.Channels, capture.WaveFormat.SampleRate, CSCore.DSP.FftSize.Fft4096);
-            lineSpectrumRight = new LineSpectrum(CSCore.DSP.FftSize.Fft4096)
-            {
-                SpectrumProvider = spectrumProviderRight,
-                UseAverage = true,
-                BarCount = numBars,
-                BarSpacing = 2,
-                IsXLogScale = false,
-                ScalingStrategy = ScalingStrategy.Sqrt
-            };
-            var notificationSource = new CSCore.Streams.SingleBlockNotificationStream(source.ToSampleSource());
-            notificationSource.SingleBlockRead += NotificationSource_SingleBlockRead;
-            finalSource = notificationSource.ToWaveSource();
-            capture.DataAvailable += Capture_DataAvailable;
-            capture.Start();
+                fftBuffer = new float[(int)CSCore.DSP.FftSize.Fft4096];
+                spectrumProviderLeft = new BasicSpectrumProvider(capture.WaveFormat.Channels, capture.WaveFormat.SampleRate, CSCore.DSP.FftSize.Fft4096);
+                lineSpectrumLeft = new LineSpectrum(CSCore.DSP.FftSize.Fft4096)
+                {
+                    SpectrumProvider = spectrumProviderLeft,
+                    UseAverage = true,
+                    BarCount = numBars,
+                    BarSpacing = 2,
+                    IsXLogScale = false,
+                    ScalingStrategy = ScalingStrategy.Sqrt
+                };
+                spectrumProviderRight = new BasicSpectrumProvider(capture.WaveFormat.Channels, capture.WaveFormat.SampleRate, CSCore.DSP.FftSize.Fft4096);
+                lineSpectrumRight = new LineSpectrum(CSCore.DSP.FftSize.Fft4096)
+                {
+                    SpectrumProvider = spectrumProviderRight,
+                    UseAverage = true,
+                    BarCount = numBars,
+                    BarSpacing = 2,
+                    IsXLogScale = false,
+                    ScalingStrategy = ScalingStrategy.Sqrt
+                };
+                var notificationSource = new CSCore.Streams.SingleBlockNotificationStream(source.ToSampleSource());
+                notificationSource.SingleBlockRead += NotificationSource_SingleBlockRead;
+                finalSource = notificationSource.ToWaveSource();
+                capture.DataAvailable += Capture_DataAvailable;
+                capture.Start();
+            }
         }
         private void Capture_DataAvailable(object sender, CSCore.SoundIn.DataAvailableEventArgs e)
         {
