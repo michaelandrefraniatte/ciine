@@ -15,6 +15,10 @@ using System.Drawing.Drawing2D;
 using System.Drawing.Text;
 using System.Drawing;
 using System.Threading;
+using AForge.Video;
+using AForge.Video.DirectShow;
+using Bitmap = System.Drawing.Bitmap;
+using Point = System.Drawing.Point;
 
 namespace ciine
 {
@@ -80,6 +84,10 @@ namespace ciine
         public BasicSpectrumProvider spectrumProviderRight;
         public CSCore.IWaveSource finalSource;
         private Bitmap bmp;
+        private FilterInfoCollection CaptureDevice;
+        private VideoCaptureDevice FinalFrame;
+        private VideoCapabilities[] videoCapabilities;
+        private double initratio;
         private void Form2_Load(object sender, EventArgs e)
         {
             TimeBeginPeriod(1);
@@ -120,9 +128,27 @@ namespace ciine
             }
             catch { }
             Task.Run(() => GetAudioByteArray());
-            this.pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
-            this.pictureBox1.Size = new Size(170 - 15, 170 - 15);
-            this.pictureBox1.Location = new Point((width - this.pictureBox1.Width) / 2, 0);
+            pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
+            pictureBox2.SizeMode = PictureBoxSizeMode.StretchImage;
+            CaptureDevice = new FilterInfoCollection(FilterCategory.VideoInputDevice);
+            if (CaptureDevice.Count > 0)
+            {
+                FinalFrame = new VideoCaptureDevice(CaptureDevice[0].MonikerString);
+                videoCapabilities = FinalFrame.VideoCapabilities;
+                FinalFrame.VideoResolution = videoCapabilities[1];
+                initratio = Convert.ToDouble(FinalFrame.VideoResolution.FrameSize.Width) / Convert.ToDouble(FinalFrame.VideoResolution.FrameSize.Height);
+                this.pictureBox2.Size = new Size(170 - 15, 170 - 15);
+                this.pictureBox2.Location = new Point((width - this.pictureBox2.Width) / 2 + (170 - 15) / 2, 0);
+                FinalFrame.NewFrame += FinalFrame_NewFrame;
+                FinalFrame.Start();
+                this.pictureBox1.Size = new Size(170 - 15, 170 - 15);
+                this.pictureBox1.Location = new Point((width - this.pictureBox1.Width) / 2 - (170 - 15) / 2, 0);
+            }
+            else
+            {
+                this.pictureBox1.Size = new Size(170 - 15, 170 - 15);
+                this.pictureBox1.Location = new Point((width - this.pictureBox1.Width) / 2, 0);
+            }
         }
         private void Form2_KeyDown(object sender, KeyEventArgs e)
         {
@@ -140,6 +166,26 @@ namespace ciine
                 const string caption = "About";
                 MessageBox.Show(message, caption, MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
+        }
+        private void FinalFrame_NewFrame(object sender, NewFrameEventArgs eventArgs)
+        {
+            try
+            {
+                Bitmap capture = eventArgs.Frame.Clone() as Bitmap;
+                this.pictureBox2.Image = cropImage(capture);
+                capture.Dispose();
+            }
+            catch { }
+        }
+        private Bitmap cropImage(Bitmap bmp)
+        {
+            int oldwidth = (int)(initratio * bmp.Height);
+            int oldheight = bmp.Height;
+            int newWidth = oldheight;
+            int newHeight = oldheight;
+            Rectangle CropArea = new Rectangle((oldwidth - oldheight) / 2, 0, newWidth, newHeight);
+            Bitmap bmpCrop = bmp.Clone(CropArea, bmp.PixelFormat);
+            return bmpCrop;
         }
         public async void SetDots(double ir1x, double ir1y, double ir2x, double ir2y)
         {
