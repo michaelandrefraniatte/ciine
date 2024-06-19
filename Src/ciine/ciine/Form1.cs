@@ -108,26 +108,34 @@ namespace ciine
         {
             TimeBeginPeriod(1);
             NtSetTimerResolution(1, true, ref CurrentResolution);
-            SetProcessPriority();
-            using (StreamReader createdfile = new StreamReader("params.txt"))
+            if (!File.Exists(Application.StartupPath + @"\ffmpeg.exe"))
             {
-                createdfile.ReadLine();
-                cpuorgpu = createdfile.ReadLine();
-                createdfile.ReadLine();
-                commandcpu = createdfile.ReadLine();
-                createdfile.ReadLine();
-                commandgpu = createdfile.ReadLine();
-                createdfile.ReadLine();
-                videodelay = createdfile.ReadLine();
+                MessageBox.Show("Not existing ffmpeg.exe! Please copy/paste ffmpeg.exe from the zip folder in this program folder, sorry closing.");
+                this.Close();
             }
-            double ticks = double.Parse(videodelay);
-            TimeSpan time = TimeSpan.FromMilliseconds(ticks);
-            DateTime datetime = new DateTime(time.Ticks);
-            ss = datetime.ToString("HH:mm:ss.fff");
-            Task.Run(() => StartStopItBlockProc());
-            Task.Run(() => StartStopItBlockServ());
-            Task.Run(() => StartEchoBoost());
-            Task.Run(() => StartCiine());
+            else
+            {
+                SetProcessPriority();
+                using (StreamReader createdfile = new StreamReader("params.txt"))
+                {
+                    createdfile.ReadLine();
+                    cpuorgpu = createdfile.ReadLine();
+                    createdfile.ReadLine();
+                    commandcpu = createdfile.ReadLine();
+                    createdfile.ReadLine();
+                    commandgpu = createdfile.ReadLine();
+                    createdfile.ReadLine();
+                    videodelay = createdfile.ReadLine();
+                }
+                double ticks = double.Parse(videodelay);
+                TimeSpan time = TimeSpan.FromMilliseconds(ticks);
+                DateTime datetime = new DateTime(time.Ticks);
+                ss = datetime.ToString("HH:mm:ss.fff");
+                Task.Run(() => StartStopItBlockProc());
+                Task.Run(() => StartStopItBlockServ());
+                Task.Run(() => StartEchoBoost());
+                Task.Run(() => StartCiine());
+            }
         }
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
