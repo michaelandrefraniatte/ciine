@@ -84,6 +84,7 @@ namespace ciine
         private BasicSpectrumProvider spectrumProviderLeft;
         private BasicSpectrumProvider spectrumProviderRight;
         private CSCore.IWaveSource finalSource;
+        private CSCore.IWaveSource source;
         private Bitmap bmp;
         public static int minimapstart, minimapend;
         private FilterInfoCollection CaptureDevice;
@@ -417,24 +418,24 @@ namespace ciine
                     ComputeData();
                     string stringinject = @"
                         try {
-                            var height = window.innerHeight;
-                            var width = height * 9 / 16 + 'px';
-                            var left = height * 9 / 16 / 2 + 'px';
+                            var widthsize = window.innerHeight * 9 / 16 + 'px';
+                            var widthsizemid = window.innerHeight * 9 / 16 / 2 + 'px';
                             var parentcanvas = document.getElementById('parentcanvas');
                             if (parentcanvas == null) {
                                 parentcanvas = document.createElement('div');
                                 document.body.insertBefore(parentcanvas, document.body.firstChild);
                                 parentcanvas.id = 'parentcanvas';
                             }
+                            parentcanvas = document.getElementById('parentcanvas');
                             parentcanvas.style.position = 'absolute';
                             parentcanvas.style.display = 'inline-block';
-                            parentcanvas.style.width = width;
+                            parentcanvas.style.width = widthsize;
                             parentcanvas.style.height = '1000px';
-                            parentcanvas.style.left = 'calc(50% - left)';
+                            parentcanvas.style.left = 'calc(50% - widthsizemid)';
                             parentcanvas.style.bottom = '0px';
                             parentcanvas.style.backgroundColor = 'transparent';
-                            var canvas = document.getElementsByTagName('canvas');
-                            if (canvas.length == 0) {
+                            var canvas = document.getElementById('canvas');
+                            if (canvas == null) {
                                 canvas = document.createElement('canvas');
                                 parentcanvas.append(canvas);
                                 canvas.id = 'canvas';
@@ -592,9 +593,7 @@ namespace ciine
             {
                 try
                 {
-                    capture.DataAvailable -= Capture_DataAvailable;
                     capture.Stop();
-                    capture.Dispose();
                 }
                 finally
                 {
@@ -602,7 +601,6 @@ namespace ciine
                     {
                         if (FinalFrame.IsRunning)
                         {
-                            FinalFrame.NewFrame -= FinalFrame_NewFrame;
                             FinalFrame.Stop();
                         }
                     }
@@ -619,35 +617,33 @@ namespace ciine
         {
             capture = new CSCore.SoundIn.WasapiLoopbackCapture();
             capture.Initialize();
-            using (CSCore.IWaveSource source = new CSCore.Streams.SoundInSource(capture))
+            source = new CSCore.Streams.SoundInSource(capture);
+            fftBuffer = new float[(int)CSCore.DSP.FftSize.Fft4096];
+            spectrumProviderLeft = new BasicSpectrumProvider(capture.WaveFormat.Channels, capture.WaveFormat.SampleRate, CSCore.DSP.FftSize.Fft4096);
+            lineSpectrumLeft = new LineSpectrum(CSCore.DSP.FftSize.Fft4096)
             {
-                fftBuffer = new float[(int)CSCore.DSP.FftSize.Fft4096];
-                spectrumProviderLeft = new BasicSpectrumProvider(capture.WaveFormat.Channels, capture.WaveFormat.SampleRate, CSCore.DSP.FftSize.Fft4096);
-                lineSpectrumLeft = new LineSpectrum(CSCore.DSP.FftSize.Fft4096)
-                {
-                    SpectrumProvider = spectrumProviderLeft,
-                    UseAverage = true,
-                    BarCount = numBars,
-                    BarSpacing = 2,
-                    IsXLogScale = false,
-                    ScalingStrategy = ScalingStrategy.Sqrt
-                };
-                spectrumProviderRight = new BasicSpectrumProvider(capture.WaveFormat.Channels, capture.WaveFormat.SampleRate, CSCore.DSP.FftSize.Fft4096);
-                lineSpectrumRight = new LineSpectrum(CSCore.DSP.FftSize.Fft4096)
-                {
-                    SpectrumProvider = spectrumProviderRight,
-                    UseAverage = true,
-                    BarCount = numBars,
-                    BarSpacing = 2,
-                    IsXLogScale = false,
-                    ScalingStrategy = ScalingStrategy.Sqrt
-                };
-                var notificationSource = new CSCore.Streams.SingleBlockNotificationStream(source.ToSampleSource());
-                notificationSource.SingleBlockRead += NotificationSource_SingleBlockRead;
-                finalSource = notificationSource.ToWaveSource();
-                capture.DataAvailable += Capture_DataAvailable;
-                capture.Start();
-            }
+                SpectrumProvider = spectrumProviderLeft,
+                UseAverage = true,
+                BarCount = numBars,
+                BarSpacing = 2,
+                IsXLogScale = false,
+                ScalingStrategy = ScalingStrategy.Sqrt
+            };
+            spectrumProviderRight = new BasicSpectrumProvider(capture.WaveFormat.Channels, capture.WaveFormat.SampleRate, CSCore.DSP.FftSize.Fft4096);
+            lineSpectrumRight = new LineSpectrum(CSCore.DSP.FftSize.Fft4096)
+            {
+                SpectrumProvider = spectrumProviderRight,
+                UseAverage = true,
+                BarCount = numBars,
+                BarSpacing = 2,
+                IsXLogScale = false,
+                ScalingStrategy = ScalingStrategy.Sqrt
+            };
+            var notificationSource = new CSCore.Streams.SingleBlockNotificationStream(source.ToSampleSource());
+            notificationSource.SingleBlockRead += NotificationSource_SingleBlockRead;
+            finalSource = notificationSource.ToWaveSource();
+            capture.DataAvailable += Capture_DataAvailable;
+            capture.Start();
         }
         private void Capture_DataAvailable(object sender, CSCore.SoundIn.DataAvailableEventArgs e)
         {
