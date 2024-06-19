@@ -171,9 +171,9 @@ namespace ciine
         private void FadeOut()
         {
             float opacity = 0;
-            for (int i = 1; i <= 4000; i++)
+            for (int i = 1; i <= 1000; i++)
             {
-                opacity += 1f / 4000f;
+                opacity += 1f / 1000f;
                 this.Opacity = opacity;
                 Thread.Sleep(1);
             }

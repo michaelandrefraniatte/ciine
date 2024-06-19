@@ -428,7 +428,7 @@ namespace ciine
             processmerge.StartInfo.FileName = "ffmpeg.exe";
             processmerge.StartInfo.Arguments = @"-ss " + ss + " -i " + outputvideotemp + " -i " + outputaudiotemp + " -c:v copy -c:a aac -map 0:v:0 -map 1:a:0 " + outputtemp;
             processmerge.Start();
-            Thread.Sleep(20000);
+            Thread.Sleep(4000);
             do
             {
                 Thread.Sleep(1000);
