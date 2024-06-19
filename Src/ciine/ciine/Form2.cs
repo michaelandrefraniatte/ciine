@@ -585,28 +585,39 @@ namespace ciine
         }
         private void Form2_FormClosed(object sender, FormClosedEventArgs e)
         {
+            CloseWebView();
+            CloseSound();
+            CloseWebcam();
+        }
+        private void CloseWebView()
+        {
             try
             {
                 webView21.Dispose();
             }
-            finally
+            catch { }
+        }
+        private void CloseSound()
+        {
+            try
             {
-                try
+                capture.Stop();
+            }
+            catch { }
+        }
+        private void CloseWebcam()
+        {
+            try
+            {
+                if (CaptureDevice.Count > 0)
                 {
-                    capture.Stop();
-                }
-                finally
-                {
-                    try
+                    if (FinalFrame.IsRunning)
                     {
-                        if (FinalFrame.IsRunning)
-                        {
-                            FinalFrame.Stop();
-                        }
+                        FinalFrame.Stop();
                     }
-                    catch { }
                 }
             }
+            catch { }
         }
         private void Form2_FormClosing(object sender, FormClosingEventArgs e)
         {
