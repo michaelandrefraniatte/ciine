@@ -313,9 +313,12 @@ namespace ciine
                 {
                     if (Application.OpenForms["Form2"] == null)
                     {
-                        form2visible = true;
-                        form2 = new Form2();
-                        form2.Show();
+                        Task.Run(() => 
+                        {
+                            form2visible = true;
+                            form2 = new Form2();
+                            form2.Show();
+                        });
                     }
                 }
                 finally
@@ -337,8 +340,11 @@ namespace ciine
                     {
                         if (Application.OpenForms["Form2"] != null)
                         {
-                            form2visible = false;
-                            form2.Close();
+                            Task.Run(() => 
+                            {
+                                form2visible = false;
+                                form2.Close();
+                            });
                         }
                     }
                     finally
@@ -355,8 +361,11 @@ namespace ciine
                 {
                     if (Application.OpenForms["Form2"] != null)
                     {
-                        form2visible = false;
-                        form2.Close();
+                        Task.Run(() => 
+                        {
+                            form2visible = false;
+                            form2.Close();
+                        });
                     }
                 }
                 catch { }
