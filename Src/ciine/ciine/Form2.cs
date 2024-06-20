@@ -19,7 +19,6 @@ using AForge.Video;
 using AForge.Video.DirectShow;
 using Bitmap = System.Drawing.Bitmap;
 using Point = System.Drawing.Point;
-using System.Drawing.Imaging;
 
 namespace ciine
 {
@@ -91,8 +90,6 @@ namespace ciine
         private VideoCaptureDevice FinalFrame;
         private VideoCapabilities[] videoCapabilities;
         private double initratio;
-        private List<Control> shadowControls = new List<Control>();
-        private Bitmap shadowBmp = null;
         private GraphicsPath gp;
         private void Form2_Load(object sender, EventArgs e)
         {
@@ -118,9 +115,6 @@ namespace ciine
                 gp = new GraphicsPath();
                 gp.AddEllipse(pictureBox2.DisplayRectangle);
                 pictureBox2.Region = new Region(gp);
-                shadowControls.Add(pictureBox1);
-                shadowControls.Add(pictureBox2);
-                this.Refresh();
                 FinalFrame = new VideoCaptureDevice(CaptureDevice[0].MonikerString);
                 videoCapabilities = FinalFrame.VideoCapabilities;
                 FinalFrame.VideoResolution = videoCapabilities[1];
@@ -495,44 +489,6 @@ namespace ciine
                 }
             }
             catch { }
-        }
-        private void Form2_Paint(object sender, PaintEventArgs e)
-        {
-            if (shadowBmp == null || shadowBmp.Size != this.Size)
-            {
-                shadowBmp?.Dispose();
-                shadowBmp = new Bitmap(this.Width, this.Height, PixelFormat.Format32bppArgb);
-            }
-            foreach (Control control in shadowControls)
-            {
-                using (GraphicsPath gp = new GraphicsPath())
-                {
-                    gp.AddRectangle(new Rectangle(control.Location.X, control.Location.Y, control.Size.Width, control.Size.Height));
-                    DrawShadowSmooth(gp, 100, 60, shadowBmp);
-                }
-                e.Graphics.DrawImage(shadowBmp, new Point(0, 0));
-            }
-        }
-        private static void DrawShadowSmooth(GraphicsPath gp, int intensity, int radius, Bitmap dest)
-        {
-            using (Graphics g = Graphics.FromImage(dest))
-            {
-                g.Clear(Color.Transparent);
-                g.CompositingMode = CompositingMode.SourceCopy;
-                double alpha = 0;
-                double astep = 0;
-                double astepstep = (double)intensity / radius / (radius / 2D);
-                for (int thickness = radius; thickness > 0; thickness--)
-                {
-                    using (Pen p = new Pen(Color.FromArgb((int)alpha, 0, 0, 0), thickness))
-                    {
-                        p.LineJoin = LineJoin.Round;
-                        g.DrawPath(p, gp);
-                    }
-                    alpha += astep;
-                    astep += astepstep;
-                }
-            }
         }
         private void Form2_FormClosed(object sender, FormClosedEventArgs e)
         {
