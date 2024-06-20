@@ -358,15 +358,85 @@
         }
     </style>
 
+    <style>
+        #padshadow {
+            position: absolute;
+            top: 70%;
+            left: 35%;
+            height: 30%;
+            width: 30%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transform: translate(10px, 10px);
+        }
+
+            #padshadow img {
+                width: auto;
+                height: 75%;
+            }
+    </style>
+
+    <style>
+        #minimapaloneshadow, #minimapshadow, #webcamshadow {
+            position: absolute;
+            display: block;
+            background-color: rgba(100, 100, 100, 0.3);
+            transform: translate(10px, 10px);
+        }
+    </style>
+
 </head>
 <body>
+
+    <div id="minimapaloneshadow"></div>
+    <div id="minimapshadow"></div>
+    <div id="webcamshadow"></div>
 
     <div class="crosshair"></div>
 
     <div class='ir' id="ir1"></div>
     <div class='ir' id="ir2"></div>
 
+    <div id="padshadow"><img src="https://appassets/xbox-controller-shadow.png" /></div>
+
     <div id="pad"></div>
+
+    <script>
+        function setMinimapAloneShadow(width, height, left, top, display) {
+            var minimapaloneshadow = document.getElementById("minimapaloneshadow");
+            minimapaloneshadow.style.width = width + "px";
+            minimapaloneshadow.style.height = height + "px";
+            minimapaloneshadow.style.left = left + "px";
+            minimapaloneshadow.style.top = top + "px";
+            if (display == "False") {
+                minimapaloneshadow.style.display = "none";
+            }
+        }
+        function setMinimapShadow(width, height, left, top, display) {
+            var minimapshadow = document.getElementById("minimapshadow");
+            minimapshadow.style.width = width + "px";
+            minimapshadow.style.height = height + "px";
+            minimapshadow.style.left = left + "px";
+            minimapshadow.style.top = top + "px";
+            minimapshadow.style.borderRadius = width + "px";
+            if (display == "False") {
+                minimapshadow.style.display = "none";
+            }
+        }
+        function setWebcamShadow(width, height, left, top, display) {
+            var webcamshadow = document.getElementById("webcamshadow");
+            webcamshadow.style.width = width + "px";
+            webcamshadow.style.height = height + "px";
+            webcamshadow.style.left = left + "px";
+            webcamshadow.style.top = top + "px";
+            webcamshadow.style.borderRadius = width + "px";
+            if (display == "False") {
+                webcamshadow.style.display = "none";
+            }
+        }
+    </script>
 
     <script>
 
@@ -1147,7 +1217,7 @@
                                 listen_dev(
                                     window,
                                     "gamepadconnected",
-                                        /*plugIn*/ ctx[4],
+                                                        /*plugIn*/ ctx[4],
                                     false,
                                     false,
                                     false
@@ -1155,7 +1225,7 @@
                                 listen_dev(
                                     window,
                                     "gamepaddisconnected",
-                                        /*unPlug*/ ctx[5],
+                                                        /*unPlug*/ ctx[5],
                                     false,
                                     false,
                                     false
@@ -1354,9 +1424,9 @@
                                 let sx = side === "rt" ? -s : s;
 
                                 return `
-                        transform: scaleX(${sx}) scaleY(${s}) rotate(-69deg);
-                        opacity: ${0.3 + s};
-                    `;
+                                        transform: scaleX(${sx}) scaleY(${s}) rotate(-69deg);
+                                        opacity: ${0.3 + s};
+                                    `;
                             })
                         );
                     }

@@ -132,7 +132,9 @@ namespace ciine
             CoreWebView2Environment environment = await CoreWebView2Environment.CreateAsync(null, null, options);
             await webView21.EnsureCoreWebView2Async(environment);
             webView21.CoreWebView2.SetVirtualHostNameToFolderMapping("appassets", "assets", CoreWebView2HostResourceAccessKind.DenyCors);
-            webView21.CoreWebView2.Settings.AreDevToolsEnabled = true;
+            webView21.CoreWebView2.Settings.AreDevToolsEnabled = false;
+            webView21.CoreWebView2.Settings.IsStatusBarEnabled = false;
+            webView21.NavigationCompleted += WebView21_NavigationCompleted;
             webView21.KeyDown += WebView21_KeyDown;
             webView21.Source = new Uri("https://appassets/index.html");
             webView21.Dock = DockStyle.Fill;
@@ -187,6 +189,24 @@ namespace ciine
                 const string caption = "About";
                 MessageBox.Show(message, caption, MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
+        }
+        private async void WebView21_NavigationCompleted(object sender, Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs e)
+        {
+            try
+            {
+                await execScriptHelper($"setMinimapAloneShadow('{(minimapend - minimapstart).ToString()}', '{(minimapend - minimapstart).ToString()}', '{((width - this.pictureBox1.Width) / 2).ToString()}', '{(0).ToString()}', '{CaptureDevice.Count <= 0}');");
+            }
+            catch { }
+            try
+            {
+                await execScriptHelper($"setMinimapShadow('{(minimapend - minimapstart).ToString()}', '{(minimapend - minimapstart).ToString()}', '{((width - this.pictureBox1.Width) / 2 - this.pictureBox1.Width / 2 - 5).ToString()}', '{(5).ToString()}', '{CaptureDevice.Count > 0}');");
+            }
+            catch { }
+            try
+            {
+                await execScriptHelper($"setWebcamShadow('{(minimapend - minimapstart).ToString()}', '{(minimapend - minimapstart).ToString()}', '{((width - this.pictureBox2.Width) / 2 + this.pictureBox2.Width / 2 + 5).ToString()}', '{(5).ToString()}', '{CaptureDevice.Count > 0}');");
+            }
+            catch { }
         }
         private void FinalFrame_NewFrame(object sender, NewFrameEventArgs eventArgs)
         {
