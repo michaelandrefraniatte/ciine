@@ -169,9 +169,9 @@ namespace ciine
         private void FadeOut()
         {
             float opacity = 0;
-            for (int i = 1; i <= 1000; i++)
+            for (int i = 1; i <= 2000; i++)
             {
-                opacity += 1f / 1000f;
+                opacity += 1f / 2000f;
                 this.Opacity = opacity;
                 Thread.Sleep(1);
             }
@@ -573,7 +573,7 @@ namespace ciine
         private void Form2_FormClosing(object sender, FormClosingEventArgs e)
         {
             closed = true;
-            Thread.Sleep(100);
+            Thread.Sleep(2000);
         }
         private async void SetAudioVision(string rawdata100)
         {
