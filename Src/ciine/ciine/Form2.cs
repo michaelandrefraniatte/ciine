@@ -78,7 +78,7 @@ namespace ciine
         private float highScaleNotAverage = 1000f;
         private LineSpectrum lineSpectrumLeft;
         private LineSpectrum lineSpectrumRight;
-        private CSCore.SoundIn.WasapiCapture capture;
+        private CSCore.SoundIn.WasapiCapture sound;
         private CSCore.DSP.FftSize fftSize;
         private float[] fftBuffer;
         private BasicSpectrumProvider spectrumProviderLeft;
@@ -134,7 +134,6 @@ namespace ciine
                 this.pictureBox1.Size = new Size(minimapend - minimapstart, minimapend - minimapstart);
                 this.pictureBox1.Location = new Point((width - this.pictureBox1.Width) / 2, 0);
             }
-            Thread.Sleep(1000);
             CoreWebView2EnvironmentOptions options = new CoreWebView2EnvironmentOptions("--disable-web-security --allow-file-access-from-files --allow-file-access", "en");
             CoreWebView2Environment environment = await CoreWebView2Environment.CreateAsync(null, null, options);
             await webView21.EnsureCoreWebView2Async(environment);
@@ -143,10 +142,10 @@ namespace ciine
             webView21.KeyDown += WebView21_KeyDown;
             webView21.Source = new Uri("https://appassets/index.html");
             webView21.Dock = DockStyle.Fill;
-            webView21.DefaultBackgroundColor = System.Drawing.Color.Transparent;
+            webView21.DefaultBackgroundColor = Color.Transparent;
             this.Controls.Add(webView21);
-            this.Location = new System.Drawing.Point(0, 0);
-            this.Size = new System.Drawing.Size(width, height);
+            this.Location = new Point(0, 0);
+            this.Size = new Size(width, height);
             try
             {
                 var controllers = new[] { new Controller(UserIndex.One) };
@@ -165,7 +164,6 @@ namespace ciine
                 }
             }
             catch { }
-            Task.Run(() => GetAudioByteArray());
             Task.Run(() => FadeOut());
         }
         private void FadeOut()
@@ -177,6 +175,7 @@ namespace ciine
                 this.Opacity = opacity;
                 Thread.Sleep(1);
             }
+            Task.Run(() => GetAudioByteArray());
         }
         private void Form2_KeyDown(object sender, KeyEventArgs e)
         {
@@ -199,9 +198,9 @@ namespace ciine
         {
             try
             {
-                Bitmap capture = eventArgs.Frame.Clone() as Bitmap;
-                this.pictureBox2.Image = cropImage(capture);
-                capture.Dispose();
+                Bitmap minimap = eventArgs.Frame.Clone() as Bitmap;
+                this.pictureBox2.Image = cropImage(minimap);
+                minimap.Dispose();
             }
             catch { }
         }
@@ -410,7 +409,7 @@ namespace ciine
                 Graphics graphics = Graphics.FromImage(bmp as Image);
                 graphics.PixelOffsetMode = PixelOffsetMode.HighSpeed;
                 graphics.SmoothingMode = SmoothingMode.HighSpeed;
-                graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.Low;
+                graphics.InterpolationMode = InterpolationMode.Low;
                 graphics.CompositingMode = CompositingMode.SourceCopy;
                 graphics.CompositingQuality = CompositingQuality.HighSpeed;
                 graphics.Clear(Color.Transparent);
@@ -553,7 +552,7 @@ namespace ciine
         {
             try
             {
-                capture.Stop();
+                sound.Stop();
             }
             catch { }
         }
@@ -587,11 +586,11 @@ namespace ciine
         }
         private void GetAudioByteArray()
         {
-            capture = new CSCore.SoundIn.WasapiLoopbackCapture();
-            capture.Initialize();
-            source = new CSCore.Streams.SoundInSource(capture);
+            sound = new CSCore.SoundIn.WasapiLoopbackCapture();
+            sound.Initialize();
+            source = new CSCore.Streams.SoundInSource(sound) { FillWithZeros = true };
             fftBuffer = new float[(int)CSCore.DSP.FftSize.Fft4096];
-            spectrumProviderLeft = new BasicSpectrumProvider(capture.WaveFormat.Channels, capture.WaveFormat.SampleRate, CSCore.DSP.FftSize.Fft4096);
+            spectrumProviderLeft = new BasicSpectrumProvider(sound.WaveFormat.Channels, sound.WaveFormat.SampleRate, CSCore.DSP.FftSize.Fft4096);
             lineSpectrumLeft = new LineSpectrum(CSCore.DSP.FftSize.Fft4096)
             {
                 SpectrumProvider = spectrumProviderLeft,
@@ -601,7 +600,7 @@ namespace ciine
                 IsXLogScale = false,
                 ScalingStrategy = ScalingStrategy.Sqrt
             };
-            spectrumProviderRight = new BasicSpectrumProvider(capture.WaveFormat.Channels, capture.WaveFormat.SampleRate, CSCore.DSP.FftSize.Fft4096);
+            spectrumProviderRight = new BasicSpectrumProvider(sound.WaveFormat.Channels, sound.WaveFormat.SampleRate, CSCore.DSP.FftSize.Fft4096);
             lineSpectrumRight = new LineSpectrum(CSCore.DSP.FftSize.Fft4096)
             {
                 SpectrumProvider = spectrumProviderRight,
@@ -614,8 +613,8 @@ namespace ciine
             var notificationSource = new CSCore.Streams.SingleBlockNotificationStream(source.ToSampleSource());
             notificationSource.SingleBlockRead += NotificationSource_SingleBlockRead;
             finalSource = notificationSource.ToWaveSource();
-            capture.DataAvailable += Capture_DataAvailable;
-            capture.Start();
+            sound.DataAvailable += Capture_DataAvailable;
+            sound.Start();
         }
         private void Capture_DataAvailable(object sender, CSCore.SoundIn.DataAvailableEventArgs e)
         {

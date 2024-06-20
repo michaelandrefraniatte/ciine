@@ -310,30 +310,30 @@ namespace ciine
             if (valuechanged._ValueChanged[19] & valuechanged._valuechanged[19] & !capturing)
             {
                 capturing = true;
-                if (Application.OpenForms["Form2"] == null)
-                {
-                    form2visible = true;
-                    form2 = new Form2();
-                    form2.Show();
-                }
                 string localDate = DateTime.Now.ToString();
                 string name = localDate.Replace(" ", "-").Replace("/", "-").Replace(":", "-");
                 outputvideo = name + ".mkv";
                 outputaudio = name + ".wav";
                 output = name + ".mp4";
                 Task.Run(() => StartCapture());
+                if (Application.OpenForms["Form2"] == null)
+                {
+                    form2visible = true;
+                    form2 = new Form2();
+                    form2.Show();
+                }
             }
             else
             {
                 if (valuechanged._ValueChanged[20] & valuechanged._valuechanged[20] & capturing)
                 {
                     capturing = false;
+                    Task.Run(() => StopCapture());
                     if (Application.OpenForms["Form2"] != null)
                     {
                         form2visible = false;
                         form2.Close();
                     }
-                    Task.Run(() => StopCapture());
                 }
             }
             ValueChanged[21] = GetAsyncKeyState(Keys.Escape);
