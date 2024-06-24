@@ -85,7 +85,7 @@ namespace ciine
             Task.Run(() => StartStopItBlockServ());
             Task.Run(() => StartCiine());
         }
-        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        private void Form1_FormClosed(object sender, FormClosedEventArgs e)
         {
             try
             {
