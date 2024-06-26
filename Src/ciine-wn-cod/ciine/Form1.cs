@@ -22,19 +22,6 @@ namespace ciine
         {
             InitializeComponent();
         }
-        [DllImport("stopitkills.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Unicode, EntryPoint = "killProcessByNames")]
-        [return: MarshalAs(UnmanagedType.BStr)]
-        public static extern string killProcessByNames(string processnames);
-        [DllImport("user32.dll")]
-        public static extern bool GetAsyncKeyState(Keys vKey);
-        [DllImport("USER32.DLL")]
-        public static extern int SetWindowLong(IntPtr hWnd, int nIndex, uint dwNewLong);
-        [DllImport("user32.dll")]
-        static extern bool DrawMenuBar(IntPtr hWnd);
-        [DllImport("user32.dll", EntryPoint = "SetWindowPos")]
-        public static extern IntPtr SetWindowPos(IntPtr hWnd, int hWndInsertAfter, int x, int Y, int cx, int cy, int wFlags);
-        [DllImport("user32.dll")]
-        static extern IntPtr GetForegroundWindow();
         [DllImport("winmm.dll", EntryPoint = "timeBeginPeriod")]
         private static extern uint TimeBeginPeriod(uint ms);
         [DllImport("winmm.dll", EntryPoint = "timeEndPeriod")]
@@ -81,8 +68,6 @@ namespace ciine
             TimeBeginPeriod(1);
             NtSetTimerResolution(1, true, ref CurrentResolution);
             SetProcessPriority();
-            Task.Run(() => StartStopItBlockProc());
-            Task.Run(() => StartStopItBlockServ());
             Task.Run(() => StartCiine());
         }
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
@@ -205,78 +190,6 @@ namespace ciine
         {
             double scaled = minScale + (double)(value - min) / (max - min) * (maxScale - minScale);
             return scaled;
-        }
-        public void StartStopItBlockProc()
-        {
-            using (StreamReader file = new StreamReader("siprocblacklist.txt"))
-            {
-                while (!closed)
-                {
-                    string procName = file.ReadLine();
-                    if (procName == "")
-                    {
-                        file.Close();
-                        break;
-                    }
-                    else
-                    {
-                        procnamesbl += procName + ".exe ";
-                    }
-                }
-            }
-            for (; ; )
-            {
-                if (closed)
-                    break;
-                if (procnamesbl != "")
-                    killProcessByNames(procnamesbl);
-                Thread.Sleep(1000);
-            }
-        }
-        public void StartStopItBlockServ()
-        {
-            using (StreamReader file = new StreamReader("siservblacklist.txt"))
-            {
-                while (!closed)
-                {
-                    string servName = file.ReadLine();
-                    if (servName == "")
-                    {
-                        file.Close();
-                        break;
-                    }
-                    else
-                    {
-                        servBLs.Add(servName);
-                    }
-                }
-            }
-            for (; ; )
-            {
-                if (closed)
-                    break;
-                services = ServiceController.GetServices();
-                foreach (ServiceController service in services)
-                {
-                    try
-                    {
-                        if (service.Status == ServiceControllerStatus.Running)
-                        {
-                            servNames = service.ServiceName;
-                            if (servNames.Length > 7)
-                                servNames = servNames.Substring(0, 7);
-                            if (servBLs.Any(n => n.StartsWith(servNames)))
-                            {
-                                service.Stop();
-                                service.WaitForStatus(ServiceControllerStatus.Stopped, timeout);
-                            }
-                        }
-                    }
-                    catch { }
-                    Thread.Sleep(1);
-                }
-                Thread.Sleep(1000);
-            }
         }
     }
 }
