@@ -469,7 +469,6 @@
                     document.body.insertBefore(parentcanvas, document.body.firstChild);
                     parentcanvas.id = 'parentcanvas';
                 }
-                parentcanvas = document.getElementById('parentcanvas');
                 parentcanvas.style.position = 'absolute';
                 parentcanvas.style.display = 'inline-block';
                 parentcanvas.style.width = widthsize;
@@ -483,7 +482,6 @@
                     parentcanvas.append(canvas);
                     canvas.id = 'canvas';
                 }
-                canvas = document.getElementById('canvas');
                 canvas.width = parentcanvas.clientWidth;
                 canvas.height = parentcanvas.clientHeight;
                 var WIDTH = canvas.width;
